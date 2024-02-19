@@ -4,21 +4,21 @@ import (
 	"log"
 	"os"
 
-	c "github.com/zrcoder/cdor"
+	. "github.com/zrcoder/cdor"
 )
 
 func main() {
-	cdor := c.New().
+	cdor := New().
 		Cfg().
 		Nodes(
-			c.N("cat").
-				Sub(
-					c.N("meow", c.O().F("green")),
+			N("cat").
+				Children(
+					N("meow", O().F("green")),
 				),
-			c.N("dog"),
+			N("dog", O().Sh("circle").L("ddd")),
 		).
 		Cons(
-			c.C("cat.meow", "dog", c.O().L("haha")),
+			C("cat.meow", "dog", O().L("haha").S("red")),
 		)
 
 	data, err := cdor.Gen()

@@ -55,16 +55,15 @@ func (c *Cdor) Gen() (svg []byte, err error) {
 	var flatten func(node *Node)
 	flatten = func(node *Node) {
 		nodes = append(nodes, node)
-		for _, n := range node.subNodes {
-			n.id = fmt.Sprintf("%s.%s", node.id, n.id)
-			flatten(n)
+		c.connections = append(c.connections, node.connections...)
+		for _, child := range node.children {
+			flatten(child)
 		}
 	}
 	for _, n := range c.nodes {
 		flatten(n)
 	}
 	for _, n := range nodes {
-		fmt.Println("id:", n.id)
 		if err = c.gen(n.id, n.option); err != nil {
 			return
 		}
@@ -100,35 +99,32 @@ func (c *Cdor) gen(id string, option *Option) (err error) {
 	return c.apply(id, option)
 }
 
-func (c *Cdor) apply(key string, o *Option) (err error) {
+func (c *Cdor) apply(id string, o *Option) (err error) {
 	// fix
 	return
 	if o == nil {
 		return
 	}
-	set := func(tag, val *string) {
-		c.graph, err = d2oracle.Set(c.graph, nil, key, tag, val)
+	set := func(tag, val string) {
+		fmt.Println("set", id, tag, val)
+		c.graph, err = d2oracle.Set(c.graph, nil, id, &tag, &val)
 	}
 
 	switch {
 	case o.Fill != "":
-		fill := "fill"
-		if set(&fill, &o.Fill); err != nil {
+		if set("fill", o.Fill); err != nil {
 			return
 		}
 	case o.Stroke != "":
-		stroke := "stroke"
-		if set(&stroke, &o.Stroke); err != nil {
+		if set("stroke", o.Stroke); err != nil {
 			return
 		}
 	case o.Shape != "":
-		shape := "shape"
-		if set(&shape, &o.Shape); err != nil {
+		if set("shape", o.Shape); err != nil {
 			return
 		}
 	case o.Label != "":
-		label := "label"
-		if set(&label, &o.Label); err != nil {
+		if set("label", o.Label); err != nil {
 			return
 		}
 	}
