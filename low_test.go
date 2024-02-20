@@ -19,27 +19,40 @@ cat: {
   meow: {style.fill: green}
 }
 dog: ddd {shape: circle}
-cat.meow -> dog: haha {style.stroke: red}
+cat.meow <-> dog: haha {style.stroke: red}
 `
 
 func common() (string, error) {
-	res, err := New().
+	res, err := Ctx().
 		Nodes(
-			N("cat").
+			Node("cat").
 				Children(
-					N("meow", O().F("green")),
+					Node("meow", Opt().Fill("green")),
 				),
-			N("dog", O().Sh("circle").L("ddd")),
+			Node("dog", Opt().Shape("circle").Label("ddd")),
 		).
 		Cons(
-			C("cat.meow", "dog", O().L("haha").S("red")),
+			Con("cat.meow", "dog", Opt().Label("haha").Stroke("red")),
 		).
-		D2()
+		d2()
 	return strings.TrimSpace(res), err
 }
 
+func TestHello(t *testing.T) {
+	want := strings.TrimSpace(d2wanted)
+	if res, err := d2(); err != nil || res != want {
+		t.Errorf("err: %v, got: %s\n", err, res)
+	}
+	if res, err := low(); err != nil || res != want {
+		t.Errorf("err: %v, got: %s\n", err, res)
+	}
+	if res, err := common(); err != nil || res != want {
+		t.Errorf("err: %v, got: %s\n", err, res)
+	}
+}
+
 func low() (string, error) {
-	c := New()
+	c := Ctx()
 	c.add("cat")
 	c.add("cat.meow")
 	c.set("cat.meow", "style.fill", "green")
@@ -49,7 +62,7 @@ func low() (string, error) {
 	key := c.con("cat.meow", "dog")
 	c.set(key, "label", "haha")
 	c.set(key, "style.stroke", "red")
-	res, err := c.D2()
+	res, err := c.d2()
 	return strings.TrimSpace(res), err
 }
 
@@ -75,7 +88,7 @@ func d2() (string, error) {
 	ddd := "ddd"
 	graph, _ = d2oracle.Set(graph, nil, "dog.label", nil, &ddd)
 
-	key := "cat.meow -> dog"
+	key := "cat.meow <-> dog"
 	newKey := ""
 	graph, newKey, _ = d2oracle.Create(graph, nil, key)
 	haha := "haha"
@@ -84,17 +97,4 @@ func d2() (string, error) {
 	graph, _ = d2oracle.Set(graph, nil, fmt.Sprintf("%s.style.stroke", newKey), nil, &red)
 
 	return strings.TrimSpace(d2format.Format(graph.AST)), nil
-}
-
-func TestHello(t *testing.T) {
-	want := strings.TrimSpace(d2wanted)
-	if res, err := d2(); err != nil || res != want {
-		t.Errorf("err: %v, got: %s\n", err, res)
-	}
-	if res, err := low(); err != nil || res != want {
-		t.Errorf("err: %v, got: %s\n", err, res)
-	}
-	if res, err := common(); err != nil || res != want {
-		t.Errorf("err: %v, got: %s\n", err, res)
-	}
 }

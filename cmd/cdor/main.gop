@@ -1,0 +1,13 @@
+import (
+	"os"
+
+	. "github.com/zrcoder/cdor"
+)
+
+data, _ := ctx.
+	cons(
+		con("Go+", "Go", opt.label("cdor")),
+	).
+	gen
+
+os.writeFile "hello.svg", data, 0600

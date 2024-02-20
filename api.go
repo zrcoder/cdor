@@ -2,7 +2,6 @@ package cdor
 
 import (
 	"context"
-	"fmt"
 
 	"oss.terrastruct.com/d2/d2graph"
 	"oss.terrastruct.com/d2/d2layouts/d2dagrelayout"
@@ -10,8 +9,8 @@ import (
 	"oss.terrastruct.com/d2/lib/textmeasure"
 )
 
-func New() *Cdor {
-	c := &Cdor{}
+func Ctx() *ctx {
+	c := &ctx{}
 	c.ruler, c.err = textmeasure.NewRuler()
 	layoutResolver := func(engine string) (d2graph.LayoutGraph, error) {
 		return d2dagrelayout.DefaultLayout, nil
@@ -24,12 +23,12 @@ func New() *Cdor {
 	return c
 }
 
-func (c *Cdor) Cfg() *Cdor {
+func (c *ctx) Cfg() *ctx {
 	// todo
 	return c
 }
 
-func (c *Cdor) Nodes(nodes ...*Node) *Cdor {
+func (c *ctx) Nodes(nodes ...*node) *ctx {
 	if c.err != nil {
 		return c
 	}
@@ -38,7 +37,7 @@ func (c *Cdor) Nodes(nodes ...*Node) *Cdor {
 	return c
 }
 
-func (c *Cdor) Cons(cons ...*Connection) *Cdor {
+func (c *ctx) Cons(cons ...*connection) *ctx {
 	if c.err != nil {
 		return c
 	}
@@ -47,7 +46,7 @@ func (c *Cdor) Cons(cons ...*Connection) *Cdor {
 	return c
 }
 
-func (c *Cdor) Gen() (svg []byte, err error) {
+func (c *ctx) Gen() (svg []byte, err error) {
 	if c.err != nil {
 		return nil, c.err
 	}
@@ -57,74 +56,71 @@ func (c *Cdor) Gen() (svg []byte, err error) {
 	return svg, c.err
 }
 
-func C(src, dst string, opt *Option) *Connection {
-	return &Connection{src: src, dst: dst, option: opt}
+func Con(src, dst string, opt ...*option) *connection {
+	con := &connection{src: src, dst: dst}
+	if len(opt) > 0 {
+		con.option = opt[0]
+	}
+	return con
 }
 
-func N(id string, opt ...*Option) *Node {
-	node := &Node{id: id}
+func Node(id string, opt ...*option) *node {
+	node := &node{id: id}
 	if len(opt) > 0 {
 		node.option = opt[0]
 	}
 	return node
 }
 
-func (n *Node) Children(children ...*Node) *Node {
-	for _, c := range children {
-		c.id = fmt.Sprintf("%s.%s", n.id, c.id)
-		n.children = append(n.children, c)
-	}
+func (n *node) Children(children ...*node) *node {
+	n.children = append(n.children, children...)
 	return n
 }
 
-func (n *Node) Connections(cons ...*Connection) *Node {
-	for _, c := range cons {
-		c.src = fmt.Sprintf("%s.%s", n.id, c.src)
-		c.dst = fmt.Sprintf("%s.%s", n.id, c.dst)
-		n.connections = append(n.connections, c)
-	}
+func (n *node) Cons(cons ...*connection) *node {
+	n.connections = append(n.connections, cons...)
 	return n
 }
 
-func O() *Option {
-	return &Option{}
+func Opt() *option {
+	return &option{}
 }
 
-func (o *Option) L(label string) *Option {
-	o.Label = label
+func (o *option) Label(label string) *option {
+	o.label = label
 	return o
 }
 
-func (o *Option) Sh(shape string) *Option {
-	o.Shape = shape
+func (o *option) Shape(shape string) *option {
+	o.shape = shape
 	return o
 }
 
-func (o *Option) Sty(style *Style) *Option {
-	o.Style = *style
+func (o *option) Style(style *style) *option {
+	o.style = *style
 	return o
 }
 
-func (o *Option) F(fill string) *Option {
-	o.Fill = fill
+func (o *option) Fill(fill string) *option {
+	o.fill = fill
 	return o
 }
 
-func (o *Option) S(stroke string) *Option {
-	o.Stroke = stroke
+func (o *option) Stroke(stroke string) *option {
+	o.stroke = stroke
 	return o
 }
 
-func S() *Style {
-	return &Style{}
+func Style() *style {
+	return &style{}
 }
 
-func (s *Style) F(fill string) *Style {
-	s.Fill = fill
+func (s *style) Fill(fill string) *style {
+	s.fill = fill
 	return s
 }
 
-func (s *Style) S(stroke string) *Style {
-	s.Stroke = stroke
+func (s *style) Stroke(stroke string) *style {
+	s.stroke = stroke
 	return s
 }

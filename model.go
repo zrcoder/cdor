@@ -5,34 +5,35 @@ import (
 	"oss.terrastruct.com/d2/lib/textmeasure"
 )
 
-type Cdor struct {
+type ctx struct {
 	graph       *d2graph.Graph
 	ruler       *textmeasure.Ruler
-	nodes       []*Node
-	connections []*Connection
+	nodes       []*node
+	connections []*connection
 	err         error
 	built       bool
 }
 
-type Node struct {
-	children    []*Node
-	connections []*Connection
+type node struct {
+	children    []*node
+	connections []*connection
 	id          string
-	option      *Option
+	option      *option
 }
 
-type Connection struct {
-	option   *Option
+type connection struct {
+	option   *option
 	src, dst string
 }
 
-type Option struct {
-	Label string
-	Shape string
-	Style
+// todo: arrow options
+type option struct {
+	label string
+	shape string
+	style
 }
 
-type Style struct {
-	Fill   string
-	Stroke string
+type style struct {
+	fill   string
+	stroke string
 }
