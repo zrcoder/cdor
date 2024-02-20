@@ -7,21 +7,35 @@ import (
 
 	"oss.terrastruct.com/d2/d2exporter"
 	"oss.terrastruct.com/d2/d2format"
+	"oss.terrastruct.com/d2/d2graph"
 	"oss.terrastruct.com/d2/d2layouts/d2dagrelayout"
+	"oss.terrastruct.com/d2/d2lib"
 	"oss.terrastruct.com/d2/d2oracle"
 	"oss.terrastruct.com/d2/d2renderers/d2svg"
 	"oss.terrastruct.com/d2/d2target"
 	"oss.terrastruct.com/d2/d2themes/d2themescatalog"
+	"oss.terrastruct.com/d2/lib/textmeasure"
 )
 
-func (c *ctx) add(id string) {
+func (c *Cdor) init() {
+	c.ruler, c.err = textmeasure.NewRuler()
+	layoutResolver := func(engine string) (d2graph.LayoutGraph, error) {
+		return d2dagrelayout.DefaultLayout, nil
+	}
+	compileOpts := &d2lib.CompileOptions{
+		LayoutResolver: layoutResolver,
+		Ruler:          c.ruler,
+	}
+	_, c.graph, c.err = d2lib.Compile(context.Background(), "", compileOpts, nil)
+}
+func (c *Cdor) add(id string) {
 	if c.err != nil {
 		return
 	}
 	c.graph, _, c.err = d2oracle.Create(c.graph, nil, id)
 }
 
-func (c *ctx) set(id, key, val string) {
+func (c *Cdor) set(id, key, val string) {
 	if val == "" || c.err != nil {
 		return
 	}
@@ -29,7 +43,7 @@ func (c *ctx) set(id, key, val string) {
 	c.graph, c.err = d2oracle.Set(c.graph, nil, id, nil, &val)
 }
 
-func (c *ctx) con(src, dst string) (id string) {
+func (c *Cdor) con(src, dst string) (id string) {
 	if c.err != nil {
 		return
 	}
@@ -38,7 +52,7 @@ func (c *ctx) con(src, dst string) (id string) {
 	return
 }
 
-func (c *ctx) buildGraph() {
+func (c *Cdor) buildGraph() {
 	if c.built || c.err != nil {
 		return
 	}
@@ -74,7 +88,7 @@ func (c *ctx) buildGraph() {
 	}
 }
 
-func (c *ctx) genSvg() (svg []byte) {
+func (c *Cdor) genSvg() (svg []byte) {
 	if c.err != nil {
 		return
 	}
@@ -98,7 +112,7 @@ func (c *ctx) genSvg() (svg []byte) {
 	return
 }
 
-func (c *ctx) gen(id string, option *option) (err error) {
+func (c *Cdor) gen(id string, option *option) (err error) {
 	if c.graph, id, err = d2oracle.Create(c.graph, nil, id); err != nil {
 		return
 	}
@@ -106,7 +120,7 @@ func (c *ctx) gen(id string, option *option) (err error) {
 	return
 }
 
-func (c *ctx) apply(id string, o *option) {
+func (c *Cdor) apply(id string, o *option) {
 	if o == nil {
 		return
 	}
@@ -117,7 +131,7 @@ func (c *ctx) apply(id string, o *option) {
 	c.set(id, "style.stroke", o.stroke)
 }
 
-func (c *ctx) d2() (d2 string, err error) {
+func (c *Cdor) d2() (d2 string, err error) {
 	c.buildGraph()
 	if c.err != nil {
 		return "", c.err

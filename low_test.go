@@ -23,18 +23,18 @@ cat.meow <-> dog: haha {style.stroke: red}
 `
 
 func common() (string, error) {
-	res, err := Ctx().
-		Nodes(
-			Node("cat").
-				Children(
-					Node("meow", Opt().Fill("green")),
-				),
-			Node("dog", Opt().Shape("circle").Label("ddd")),
-		).
-		Cons(
-			Con("cat.meow", "dog", Opt().Label("haha").Stroke("red")),
-		).
-		d2()
+	c := Ctx()
+	c.Nodes(
+		c.Node("cat").
+			Children(
+				c.Node("meow", c.Opt().Fill("green")),
+			),
+		c.Node("dog", c.Opt().Shape("circle").Label("ddd")),
+	)
+	c.Cons(
+		c.Con("cat.meow", "dog", c.Opt().Label("haha").Stroke("red")),
+	)
+	res, err := c.d2()
 	return strings.TrimSpace(res), err
 }
 

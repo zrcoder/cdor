@@ -1,34 +1,17 @@
 package cdor
 
-import (
-	"context"
-
-	"oss.terrastruct.com/d2/d2graph"
-	"oss.terrastruct.com/d2/d2layouts/d2dagrelayout"
-	"oss.terrastruct.com/d2/d2lib"
-	"oss.terrastruct.com/d2/lib/textmeasure"
-)
-
-func Ctx() *ctx {
-	c := &ctx{}
-	c.ruler, c.err = textmeasure.NewRuler()
-	layoutResolver := func(engine string) (d2graph.LayoutGraph, error) {
-		return d2dagrelayout.DefaultLayout, nil
-	}
-	compileOpts := &d2lib.CompileOptions{
-		LayoutResolver: layoutResolver,
-		Ruler:          c.ruler,
-	}
-	_, c.graph, c.err = d2lib.Compile(context.Background(), "", compileOpts, nil)
+func Ctx() *Cdor {
+	c := &Cdor{}
+	c.init()
 	return c
 }
 
-func (c *ctx) Cfg() *ctx {
+func (c *Cdor) Cfg() *Cdor {
 	// todo
 	return c
 }
 
-func (c *ctx) Nodes(nodes ...*node) *ctx {
+func (c *Cdor) Nodes(nodes ...*node) *Cdor {
 	if c.err != nil {
 		return c
 	}
@@ -37,7 +20,7 @@ func (c *ctx) Nodes(nodes ...*node) *ctx {
 	return c
 }
 
-func (c *ctx) Cons(cons ...*connection) *ctx {
+func (c *Cdor) Cons(cons ...*connection) *Cdor {
 	if c.err != nil {
 		return c
 	}
@@ -46,17 +29,15 @@ func (c *ctx) Cons(cons ...*connection) *ctx {
 	return c
 }
 
-func (c *ctx) Gen() (svg []byte, err error) {
-	if c.err != nil {
-		return nil, c.err
+func (c *Cdor) Node(id string, opt ...*option) *node {
+	node := &node{id: id}
+	if len(opt) > 0 {
+		node.option = opt[0]
 	}
-
-	c.buildGraph()
-	svg = c.genSvg()
-	return svg, c.err
+	return node
 }
 
-func Con(src, dst string, opt ...*option) *connection {
+func (c *Cdor) Con(src, dst string, opt ...*option) *connection {
 	con := &connection{src: src, dst: dst}
 	if len(opt) > 0 {
 		con.option = opt[0]
@@ -64,12 +45,14 @@ func Con(src, dst string, opt ...*option) *connection {
 	return con
 }
 
-func Node(id string, opt ...*option) *node {
-	node := &node{id: id}
-	if len(opt) > 0 {
-		node.option = opt[0]
+func (c *Cdor) Gen() (svg []byte, err error) {
+	if c.err != nil {
+		return nil, c.err
 	}
-	return node
+
+	c.buildGraph()
+	svg = c.genSvg()
+	return svg, c.err
 }
 
 func (n *node) Children(children ...*node) *node {
@@ -82,7 +65,7 @@ func (n *node) Cons(cons ...*connection) *node {
 	return n
 }
 
-func Opt() *option {
+func (c *Cdor) Opt() *option {
 	return &option{}
 }
 
@@ -111,7 +94,7 @@ func (o *option) Stroke(stroke string) *option {
 	return o
 }
 
-func Style() *style {
+func (c *Cdor) Style() *style {
 	return &style{}
 }
 

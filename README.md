@@ -12,9 +12,9 @@ Write Go+/Go code to make diagrams.
 
 
 ```c
-	cons(
-		con("Go+", "Go", opt.label("cdor")),
-	)
+cons(
+	con("Go+", "Go", opt.label("cdor")),
+)
 ```
 
 <img src='hello.svg' width='62%'/>
@@ -23,7 +23,7 @@ see more in [example_test.go](example_test.go).
 
 ## TODO
 
-- [ ] Go+ classfile
+- [x] Go+ classfile
 - [ ] arrorw options
 - [ ] config api
 - [ ] special shapes

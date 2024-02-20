@@ -3,9 +3,10 @@ package cdor
 import "fmt"
 
 func Example_hello() {
-	print(Ctx().
+	c := Ctx()
+	print(c.
 		Cons(
-			Con("x", "y", Opt().Label("hello, cdor!")),
+			c.Con("x", "y", c.Opt().Label("hello, cdor!")),
 		).
 		d2())
 	// Output:
@@ -13,13 +14,14 @@ func Example_hello() {
 }
 
 func Example_id() {
-	print(Ctx().
+	c := Ctx()
+	print(c.
 		Nodes(
-			Node("imAShape"),
-			Node("im_a_shape"),
-			Node("im a shape"),
-			Node("i'm a shape"),
-			Node("a-shape"),
+			c.Node("imAShape"),
+			c.Node("im_a_shape"),
+			c.Node("im a shape"),
+			c.Node("i'm a shape"),
+			c.Node("a-shape"),
 		).
 		d2())
 	// Output:
@@ -31,10 +33,11 @@ func Example_id() {
 }
 
 func Example_label() {
-	print(Ctx().
+	c := Ctx()
+	print(c.
 		Nodes(
-			Node("pg", Opt().Label("PostgreSQL")),
-			Node("Cloud", Opt().Label("my cloud")),
+			c.Node("pg", c.Opt().Label("PostgreSQL")),
+			c.Node("Cloud", c.Opt().Label("my cloud")),
 		).
 		d2())
 	// Output:
@@ -43,9 +46,10 @@ func Example_label() {
 }
 
 func Example_shape() {
-	print(Ctx().
+	c := Ctx()
+	print(c.
 		Nodes(
-			Node("cloud", Opt().Shape("cloud")),
+			c.Node("cloud", c.Opt().Shape("cloud")),
 		).
 		d2())
 	// Output:
@@ -53,10 +57,11 @@ func Example_shape() {
 }
 
 func Example_connection() {
-	print(Ctx().
+	c := Ctx()
+	print(c.
 		Cons(
-			Con("x", "y", Opt().Stroke("red")),
-			Con("x", "y", Opt().Stroke("blue")),
+			c.Con("x", "y", c.Opt().Stroke("red")),
+			c.Con("x", "y", c.Opt().Stroke("blue")),
 		).
 		d2())
 	// Output:
@@ -65,13 +70,14 @@ func Example_connection() {
 }
 
 func Example_container() {
-	print(Ctx().
+	c := Ctx()
+	print(c.
 		Nodes(
-			Node("server.process"),
-			Node("im a parent.im a child"),
+			c.Node("server.process"),
+			c.Node("im a parent.im a child"),
 		).
 		Cons(
-			Con("apartment.Bedroom.Bathroom", "office.Spare Room.Bathroom", Opt().Label("Portal")),
+			c.Con("apartment.Bedroom.Bathroom", "office.Spare Room.Bathroom", c.Opt().Label("Portal")),
 		).
 		d2())
 	// Output:
@@ -81,20 +87,21 @@ func Example_container() {
 }
 
 func Example_nested_containers() {
-	print(Ctx().
+	c := Ctx()
+	print(c.
 		Nodes(
-			Node("clouds").
+			c.Node("clouds").
 				Children(
-					Node("aws").Cons(
-						Con("load_balancer", "api"),
-						Con("api", "db"),
+					c.Node("aws").Cons(
+						c.Con("load_balancer", "api"),
+						c.Con("api", "db"),
 					),
-					Node("gcloud").Cons(
-						Con("auth", "db"),
+					c.Node("gcloud").Cons(
+						c.Con("auth", "db"),
 					),
 				).
 				Cons(
-					Con("gcloud", "aws"),
+					c.Con("gcloud", "aws"),
 				),
 		).
 		d2())
@@ -112,12 +119,13 @@ func Example_nested_containers() {
 }
 
 func Example_same_name_sub_containers() {
-	print(Ctx().
+	c := Ctx()
+	print(c.
 		Nodes(
-			Node("christmas", Opt().Fill("#ACE1AF")),
+			c.Node("christmas", c.Opt().Fill("#ACE1AF")),
 		).
 		Cons(
-			Con("christmas.presents", "birthdays.presents", Opt().Label("regift")),
+			c.Con("christmas.presents", "birthdays.presents", c.Opt().Label("regift")),
 		).
 		d2())
 	// Output:

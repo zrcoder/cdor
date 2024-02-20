@@ -5,7 +5,7 @@ import (
 	"oss.terrastruct.com/d2/lib/textmeasure"
 )
 
-type ctx struct {
+type Cdor struct {
 	graph       *d2graph.Graph
 	ruler       *textmeasure.Ruler
 	nodes       []*node

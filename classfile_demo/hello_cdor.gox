@@ -1,0 +1,13 @@
+import "os"
+
+cons(
+	con("Go+", "Go", opt.label("cdor")),
+)
+
+data, err := gen()
+if err != nil {
+	echo "err:", err
+	return
+}
+
+os.writeFile "hello.svg", data, 0600
