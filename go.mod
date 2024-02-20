@@ -1,6 +1,6 @@
 module github.com/zrcoder/cdor
 
-go 1.22.0
+go 1.20
 
 require oss.terrastruct.com/d2 v0.6.3
 
