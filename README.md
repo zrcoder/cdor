@@ -17,7 +17,7 @@ cons(
 )
 ```
 
-<img src='hello.svg' width='62%'/>
+<center><img src='hello.svg' width='62%'/></center>
 
 see more in [example_test.go](example_test.go).
 
