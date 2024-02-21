@@ -48,6 +48,7 @@ func (c *Cdor) Con(src, dst string, opt ...*option) *connection {
 	} else {
 		con.option = c.option.Copy()
 	}
+	con.arrow = c.arrow.Copy()
 	return con
 }
 
@@ -65,10 +66,6 @@ func (c *Cdor) Opt() *option {
 	return &option{}
 }
 
-func (c *Cdor) Style() *style {
-	return &style{}
-}
-
 // --- node ---
 
 func (n *node) Children(children ...*node) *node {
@@ -82,42 +79,52 @@ func (n *node) Cons(cons ...*connection) *node {
 }
 
 func (n *node) Label(label string) *node {
-	n.option.label = label
+	n.label = label
 	return n
 }
 
 func (n *node) Shape(shape string) *node {
-	n.option.shape = shape
+	n.shape = shape
 	return n
 }
 func (n *node) Fill(fill string) *node {
-	n.option.fill = fill
+	n.fill = fill
 	return n
 }
 
 func (n *node) Stroke(stroke string) *node {
-	n.option.stroke = stroke
+	n.stroke = stroke
 	return n
 }
 
 // --- connection ---
 
 func (c *connection) Label(label string) *connection {
-	c.option.label = label
+	c.label = label
 	return c
 }
 
 func (c *connection) Shape(shape string) *connection {
-	c.option.shape = shape
+	c.shape = shape
 	return c
 }
 func (c *connection) Fill(fill string) *connection {
-	c.option.fill = fill
+	c.fill = fill
 	return c
 }
 
 func (c *connection) Stroke(stroke string) *connection {
-	c.option.stroke = stroke
+	c.stroke = stroke
+	return c
+}
+
+func (c *connection) SrcOpt(opt *option) *connection {
+	c.arrow.srcOpt = *opt
+	return c
+}
+
+func (c *connection) DstOpt(opt *option) *connection {
+	c.arrow.dstOpt = *opt
 	return c
 }
 
@@ -138,11 +145,6 @@ func (o *option) Shape(shape string) *option {
 	return o
 }
 
-func (o *option) Style(style *style) *option {
-	o.style = *style
-	return o
-}
-
 func (o *option) Fill(fill string) *option {
 	o.fill = fill
 	return o
@@ -155,12 +157,9 @@ func (o *option) Stroke(stroke string) *option {
 
 // --- style ---
 
-func (s *style) Fill(fill string) *style {
-	s.fill = fill
-	return s
-}
+// --- arrow ---
 
-func (s *style) Stroke(stroke string) *style {
-	s.stroke = stroke
-	return s
+func (a *arrow) Copy() *arrow {
+	res := *a
+	return &res
 }

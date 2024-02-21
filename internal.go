@@ -18,7 +18,9 @@ import (
 )
 
 func (c *Cdor) init() {
-	c.ruler, c.err = textmeasure.NewRuler()
+	if c.ruler, c.err = textmeasure.NewRuler(); c.err != nil {
+		return
+	}
 	layoutResolver := func(engine string) (d2graph.LayoutGraph, error) {
 		return d2dagrelayout.DefaultLayout, nil
 	}
@@ -26,31 +28,9 @@ func (c *Cdor) init() {
 		LayoutResolver: layoutResolver,
 		Ruler:          c.ruler,
 	}
-	_, c.graph, c.err = d2lib.Compile(context.Background(), "", compileOpts, nil)
 	c.option = &option{}
-}
-func (c *Cdor) add(id string) {
-	if c.err != nil {
-		return
-	}
-	c.graph, _, c.err = d2oracle.Create(c.graph, nil, id)
-}
-
-func (c *Cdor) set(id, key, val string) {
-	if val == "" || c.err != nil {
-		return
-	}
-	id = combinID(id, key)
-	c.graph, c.err = d2oracle.Set(c.graph, nil, id, nil, &val)
-}
-
-func (c *Cdor) con(src, dst string) (id string) {
-	if c.err != nil {
-		return
-	}
-	i := makeArrow(src, dst)
-	c.graph, id, c.err = d2oracle.Create(c.graph, nil, i)
-	return
+	c.arrow = &arrow{}
+	_, c.graph, c.err = d2lib.Compile(context.Background(), "", compileOpts, nil)
 }
 
 func (c *Cdor) buildGraph() {
@@ -69,7 +49,9 @@ func (c *Cdor) buildGraph() {
 			flatten(child)
 		}
 		for _, con := range node.connections {
-			c.connections = append(c.connections, &connection{src: combinID(node.id, con.src), dst: combinID(node.id, con.dst)})
+			con.src = combinID(node.id, con.src)
+			con.dst = combinID(node.id, con.dst)
+			c.connections = append(c.connections, con)
 		}
 	}
 	for _, n := range c.nodes {
@@ -77,13 +59,12 @@ func (c *Cdor) buildGraph() {
 	}
 
 	for _, n := range nodes {
-		if c.err = c.gen(n.id, n.option); c.err != nil {
+		if c.gen(n.id, n.option); c.err != nil {
 			return
 		}
 	}
 	for _, con := range c.connections {
-		id := makeArrow(con.src, con.dst)
-		if c.err = c.gen(id, con.option); c.err != nil {
+		if c.genCon(con); c.err != nil {
 			return
 		}
 	}
@@ -113,11 +94,32 @@ func (c *Cdor) genSvg() (svg []byte) {
 	return
 }
 
-func (c *Cdor) gen(id string, option *option) (err error) {
-	if c.graph, id, err = d2oracle.Create(c.graph, nil, id); err != nil {
+func (c *Cdor) gen(id string, option *option) (key string) {
+	if c.err != nil {
 		return
 	}
-	c.apply(id, option)
+
+	if c.graph, key, c.err = d2oracle.Create(c.graph, nil, id); c.err != nil {
+		return
+	}
+	c.apply(key, option)
+	return
+}
+
+func (c *Cdor) genCon(con *connection) (key string) {
+	if key = c.gen(con.genKey(), con.option); c.err != nil {
+		return
+	}
+
+	c.set(key, "source-arrowhead.label", con.srcOpt.label)
+	c.set(key, "source-arrowhead.style.fill", con.srcOpt.fill)
+	c.set(key, "source-arrowhead.style.stroke", con.srcOpt.stroke)
+	c.set(key, "source-arrowhead.shape", con.srcOpt.shape)
+	c.set(key, "target-arrowhead.label", con.dstOpt.label)
+	c.set(key, "target-arrowhead.style.fill", con.dstOpt.fill)
+	c.set(key, "target-arrowhead.style.stroke", con.dstOpt.stroke)
+	c.set(key, "target-arrowhead.shape", con.dstOpt.shape)
+
 	return
 }
 
@@ -132,6 +134,14 @@ func (c *Cdor) apply(id string, o *option) {
 	c.set(id, "style.stroke", o.stroke)
 }
 
+func (c *Cdor) set(id, key, val string) {
+	if val == "" || c.err != nil {
+		return
+	}
+	id = combinID(id, key)
+	c.graph, c.err = d2oracle.Set(c.graph, nil, id, nil, &val)
+}
+
 func (c *Cdor) d2() (d2 string, err error) {
 	c.buildGraph()
 	if c.err != nil {
@@ -144,6 +154,6 @@ func combinID(parts ...string) string {
 	return strings.Join(parts, ".")
 }
 
-func makeArrow(src, dst string) string {
-	return fmt.Sprintf("%s <-> %s", src, dst)
+func (c *connection) genKey() string {
+	return fmt.Sprintf("%s <-> %s", c.src, c.dst)
 }

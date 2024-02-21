@@ -44,27 +44,9 @@ func TestHello(t *testing.T) {
 	if res, err := d2(); err != nil || res != want {
 		t.Errorf("err: %v, got: %s\n", err, res)
 	}
-	if res, err := low(); err != nil || res != want {
-		t.Errorf("err: %v, got: %s\n", err, res)
-	}
 	if res, err := common(); err != nil || res != want {
 		t.Errorf("err: %v, got: %s\n", err, res)
 	}
-}
-
-func low() (string, error) {
-	c := Ctx()
-	c.add("cat")
-	c.add("cat.meow")
-	c.set("cat.meow", "style.fill", "green")
-	c.add("dog")
-	c.set("dog", "shape", "circle")
-	c.set("dog", "label", "ddd")
-	key := c.con("cat.meow", "dog")
-	c.set(key, "label", "haha")
-	c.set(key, "style.stroke", "red")
-	res, err := c.d2()
-	return strings.TrimSpace(res), err
 }
 
 func d2() (string, error) {

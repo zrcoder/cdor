@@ -24,6 +24,6 @@ see more in [example_test.go](example_test.go).
 ## TODO
 
 - [x] Go+ classfile
-- [ ] arrorw options
+- [x] arrorw options
 - [ ] config api
 - [ ] special shapes

@@ -71,6 +71,26 @@ func Example_connection() {
 	// x <-> y: {style.stroke: blue}
 }
 
+func Example_connection_arrow() {
+	c := Ctx()
+	print(c.
+		Cons(
+			c.Con("x", "y").
+				Stroke("red").
+				SrcOpt(c.Opt().Label("from").Shape("arrow")).
+				DstOpt(c.Opt().Label("to").Shape("diamond")),
+		).
+		d2())
+	// Output:
+	// x <-> y: {
+	//   style.stroke: red
+	//   source-arrowhead.label: from
+	//   source-arrowhead.shape: arrow
+	//   target-arrowhead.label: to
+	//   target-arrowhead.shape: diamond
+	// }
+}
+
 func Example_container() {
 	c := Ctx()
 	print(c.

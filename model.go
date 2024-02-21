@@ -11,6 +11,7 @@ type Cdor struct {
 	nodes       []*node
 	connections []*connection
 	option      *option
+	arrow       *arrow
 	err         error
 	built       bool
 }
@@ -24,6 +25,7 @@ type node struct {
 
 type connection struct {
 	*option
+	*arrow
 	src, dst string
 }
 
@@ -37,4 +39,9 @@ type option struct {
 type style struct {
 	fill   string
 	stroke string
+}
+
+type arrow struct {
+	srcOpt option
+	dstOpt option
 }
