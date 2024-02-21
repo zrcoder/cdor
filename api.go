@@ -118,13 +118,23 @@ func (c *connection) Stroke(stroke string) *connection {
 	return c
 }
 
-func (c *connection) SrcOpt(opt *option) *connection {
-	c.arrow.srcOpt = *opt
+func (c *connection) SrcHeadShape(shape string) *connection {
+	c.arrow.srcHead.shape = shape
 	return c
 }
 
-func (c *connection) DstOpt(opt *option) *connection {
-	c.arrow.dstOpt = *opt
+func (c *connection) SrcHeadLabel(label string) *connection {
+	c.srcHead.label = label
+	return c
+}
+
+func (c *connection) DstHeadShape(shape string) *connection {
+	c.dstHead.shape = shape
+	return c
+}
+
+func (c *connection) DstHeadLabel(label string) *connection {
+	c.dstHead.label = label
 	return c
 }
 

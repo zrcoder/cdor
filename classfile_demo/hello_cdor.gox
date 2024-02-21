@@ -2,11 +2,6 @@ import "os"
 
 cons(
 	con("Go+", "Go").label("cdor"),
-
-//	con("x", "y").
-//		stroke("red").
-//		srcOpt(opt.label("from").shape("arrow")).
-//		dstOpt(opt.label("to").shape("diamond")),
 )
 
 data, err := gen

@@ -77,8 +77,8 @@ func Example_connection_arrow() {
 		Cons(
 			c.Con("x", "y").
 				Stroke("red").
-				SrcOpt(c.Opt().Label("from").Shape("arrow")).
-				DstOpt(c.Opt().Label("to").Shape("diamond")),
+				SrcHeadLabel("from").SrcHeadShape("arrow").
+				DstHeadLabel("to").DstHeadShape("diamond"),
 		).
 		d2())
 	// Output:

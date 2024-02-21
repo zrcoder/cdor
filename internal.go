@@ -3,6 +3,7 @@ package cdor
 import (
 	"context"
 	"fmt"
+	"strconv"
 	"strings"
 
 	"oss.terrastruct.com/d2/d2exporter"
@@ -111,14 +112,22 @@ func (c *Cdor) genCon(con *connection) (key string) {
 		return
 	}
 
-	c.set(key, "source-arrowhead.label", con.srcOpt.label)
-	c.set(key, "source-arrowhead.style.fill", con.srcOpt.fill)
-	c.set(key, "source-arrowhead.style.stroke", con.srcOpt.stroke)
-	c.set(key, "source-arrowhead.shape", con.srcOpt.shape)
-	c.set(key, "target-arrowhead.label", con.dstOpt.label)
-	c.set(key, "target-arrowhead.style.fill", con.dstOpt.fill)
-	c.set(key, "target-arrowhead.style.stroke", con.dstOpt.stroke)
-	c.set(key, "target-arrowhead.shape", con.dstOpt.shape)
+	c.set(key, "source-arrowhead.label", con.srcHead.label)
+	c.set(key, "source-arrowhead.shape", con.srcHead.shape)
+	c.set(key, "target-arrowhead.label", con.dstHead.label)
+	c.set(key, "target-arrowhead.shape", con.dstHead.shape)
+	/* FIX ME
+
+	Error failed to set "(x <-> y)[0].target-arrowhead.style.filled" to "\"true\"": malformed style setting, expected 2 part path
+	*/
+	if con.srcHead.filledFlag {
+		s := strconv.FormatBool(con.srcHead.filled)
+		c.set(key, "source-arrowhead.style.filled", s)
+	}
+	if con.dstHead.filledFlag {
+		s := strconv.FormatBool(con.dstHead.filled)
+		c.set(key, "target-arrowhead.style.filled", s)
+	}
 
 	return
 }

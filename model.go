@@ -29,7 +29,6 @@ type connection struct {
 	src, dst string
 }
 
-// todo: arrow options
 type option struct {
 	label string
 	shape string
@@ -37,11 +36,13 @@ type option struct {
 }
 
 type style struct {
-	fill   string
-	stroke string
+	fill       string
+	filled     bool
+	filledFlag bool
+	stroke     string
 }
 
 type arrow struct {
-	srcOpt option
-	dstOpt option
+	srcHead option
+	dstHead option
 }
