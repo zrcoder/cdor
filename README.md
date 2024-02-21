@@ -13,7 +13,7 @@ Write Go+/Go code to make diagrams.
 
 ```c
 cons(
-	con("Go+", "Go", opt.label("cdor")),
+	con("Go+", "Go").label("cdor"),
 )
 ```
 

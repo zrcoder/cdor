@@ -6,11 +6,13 @@ func Example_hello() {
 	c := Ctx()
 	print(c.
 		Cons(
-			c.Con("x", "y", c.Opt().Label("hello, cdor!")),
+			c.Con("a", "b").Label("hi"),
+			c.Con("x", "y", c.Opt().Label("hello")),
 		).
 		d2())
 	// Output:
-	// x <-> y: hello, cdor!
+	// a <-> b: hi
+	// x <-> y: hello
 }
 
 func Example_id() {
@@ -36,8 +38,8 @@ func Example_label() {
 	c := Ctx()
 	print(c.
 		Nodes(
-			c.Node("pg", c.Opt().Label("PostgreSQL")),
-			c.Node("Cloud", c.Opt().Label("my cloud")),
+			c.Node("pg").Label("PostgreSQL"),
+			c.Node("Cloud").Label("my cloud"),
 		).
 		d2())
 	// Output:
@@ -49,7 +51,7 @@ func Example_shape() {
 	c := Ctx()
 	print(c.
 		Nodes(
-			c.Node("cloud", c.Opt().Shape("cloud")),
+			c.Node("cloud").Shape("cloud"),
 		).
 		d2())
 	// Output:
@@ -60,8 +62,8 @@ func Example_connection() {
 	c := Ctx()
 	print(c.
 		Cons(
-			c.Con("x", "y", c.Opt().Stroke("red")),
-			c.Con("x", "y", c.Opt().Stroke("blue")),
+			c.Con("x", "y").Stroke("red"),
+			c.Con("x", "y").Stroke("blue"),
 		).
 		d2())
 	// Output:
@@ -77,7 +79,7 @@ func Example_container() {
 			c.Node("im a parent.im a child"),
 		).
 		Cons(
-			c.Con("apartment.Bedroom.Bathroom", "office.Spare Room.Bathroom", c.Opt().Label("Portal")),
+			c.Con("apartment.Bedroom.Bathroom", "office.Spare Room.Bathroom").Label("Portal"),
 		).
 		d2())
 	// Output:
@@ -122,10 +124,10 @@ func Example_same_name_sub_containers() {
 	c := Ctx()
 	print(c.
 		Nodes(
-			c.Node("christmas", c.Opt().Fill("#ACE1AF")),
+			c.Node("christmas").Fill("#ACE1AF"),
 		).
 		Cons(
-			c.Con("christmas.presents", "birthdays.presents", c.Opt().Label("regift")),
+			c.Con("christmas.presents", "birthdays.presents").Label("regift"),
 		).
 		d2())
 	// Output:

@@ -16,7 +16,7 @@ type hello struct {
 //line classfile_demo/hello_cdor.gox:3
 func (this *hello) MainEntry() {
 //line classfile_demo/hello_cdor.gox:3:1
-	this.Cons(this.Con("Go+", "Go", this.Opt().Label("cdor")))
+	this.Cons(this.Con("Go+", "Go").Label("cdor"))
 //line classfile_demo/hello_cdor.gox:7:1
 	data, err := this.Gen()
 //line classfile_demo/hello_cdor.gox:8:1

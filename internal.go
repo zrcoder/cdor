@@ -27,6 +27,7 @@ func (c *Cdor) init() {
 		Ruler:          c.ruler,
 	}
 	_, c.graph, c.err = d2lib.Compile(context.Background(), "", compileOpts, nil)
+	c.option = &option{}
 }
 func (c *Cdor) add(id string) {
 	if c.err != nil {

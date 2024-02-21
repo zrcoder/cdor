@@ -10,6 +10,7 @@ type Cdor struct {
 	ruler       *textmeasure.Ruler
 	nodes       []*node
 	connections []*connection
+	option      *option
 	err         error
 	built       bool
 }
@@ -18,11 +19,11 @@ type node struct {
 	children    []*node
 	connections []*connection
 	id          string
-	option      *option
+	*option
 }
 
 type connection struct {
-	option   *option
+	*option
 	src, dst string
 }
 
