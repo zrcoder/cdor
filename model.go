@@ -20,6 +20,7 @@ type node struct {
 	children    []*node
 	connections []*connection
 	id          string
+	idSoved     bool
 	*option
 }
 

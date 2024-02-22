@@ -10,11 +10,8 @@ Write Go+/Go code to make diagrams.
 
 ## examples
 
-
 ```c
-cons(
-	con("Go+", "Go").label("cdor"),
-)
+con("Go+", "Go").label("cdor")
 ```
 
 <center><img src='hello.svg' width='62%'/></center>

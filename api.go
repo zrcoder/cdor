@@ -14,41 +14,28 @@ func (c *Cdor) Cfg() *Cdor {
 }
 
 func (c *Cdor) Nodes(nodes ...*node) *Cdor {
-	if c.err != nil {
-		return c
-	}
-
-	c.nodes = append(c.nodes, nodes...)
 	return c
 }
 
 func (c *Cdor) Cons(cons ...*connection) *Cdor {
-	if c.err != nil {
-		return c
-	}
-
-	c.connections = append(c.connections, cons...)
 	return c
 }
 
 func (c *Cdor) Node(id string, opt ...*option) *node {
-	node := &node{id: id}
+	node := &node{id: id, option: c.option.Copy()}
 	if len(opt) > 0 {
 		node.option = opt[0]
-	} else {
-		node.option = c.option.Copy()
 	}
+	c.nodes = append(c.nodes, node)
 	return node
 }
 
 func (c *Cdor) Con(src, dst string, opt ...*option) *connection {
-	con := &connection{src: src, dst: dst}
+	con := &connection{src: src, dst: dst, option: c.option.Copy(), arrow: c.arrow.Copy()}
 	if len(opt) > 0 {
 		con.option = opt[0]
-	} else {
-		con.option = c.option.Copy()
 	}
-	con.arrow = c.arrow.Copy()
+	c.connections = append(c.connections, con)
 	return con
 }
 

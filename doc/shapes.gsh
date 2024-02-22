@@ -1,6 +1,4 @@
-import (
-	"strings"
-)
+#!/usr/bin/env gop run
 
 shapes := `
 rectangle
@@ -22,21 +20,17 @@ hexagon
 cloud
 `
 
-arr := strings.fields(shapes)
-
-for sh <- arr {
-	// N("cloud", Opt().Sh("cloud")),
-	echo `N("${sh}", Opt().Sh("${sh}")),`
+for sh <- shapes.fields {
+	echo `node("${sh}").shape("${sh}"),`
 }
 
 /* arrow head shapes
-triangle (default)
-Can be further styled as style.filled: false.
-arrow (like triangle but pointier)
-diamond
-Can be further styled as style.filled: true.
-circle
-Can be further styled as style.filled: true.
-cf-one, cf-one-required (cf stands for crows foot)
-cf-many, cf-many-required
+triangle: (default) Can be further styled as style.filled: false.
+arrow: (like triangle but pointier)
+diamond: Can be further styled as style.filled: true.
+circle: Can be further styled as style.filled: true.
+cf-one: (cf stands for crows foot)
+cf-one-required:
+cf-many:
+cf-many-required:
 */

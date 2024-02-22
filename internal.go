@@ -41,25 +41,11 @@ func (c *Cdor) buildGraph() {
 
 	c.built = true
 
-	var nodes []*node
-	var flatten func(node *node)
-	flatten = func(node *node) {
-		nodes = append(nodes, node)
-		for _, child := range node.children {
-			child.id = combinID(node.id, child.id)
-			flatten(child)
-		}
-		for _, con := range node.connections {
-			con.src = combinID(node.id, con.src)
-			con.dst = combinID(node.id, con.dst)
-			c.connections = append(c.connections, con)
-		}
-	}
 	for _, n := range c.nodes {
-		flatten(n)
+		c.soveID(n)
 	}
 
-	for _, n := range nodes {
+	for _, n := range c.nodes {
 		if c.gen(n.id, n.option); c.err != nil {
 			return
 		}
@@ -68,6 +54,21 @@ func (c *Cdor) buildGraph() {
 		if c.genCon(con); c.err != nil {
 			return
 		}
+	}
+}
+
+func (c *Cdor) soveID(node *node) {
+	if node.idSoved {
+		return
+	}
+	node.idSoved = true
+	for _, child := range node.children {
+		child.id = combinID(node.id, child.id)
+		c.soveID(child)
+	}
+	for _, con := range node.connections {
+		con.src = combinID(node.id, con.src)
+		con.dst = combinID(node.id, con.dst)
 	}
 }
 

@@ -1,8 +1,6 @@
 import "os"
 
-cons(
-	con("Go+", "Go").label("cdor"),
-)
+con("Go+", "Go").label("cdor")
 
 data, err := gen
 if err != nil {
