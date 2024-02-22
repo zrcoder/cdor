@@ -31,8 +31,8 @@ func common() (string, error) {
 		)
 	c.Node("dog").Shape("circle").Label("ddd")
 	c.Con("cat.meow", "dog").Label("haha").Stroke("red")
-	res, err := c.d2()
-	return strings.TrimSpace(res), err
+	res := c.d2()
+	return strings.TrimSpace(res), c.err
 }
 
 func TestHello(t *testing.T) {

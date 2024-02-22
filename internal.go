@@ -10,19 +10,19 @@ import (
 	"oss.terrastruct.com/d2/d2format"
 	"oss.terrastruct.com/d2/d2graph"
 	"oss.terrastruct.com/d2/d2layouts/d2dagrelayout"
+	"oss.terrastruct.com/d2/d2layouts/d2elklayout"
 	"oss.terrastruct.com/d2/d2lib"
 	"oss.terrastruct.com/d2/d2oracle"
 	"oss.terrastruct.com/d2/d2renderers/d2svg"
 	"oss.terrastruct.com/d2/d2target"
-	"oss.terrastruct.com/d2/d2themes/d2themescatalog"
 	"oss.terrastruct.com/d2/lib/textmeasure"
 )
 
 func (c *Cdor) init() {
-	if c.ruler, c.err = textmeasure.NewRuler(); c.err != nil {
-		return
-	}
 	layoutResolver := func(engine string) (d2graph.LayoutGraph, error) {
+		if c.elkLayout {
+			return d2elklayout.DefaultLayout, nil
+		}
 		return d2dagrelayout.DefaultLayout, nil
 	}
 	compileOpts := &d2lib.CompileOptions{
@@ -31,6 +31,7 @@ func (c *Cdor) init() {
 	}
 	c.option = &option{}
 	c.arrow = &arrow{}
+	c.direction = "down"
 	_, c.graph, c.err = d2lib.Compile(context.Background(), "", compileOpts, nil)
 }
 
@@ -58,10 +59,10 @@ func (c *Cdor) buildGraph() {
 }
 
 func (c *Cdor) soveID(node *node) {
-	if node.idSoved {
+	if node.idSolved {
 		return
 	}
-	node.idSoved = true
+	node.idSolved = true
 	for _, child := range node.children {
 		child.id = combinID(node.id, child.id)
 		c.soveID(child)
@@ -77,21 +78,34 @@ func (c *Cdor) genSvg() (svg []byte) {
 		return
 	}
 
-	c.graph.ApplyTheme(d2themescatalog.NeutralDefault.ID)
+	if c.graph, c.err = d2oracle.Set(c.graph, nil, "direction", nil, &c.direction); c.err != nil {
+		return
+	}
+
+	if c.ruler, c.err = textmeasure.NewRuler(); c.err != nil {
+		return
+	}
+
 	if c.err = c.graph.SetDimensions(nil, c.ruler, nil); c.err != nil {
 		return
 	}
 	if c.err = d2dagrelayout.Layout(context.Background(), c.graph, nil); c.err != nil {
 		return
 	}
+
 	var diagram *d2target.Diagram
 	diagram, c.err = d2exporter.Export(context.Background(), c.graph, nil)
 	if c.err != nil {
 		return
 	}
-	diagram.Config = &d2target.Config{}
 	svg, c.err = d2svg.Render(diagram, &d2svg.RenderOpts{
-		ThemeID: &d2themescatalog.NeutralDefault.ID,
+		ThemeID:            c.cfg.ThemeID,
+		DarkThemeID:        c.cfg.DarkThemeID,
+		Pad:                c.cfg.Pad,
+		Sketch:             c.cfg.Sketch,
+		Center:             c.cfg.Center,
+		ThemeOverrides:     c.cfg.ThemeOverrides,
+		DarkThemeOverrides: c.cfg.DarkThemeOverrides,
 	})
 	return
 }
@@ -152,12 +166,12 @@ func (c *Cdor) set(id, key, val string) {
 	c.graph, c.err = d2oracle.Set(c.graph, nil, id, nil, &val)
 }
 
-func (c *Cdor) d2() (d2 string, err error) {
+func (c *Cdor) d2() string {
 	c.buildGraph()
 	if c.err != nil {
-		return "", c.err
+		return ""
 	}
-	return d2format.Format(c.graph.AST), nil
+	return d2format.Format(c.graph.AST)
 }
 
 func combinID(parts ...string) string {

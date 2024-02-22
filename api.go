@@ -8,9 +8,8 @@ func Ctx() *Cdor {
 	return c
 }
 
-func (c *Cdor) Cfg() *Cdor {
-	// todo
-	return c
+func (c *Cdor) Cfg() *config {
+	return &c.config
 }
 
 func (c *Cdor) Nodes(nodes ...*node) *Cdor {
@@ -160,3 +159,80 @@ func (a *arrow) Copy() *arrow {
 	res := *a
 	return &res
 }
+
+// --- config ---
+
+func (c *config) Sketch(b ...bool) *config {
+	c.cfg.Sketch = c.solveBool(b)
+	return c
+}
+
+func (c *config) Center(b ...bool) *config {
+	c.cfg.Center = c.solveBool(b)
+	return c
+}
+
+func (c *config) Pad(pad int) *config {
+	p := int64(pad)
+	c.cfg.Pad = &p
+	return c
+}
+
+func (c *config) Theme(theme int) *config {
+	t := int64(theme)
+	c.cfg.ThemeID = &t
+	return c
+}
+
+func (c *config) DarkTheme(theme int) *config {
+	t := int64(theme)
+	c.cfg.DarkThemeID = &t
+	return c
+}
+
+func (c *config) ThemeOverrides(ov *ThemeOverrides) *config {
+	c.cfg.ThemeOverrides = ov
+	return c
+}
+
+func (c *config) DarkThemeOverrides(ov *ThemeOverrides) *config {
+	c.cfg.DarkThemeOverrides = ov
+	return c
+}
+
+func (c *config) Direction(dir string) *config {
+	c.direction = dir
+	return c
+}
+
+func (c *config) solveBool(b []bool) *bool {
+	if len(b) > 0 {
+		return &b[0]
+	}
+	res := true
+	return &res
+}
+
+const (
+	// Light:
+	Neutral           = 0
+	NeutralGrey       = 1
+	Flagship          = 3
+	Cool              = 4
+	MixedBerryBlue    = 5
+	GrapeSoda         = 6
+	Aubergine         = 7
+	ColorblindClear   = 8
+	VanillaNitroCola  = 100
+	OrangeCreamsicle  = 101
+	ShirleyTemple     = 102
+	EarthTones        = 103
+	EvergladeGreen    = 104
+	ButteredToast     = 105
+	Terminal          = 300
+	TerminalGrayscale = 301
+	Origami           = 302
+	// Dark:
+	DarkMauve               = 200
+	DarkFlagshipTerrastruct = 201
+)
