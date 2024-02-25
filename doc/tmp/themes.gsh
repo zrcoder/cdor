@@ -1,6 +1,5 @@
-#!/usr/bin/env gop run
 
-shapes := `
+/* shapes
 rectangle
 square
 page
@@ -18,11 +17,8 @@ oval
 circle
 hexagon
 cloud
-`
+*/
 
-for sh <- shapes.fields {
-	echo `node("${sh}").shape("${sh}"),`
-}
 
 /* arrow head shapes
 triangle: (default) Can be further styled as style.filled: false.
@@ -35,7 +31,12 @@ cf-many:
 cf-many-required:
 */
 
-echo "---"
+
+/*specia shapes:
+text/code/latex
+node("code").code("tex", `\lim_{h \rightarrow 0 } \frac{f(x+h)-f(x)}{h}`)
+*/
+
 
 themes := `
 Available themes:
@@ -79,3 +80,4 @@ for line <- themes.Split("\n") {
 	}
 	echo "| ${theme} | ${id} |"
 }
+

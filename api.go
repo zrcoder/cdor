@@ -1,5 +1,10 @@
 package cdor
 
+import (
+	"os"
+	"strings"
+)
+
 // --- Cdor ---
 
 func Ctx() *Cdor {
@@ -52,6 +57,25 @@ func (c *Cdor) Opt() *option {
 	return &option{}
 }
 
+func (c *Cdor) ArrowOpt() *arrow {
+	return &arrow{}
+}
+
+func (c *Cdor) SaveFile(filename string) error {
+	data, err := c.Gen()
+	if err != nil {
+		return err
+	}
+	return os.WriteFile(filename, data, 0600)
+}
+
+func (c *Cdor) Clear() {
+	c.init()
+	c.nodes = nil
+	c.connections = nil
+	c.built = false
+}
+
 // --- node ---
 
 func (n *node) Children(children ...*node) *node {
@@ -80,6 +104,20 @@ func (n *node) Fill(fill string) *node {
 
 func (n *node) Stroke(stroke string) *node {
 	n.stroke = stroke
+	return n
+}
+
+func (n *node) Code(tag, code string) *node {
+	if tag == "latex" || tag == "tex" {
+		code = strings.ReplaceAll(code, `\`, `\\`)
+	}
+	n.codeTag = tag
+	n.code = code
+	return n
+}
+
+func (n *node) Icon(icon string) *node {
+	n.icon = icon
 	return n
 }
 
@@ -124,6 +162,11 @@ func (c *connection) DstHeadLabel(label string) *connection {
 	return c
 }
 
+func (c *connection) ArrowOpt(opt *arrow) *connection {
+	c.arrow = opt
+	return c
+}
+
 // --- option ---
 
 func (o *option) Copy() *option {
@@ -160,10 +203,35 @@ func (a *arrow) Copy() *arrow {
 	return &res
 }
 
+func (a *arrow) SrcHeadLabel(label string) *arrow {
+	a.srcHead.label = label
+	return a
+}
+
+func (a *arrow) SrcHeadShape(shape string) *arrow {
+	a.srcHead.shape = shape
+	return a
+}
+
+func (a *arrow) DstHeadLabel(label string) *arrow {
+	a.dstHead.label = label
+	return a
+}
+
+func (a *arrow) DstHeadShape(shape string) *arrow {
+	a.dstHead.shape = shape
+	return a
+}
+
 // --- config ---
 
 func (c *config) Sketch(b ...bool) *config {
 	c.cfg.Sketch = c.solveBool(b)
+	return c
+}
+
+func (c *config) ElkLayout(b ...bool) *config {
+	c.elkLayout = *c.solveBool(b)
 	return c
 }
 

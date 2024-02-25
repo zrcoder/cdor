@@ -10,11 +10,15 @@ Write Go+/Go code to make diagrams.
 
 ## examples
 
-```c
-con("Go+", "Go").label("cdor")
-```
+![hello](examples/hello.svg)
+![id](examples/example-id.svg)
+![shape](examples/shape.svg)
+![connections](examples/connections.svg)
+![containers](examples/containers.svg)
 
-<center><img src='hello.svg' width='62%'/></center>
+text & code:
+![markdown](examples/md.svg)
+![latext](examples/latex.svg)
 
 see more in [example_test.go](example_test.go).
 
@@ -52,10 +56,8 @@ theme ids:
 
 ## TODO
 
-- [x] Go+ classfile
 - [x] arrorw options
     - [ ] arrow head filled
-- [x] config api
-    - [ ] elk layout
 - [ ] special shapes
+    - [x] text/code
 - [ ] surpport multiple cdor files in same directory

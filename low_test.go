@@ -7,11 +7,8 @@ import (
 	"testing"
 
 	"oss.terrastruct.com/d2/d2format"
-	"oss.terrastruct.com/d2/d2graph"
-	"oss.terrastruct.com/d2/d2layouts/d2dagrelayout"
 	"oss.terrastruct.com/d2/d2lib"
 	"oss.terrastruct.com/d2/d2oracle"
-	"oss.terrastruct.com/d2/lib/textmeasure"
 )
 
 const d2wanted = `
@@ -46,15 +43,7 @@ func TestHello(t *testing.T) {
 }
 
 func d2() (string, error) {
-	ruler, _ := textmeasure.NewRuler()
-	layoutResolver := func(engine string) (d2graph.LayoutGraph, error) {
-		return d2dagrelayout.DefaultLayout, nil
-	}
-	compileOpts := &d2lib.CompileOptions{
-		LayoutResolver: layoutResolver,
-		Ruler:          ruler,
-	}
-	_, graph, _ := d2lib.Compile(context.Background(), "", compileOpts, nil)
+	_, graph, _ := d2lib.Compile(context.Background(), "", nil, nil)
 
 	graph, _, _ = d2oracle.Create(graph, nil, "cat")
 	graph, _, _ = d2oracle.Create(graph, nil, "cat.meow")

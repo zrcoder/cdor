@@ -3,12 +3,10 @@ package cdor
 import (
 	"oss.terrastruct.com/d2/d2graph"
 	"oss.terrastruct.com/d2/d2target"
-	"oss.terrastruct.com/d2/lib/textmeasure"
 )
 
 type Cdor struct {
 	graph       *d2graph.Graph
-	ruler       *textmeasure.Ruler
 	nodes       []*node
 	connections []*connection
 	option      *option
@@ -22,6 +20,8 @@ type node struct {
 	children    []*node
 	connections []*connection
 	id          string
+	codeTag     string
+	code        string
 	idSolved    bool
 	*option
 }
@@ -35,6 +35,7 @@ type connection struct {
 type option struct {
 	label string
 	shape string
+	icon  string
 	style
 }
 

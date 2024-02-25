@@ -8,7 +8,6 @@ import (
 
 	"oss.terrastruct.com/d2/d2exporter"
 	"oss.terrastruct.com/d2/d2format"
-	"oss.terrastruct.com/d2/d2graph"
 	"oss.terrastruct.com/d2/d2layouts/d2dagrelayout"
 	"oss.terrastruct.com/d2/d2layouts/d2elklayout"
 	"oss.terrastruct.com/d2/d2lib"
@@ -19,20 +18,10 @@ import (
 )
 
 func (c *Cdor) init() {
-	layoutResolver := func(engine string) (d2graph.LayoutGraph, error) {
-		if c.elkLayout {
-			return d2elklayout.DefaultLayout, nil
-		}
-		return d2dagrelayout.DefaultLayout, nil
-	}
-	compileOpts := &d2lib.CompileOptions{
-		LayoutResolver: layoutResolver,
-		Ruler:          c.ruler,
-	}
 	c.option = &option{}
 	c.arrow = &arrow{}
 	c.direction = "down"
-	_, c.graph, c.err = d2lib.Compile(context.Background(), "", compileOpts, nil)
+	_, c.graph, c.err = d2lib.Compile(context.Background(), "", nil, nil)
 }
 
 func (c *Cdor) buildGraph() {
@@ -48,6 +37,9 @@ func (c *Cdor) buildGraph() {
 
 	for _, n := range c.nodes {
 		if c.gen(n.id, n.option); c.err != nil {
+			return
+		}
+		if c.setCode(n.id, n.codeTag, n.code); c.err != nil {
 			return
 		}
 	}
@@ -78,19 +70,31 @@ func (c *Cdor) genSvg() (svg []byte) {
 		return
 	}
 
+	if c.direction == "" {
+		c.direction = "down"
+	}
+
 	if c.graph, c.err = d2oracle.Set(c.graph, nil, "direction", nil, &c.direction); c.err != nil {
 		return
 	}
 
-	if c.ruler, c.err = textmeasure.NewRuler(); c.err != nil {
+	var ruler *textmeasure.Ruler
+	if ruler, c.err = textmeasure.NewRuler(); c.err != nil {
 		return
 	}
 
-	if c.err = c.graph.SetDimensions(nil, c.ruler, nil); c.err != nil {
+	if c.err = c.graph.SetDimensions(nil, ruler, nil); c.err != nil {
 		return
 	}
-	if c.err = d2dagrelayout.Layout(context.Background(), c.graph, nil); c.err != nil {
-		return
+
+	if c.config.elkLayout {
+		if c.err = d2elklayout.Layout(context.Background(), c.graph, nil); c.err != nil {
+			return
+		}
+	} else {
+		if c.err = d2dagrelayout.Layout(context.Background(), c.graph, nil); c.err != nil {
+			return
+		}
 	}
 
 	var diagram *d2target.Diagram
@@ -152,6 +156,7 @@ func (c *Cdor) apply(id string, o *option) {
 		return
 	}
 
+	c.set(id, "icon", o.icon) // shoul set icon befor shape
 	c.set(id, "shape", o.shape)
 	c.set(id, "label", o.label)
 	c.set(id, "style.fill", o.fill)
@@ -164,6 +169,13 @@ func (c *Cdor) set(id, key, val string) {
 	}
 	id = combinID(id, key)
 	c.graph, c.err = d2oracle.Set(c.graph, nil, id, nil, &val)
+}
+
+func (c *Cdor) setCode(id, tag, code string) {
+	if code == "" || c.err != nil {
+		return
+	}
+	c.graph, c.err = d2oracle.Set(c.graph, nil, id, &tag, &code)
 }
 
 func (c *Cdor) d2() string {

@@ -1,6 +1,8 @@
 package cdor
 
-import "fmt"
+import (
+	"fmt"
+)
 
 func Example_hello() {
 	c := Ctx()
@@ -120,4 +122,35 @@ func Example_same_name_sub_containers() {
 	// Output:
 	// christmas: {style.fill: "#ACE1AF"}
 	// christmas.presents <-> birthdays.presents: regift
+}
+
+func Example_code() {
+	c := Ctx()
+	c.Node("markdown").Code("md", `# Hi cdor
+	- Go+
+	- Go
+	`)
+	c.Node("latex").Code("latex", `\lim_{h \rightarrow 0 } \frac{f(x+h)-f(x)}{h}`)
+	fmt.Println(c.d2())
+	// Output:
+	// markdown: |md
+	//   # Hi cdor
+	//   	- Go+
+	//   	- Go
+	// |
+	// latex: |latex \\lim_{h \\rightarrow 0 } \\frac{f(x+h)-f(x)}{h} |
+}
+
+func Example_icon() {
+	c := Ctx()
+	c.Node("github").Icon("https://icons.terrastruct.com/dev/github.svg")
+	c.Node("gg").Icon("https://icons.terrastruct.com/dev/github.svg").Shape("image")
+	fmt.Println(c.d2())
+	// Output:
+	// github: {icon: https://icons.terrastruct.com/dev/github.svg}
+	// gg: {
+	//   icon: https://icons.terrastruct.com/dev/github.svg
+	//   shape: image
+	// }
+
 }
