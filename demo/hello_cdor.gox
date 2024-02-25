@@ -1,0 +1,3 @@
+direction "right"
+mdCode `con("Go+", "Go").label("cdor")`
+con("Go+", "Go").label("cdor")

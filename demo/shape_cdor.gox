@@ -1,0 +1,4 @@
+mdCode `node("pg").label("PostgreSQL")
+node("Cloud").label("my cloud").shape("cloud")`
+node("pg").label("PostgreSQL")
+node("Cloud").label("my cloud").shape("cloud")

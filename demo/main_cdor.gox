@@ -1,0 +1,40 @@
+import (
+    "bytes"
+    "os"
+)
+
+// saveFiles("demo")
+
+buf := bytes.newBuffer(nil)
+
+i := 0
+rangeDiagrams(func(data []byte, err error) error {
+    if err != nil {
+        panic err
+        return err
+    }
+    err = os.writeFile("demo/${i}.svg", data, 0600)
+    if err != nil {
+        panic err
+        return err
+    }
+    buf.writeString "![${i}](${i}.svg)\n"
+    i++
+    return nil
+})
+/*
+for i, worker <- Workers {
+    data, err := worker.gen
+    if err != nil {
+        panic err
+    }
+    err = os.writeFile("demo/${i}.svg", data, 0600)
+    if err != nil {
+        panic err
+    }
+    buf.writeString "![${i}](${i}.svg)\n"
+}
+*/
+if err := os.writeFile("demo/main.md", buf.bytes, 0600); err != nil {
+    panic err
+}

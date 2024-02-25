@@ -1,0 +1,32 @@
+direction "right"
+mdCode `opt := arrowOpt().srcHeadShape("none")
+node("clouds").children(
+	node("aws").label("AWS").cons(
+		con("load_balancer", "api"),
+		con("api", "db"),
+	),
+	node("gcloud").label("Google Cloud").cons(
+		con("auth", "db").arrowOpt(opt),
+	)).
+	cons(
+		con("gcloud", "aws").arrowOpt(opt),
+	)
+con("users", "clouds.aws.load_balancer").arrowOpt(opt)
+con("users", "clouds.gcloud.auth").arrowOpt(opt)
+con("ci.deploys", "clouds").arrowOpt(opt)
+`
+opt := arrowOpt().srcHeadShape("none")
+node("clouds").children(
+	node("aws").label("AWS").cons(
+		con("load_balancer", "api"),
+		con("api", "db"),
+	),
+	node("gcloud").label("Google Cloud").cons(
+		con("auth", "db").arrowOpt(opt),
+	)).
+	cons(
+		con("gcloud", "aws").arrowOpt(opt),
+	)
+con("users", "clouds.aws.load_balancer").arrowOpt(opt)
+con("users", "clouds.gcloud.auth").arrowOpt(opt)
+con("ci.deploys", "clouds").arrowOpt(opt)

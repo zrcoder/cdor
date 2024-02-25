@@ -64,4 +64,4 @@ theme ids:
     - [ ] grid
     - [ ] json/yaml/tomal/object
     - [ ] icons/images
-- [ ] support worker classfile
+- [x] support worker classfile

@@ -1,6 +1,7 @@
 package cdor
 
 import (
+	"fmt"
 	"os"
 	"strings"
 )
@@ -86,6 +87,15 @@ func (c *Cdor) Clear() {
 	c.connections = nil
 	c.built = false
 	c.isSequence = false
+}
+
+func (c *Cdor) MdCode(code string, id ...string) *node {
+	const mdCodeTemp = "```\n%s\n```"
+	key := "md"
+	if len(id) > 0 {
+		key = id[0]
+	}
+	return c.Node(key).Code("md", fmt.Sprintf(mdCodeTemp, code))
 }
 
 // --- node ---

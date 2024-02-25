@@ -1,0 +1,6 @@
+mdCode `node("table").shape("sql_table").
+	field("id", "int", "primary_key").
+	field("last_updated", "timestamp with time zone")`
+node("table").shape("sql_table").
+	field("id", "int", "primary_key").
+	field("last_updated", "timestamp with time zone")
