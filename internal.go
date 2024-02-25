@@ -21,6 +21,7 @@ func (c *Cdor) init() {
 	c.option = &option{}
 	c.arrow = &arrow{}
 	c.direction = "down"
+	c.config.DarkTheme(DarkMauve)
 	_, c.graph, c.err = d2lib.Compile(context.Background(), "", nil, nil)
 }
 

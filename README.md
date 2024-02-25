@@ -4,9 +4,9 @@ Write Go+/Go code to make diagrams.
 
 ## cdor vs [d2](https://d2lang.com)
 
-`cdor` is inspired and pwored by `d2`, the difference is:
+`cdor` is inspired and powered by `d2`, the difference is:
 
-> d2 is a `DSL` (Domain Specific Language), But cdor is `SDF` (Specific Domain Friendliness), we just write Go+/Go to generate diagrams.
+> d2 is a `DSL` (Domain Specific Language), But cdor is `SDF` (Specific Domain Friendliness), we just write common programming laguages (Go+/Go) to generate diagrams.
 
 ## examples
 
@@ -60,4 +60,4 @@ theme ids:
     - [ ] arrow head filled
 - [ ] special shapes
     - [x] text/code
-- [ ] surpport multiple cdor files in same directory
+- [ ] surpport worker classfile
