@@ -9,6 +9,7 @@ func Example_hello() {
 	c.Con("a", "b").Label("hi") // or c.Con("a", "b", c.Opt().Label("hi"))
 	fmt.Println(c.d2())
 	// Output:
+	// direction: down
 	// a <-> b: hi
 }
 
@@ -21,6 +22,7 @@ func Example_id() {
 	c.Node("a-shape")
 	fmt.Println(c.d2())
 	// Output:
+	// direction: down
 	// imAShape
 	// im_a_shape
 	// im a shape
@@ -34,6 +36,7 @@ func Example_label() {
 	c.Node("Cloud").Label("my cloud")
 	fmt.Println(c.d2())
 	// Output:
+	// direction: down
 	// pg: PostgreSQL
 	// Cloud: my cloud
 }
@@ -43,6 +46,7 @@ func Example_shape() {
 	c.Node("cloud").Shape("cloud")
 	fmt.Println(c.d2())
 	// Output:
+	// direction: down
 	// cloud: {shape: cloud}
 }
 
@@ -52,6 +56,7 @@ func Example_connection() {
 	c.Con("x", "y").Stroke("blue")
 	fmt.Println(c.d2())
 	// Output:
+	// direction: down
 	// x <-> y: {style.stroke: red}
 	// x <-> y: {style.stroke: blue}
 }
@@ -64,6 +69,7 @@ func Example_connection_arrow() {
 		DstHeadLabel("to").DstHeadShape("diamond")
 	fmt.Println(c.d2())
 	// Output:
+	// direction: down
 	// x <-> y: {
 	//   style.stroke: red
 	//   source-arrowhead.label: from
@@ -80,6 +86,7 @@ func Example_container() {
 	c.Con("apartment.Bedroom.Bathroom", "office.Spare Room.Bathroom").Label("Portal")
 	fmt.Println(c.d2())
 	// Output:
+	// direction: down
 	// server.process
 	// im a parent.im a child
 	// apartment.Bedroom.Bathroom <-> office.Spare Room.Bathroom: Portal
@@ -102,6 +109,7 @@ func Example_nested_containers() {
 		)
 	fmt.Println(c.d2())
 	// Output:
+	// direction: down
 	// clouds: {
 	//   aws: {
 	//     load_balancer <-> api
@@ -120,6 +128,7 @@ func Example_same_name_sub_containers() {
 	c.Con("christmas.presents", "birthdays.presents").Label("regift")
 	fmt.Println(c.d2())
 	// Output:
+	// direction: down
 	// christmas: {style.fill: "#ACE1AF"}
 	// christmas.presents <-> birthdays.presents: regift
 }
@@ -133,6 +142,7 @@ func Example_code() {
 	c.Node("latex").Code("latex", `\lim_{h \rightarrow 0 } \frac{f(x+h)-f(x)}{h}`)
 	fmt.Println(c.d2())
 	// Output:
+	// direction: down
 	// markdown: |md
 	//   # Hi cdor
 	//   	- Go+
@@ -147,10 +157,58 @@ func Example_icon() {
 	c.Node("gg").Icon("https://icons.terrastruct.com/dev/github.svg").Shape("image")
 	fmt.Println(c.d2())
 	// Output:
+	// direction: down
 	// github: {icon: https://icons.terrastruct.com/dev/github.svg}
 	// gg: {
 	//   icon: https://icons.terrastruct.com/dev/github.svg
 	//   shape: image
 	// }
 
+}
+
+func Example_sql_table() {
+	c := Ctx()
+	c.Node("table").Shape("sql_table").
+		Field("id", "int", "primary_key").
+		Field("last_updated", "timestamp with time zone")
+	fmt.Println(c.d2())
+	// Output:
+	// direction: down
+	// table: {
+	//   shape: sql_table
+	//   id: int
+	//   id.constraint: primary_key
+	//   last_updated: timestamp with time zone
+	// }
+}
+
+func Example_class() {
+	c := Ctx()
+	c.Node("MyClass").
+		Shape("class").
+		Field("field", "[]string").
+		Field("method(a uint64)", "(x, y int)").
+		Field(`# peekn(n int)`, "(s string, eof bool)")
+	fmt.Println(c.d2())
+	// Output:
+	// direction: down
+	// MyClass: {
+	//   shape: class
+	//   field: "[]string"
+	//   method(a uint64): (x, y int)
+	//   \# peekn(n int): (s string, eof bool)
+	// }
+}
+
+func Example_sequece() {
+	c := Ctx()
+	c.Sequence()
+	c.Scon("alice", "bob").Label("What does it mean\nto be well-adjusted?")
+	c.Scon("bob", "alice").Label("The ability to play bridge or\ngolf as if they were games.")
+	fmt.Println(c.d2())
+	// Output:
+	// direction: down
+	// shape: sequence_diagram
+	// alice -> bob: "What does it mean\nto be well-adjusted?"
+	// bob -> alice: "The ability to play bridge or\ngolf as if they were games."
 }

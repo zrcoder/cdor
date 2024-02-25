@@ -12,6 +12,7 @@ import (
 )
 
 const d2wanted = `
+direction: down
 cat: {
   meow: {style.fill: green}
 }
@@ -44,7 +45,8 @@ func TestHello(t *testing.T) {
 
 func d2() (string, error) {
 	_, graph, _ := d2lib.Compile(context.Background(), "", nil, nil)
-
+	direction := "down"
+	graph, _ = d2oracle.Set(graph, nil, "direction", nil, &direction)
 	graph, _, _ = d2oracle.Create(graph, nil, "cat")
 	graph, _, _ = d2oracle.Create(graph, nil, "cat.meow")
 	color := "green"

@@ -50,46 +50,48 @@ func (this *doc) MainEntry() {
 //line doc/doc_cdor.gox:24:1
 	this.Cfg().Pad(27).ElkLayout()
 //line doc/doc_cdor.gox:26:1
-	this.genMdNode(`con("Go+", "Go").label("cdor")`)
+	this.Direction("right")
 //line doc/doc_cdor.gox:27:1
-	this.Con("Go+", "Go").Label("cdor")
+	this.genMdNode(`con("Go+", "Go").label("cdor")`)
 //line doc/doc_cdor.gox:28:1
+	this.Con("Go+", "Go").Label("cdor")
+//line doc/doc_cdor.gox:29:1
 	this.save("hello")
-//line doc/doc_cdor.gox:30:1
-	this.Clear()
 //line doc/doc_cdor.gox:31:1
+	this.Clear()
+//line doc/doc_cdor.gox:32:1
 	this.genMdNode(`node "imAShape"
 node "im_a_shape"
 node "im a shape"
 node "i'm a shape"
 node "a-shape"
 `)
-//line doc/doc_cdor.gox:37:1
-	this.Node("imAShape")
 //line doc/doc_cdor.gox:38:1
-	this.Node("im_a_shape")
+	this.Node("imAShape")
 //line doc/doc_cdor.gox:39:1
-	this.Node("im a shape")
+	this.Node("im_a_shape")
 //line doc/doc_cdor.gox:40:1
-	this.Node("i'm a shape")
+	this.Node("im a shape")
 //line doc/doc_cdor.gox:41:1
-	this.Node("a-shape")
+	this.Node("i'm a shape")
 //line doc/doc_cdor.gox:42:1
+	this.Node("a-shape")
+//line doc/doc_cdor.gox:43:1
 	this.save("example-id")
-//line doc/doc_cdor.gox:44:1
-	this.Clear()
 //line doc/doc_cdor.gox:45:1
+	this.Clear()
+//line doc/doc_cdor.gox:46:1
 	this.genMdNode(`node("pg").label("PostgreSQL")
 node("Cloud").label("my cloud").shape("cloud")`)
-//line doc/doc_cdor.gox:47:1
-	this.Node("pg").Label("PostgreSQL")
 //line doc/doc_cdor.gox:48:1
-	this.Node("Cloud").Label("my cloud").Shape("cloud")
+	this.Node("pg").Label("PostgreSQL")
 //line doc/doc_cdor.gox:49:1
+	this.Node("Cloud").Label("my cloud").Shape("cloud")
+//line doc/doc_cdor.gox:50:1
 	this.save("shape")
-//line doc/doc_cdor.gox:51:1
-	this.Clear()
 //line doc/doc_cdor.gox:52:1
+	this.Clear()
+//line doc/doc_cdor.gox:53:1
 	this.genMdNode(`con("x", "y").srcHeadShape("none").stroke("orange")
 con("x", "y").dstHeadShape("none").stroke("green")
 con("x", "y").srcHeadShape("none").dstHeadShape("none")
@@ -110,8 +112,10 @@ con("c", "a")`)
 	this.Con("c", "a")
 //line doc/doc_cdor.gox:65:1
 	this.save("connections")
-//line doc/doc_cdor.gox:68:1
+//line doc/doc_cdor.gox:67:1
 	this.Clear()
+//line doc/doc_cdor.gox:68:1
+	this.Direction("right")
 //line doc/doc_cdor.gox:69:1
 	opt := this.ArrowOpt().SrcHeadShape("none")
 //line doc/doc_cdor.gox:70:1
@@ -167,6 +171,39 @@ con("ci.deploys", "clouds").arrowOpt(opt)
 	this.Node("tex").Code("latex", tex)
 //line doc/doc_cdor.gox:118:1
 	this.save("latex")
+//line doc/doc_cdor.gox:120:1
+	this.Clear()
+//line doc/doc_cdor.gox:121:1
+	this.genMdNode(`node("table").shape("sql_table").
+	field("id", "int", "primary_key").
+	field("last_updated", "timestamp with time zone")`)
+//line doc/doc_cdor.gox:124:1
+	this.Node("table").Shape("sql_table").Field("id", "int", "primary_key").Field("last_updated", "timestamp with time zone")
+//line doc/doc_cdor.gox:127:1
+	this.save("sql_table")
+//line doc/doc_cdor.gox:129:1
+	this.Clear()
+//line doc/doc_cdor.gox:130:1
+	this.genMdNode(`node("MyClass").
+	shape("class").
+	field("Age", "int").
+	field("+ Field", "[]string").
+	field("- method(a uint64)", "(x, y int)").
+	field("# peekn(n int)", "(s string, eof bool)")`)
+//line doc/doc_cdor.gox:136:1
+	this.Node("MyClass").Shape("class").Field("Age", "int").Field("+ Field", "[]string").Field("- method(a uint64)", "(x, y int)").Field("# peekn(n int)", "(s string, eof bool)")
+//line doc/doc_cdor.gox:142:1
+	this.save("calss")
+//line doc/doc_cdor.gox:144:1
+	this.Clear()
+//line doc/doc_cdor.gox:146:1
+	this.Sequence()
+//line doc/doc_cdor.gox:147:1
+	this.Scon("alice", "bob").Label("What does it mean\nto be well-adjusted?")
+//line doc/doc_cdor.gox:148:1
+	this.Scon("bob", "alice").Label("The ability to play bridge or\ngolf as if they were games.")
+//line doc/doc_cdor.gox:149:1
+	this.save("sequence")
 }
 func main() {
 	cdor.Gopt_App_Main(new(doc))

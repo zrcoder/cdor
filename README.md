@@ -19,8 +19,8 @@ Write Go+/Go code to make diagrams.
 text & code:
 ![markdown](examples/md.svg)
 ![latext](examples/latex.svg)
-
-see more in [example_test.go](example_test.go).
+![table](examples/sql_table.svg)
+![class](examples/calss.svg)
 
 ## config
 
@@ -56,8 +56,12 @@ theme ids:
 
 ## TODO
 
-- [x] arrorw options
-    - [ ] arrow head filled
 - [ ] special shapes
     - [x] text/code
-- [ ] surpport worker classfile
+    - [x] sql_table
+    - [x] class uml
+    - [ ] sequece
+    - [ ] grid
+    - [ ] json/yaml/tomal/object
+    - [ ] icons/images
+- [ ] support worker classfile

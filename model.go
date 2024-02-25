@@ -19,6 +19,7 @@ type Cdor struct {
 type node struct {
 	children    []*node
 	connections []*connection
+	sqlFields   []sqlField
 	id          string
 	codeTag     string
 	code        string
@@ -29,6 +30,7 @@ type node struct {
 type connection struct {
 	*option
 	*arrow
+	isSingle bool
 	src, dst string
 }
 
@@ -51,10 +53,17 @@ type arrow struct {
 	dstHead option
 }
 
+type sqlField struct {
+	key        string
+	value      string
+	constraint string
+}
+
 type config struct {
-	cfg       d2target.Config
-	elkLayout bool
-	direction string
+	cfg        d2target.Config
+	elkLayout  bool
+	isSequence bool
+	direction  string
 }
 
 type ThemeOverrides = d2target.ThemeOverrides

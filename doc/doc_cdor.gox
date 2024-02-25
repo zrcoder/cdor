@@ -1,6 +1,6 @@
 #!/usr/bin/env gop run
 
-import(
+import (
 	"fmt"
 	"os"
 
@@ -23,6 +23,7 @@ func save(name string) {
 
 cfg.pad(27).elkLayout()
 
+direction "right"
 genMdNode `con("Go+", "Go").label("cdor")`
 con("Go+", "Go").label("cdor")
 save "hello"
@@ -55,7 +56,6 @@ con("x", "y").srcHeadShape("none").dstHeadShape("none")
 con("a", "b").srcHeadShape("circle")
 con("b", "c").srcHeadShape("circle")
 con("c", "a")`
-
 con("x", "y").srcHeadShape("none").stroke("orange")
 con("x", "y").dstHeadShape("none").stroke("green")
 con("x", "y").srcHeadShape("none").dstHeadShape("none")
@@ -64,8 +64,8 @@ con("b", "c").srcHeadShape("circle")
 con("c", "a")
 save "connections"
 
-
 clear
+direction "right"
 opt := arrowOpt().srcHeadShape("none")
 genMdNode `opt := arrowOpt().srcHeadShape("none")
 
@@ -117,10 +117,41 @@ genMdNode "tex := `${tex}`\nnode(\"tex\").code(\"latex\", tex)"
 node("tex").code("latex", tex)
 save "latex"
 
+clear
+genMdNode `node("table").shape("sql_table").
+	field("id", "int", "primary_key").
+	field("last_updated", "timestamp with time zone")`
+node("table").shape("sql_table").
+	field("id", "int", "primary_key").
+	field("last_updated", "timestamp with time zone")
+save "sql_table"
+
+clear
+genMdNode `node("MyClass").
+	shape("class").
+	field("Age", "int").
+	field("+ Field", "[]string").
+	field("- method(a uint64)", "(x, y int)").
+	field("# peekn(n int)", "(s string, eof bool)")`
+node("MyClass").
+	shape("class").
+	field("Age", "int").
+	field("+ Field", "[]string").
+	field("- method(a uint64)", "(x, y int)").
+	field("# peekn(n int)", "(s string, eof bool)")
+save "calss"
+
+clear
+
+sequence()
+scon("alice", "bob").Label("What does it mean\nto be well-adjusted?")
+scon("bob", "alice").Label("The ability to play bridge or\ngolf as if they were games.")
+save "sequence"
+
 /*
-c = cdor.ctx
-genMdNode(c, `node("github").shape("image").icon("https://icons.terrastruct.com/dev/github.svg")`)
-c.node("github").shape("image").icon("https://icons.terrastruct.com/dev/github.svg")
-c.node("gg").icon("https://icons.terrastruct.com/dev/github.svg")
-gen(c, "icon")
+   c = cdor.ctx
+   genMdNode(c, `node("github").shape("image").icon("https://icons.terrastruct.com/dev/github.svg")`)
+   c.node("github").shape("image").icon("https://icons.terrastruct.com/dev/github.svg")
+   c.node("gg").icon("https://icons.terrastruct.com/dev/github.svg")
+   gen(c, "icon")
 */

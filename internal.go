@@ -32,6 +32,17 @@ func (c *Cdor) buildGraph() {
 
 	c.built = true
 
+	if c.graph, c.err = d2oracle.Set(c.graph, nil, "direction", nil, &c.direction); c.err != nil {
+		return
+	}
+
+	if c.isSequence {
+		seq := "sequence_diagram"
+		if c.graph, c.err = d2oracle.Set(c.graph, nil, "shape", nil, &seq); c.err != nil {
+			return
+		}
+	}
+
 	for _, n := range c.nodes {
 		c.soveID(n)
 	}
@@ -42,6 +53,14 @@ func (c *Cdor) buildGraph() {
 		}
 		if c.setCode(n.id, n.codeTag, n.code); c.err != nil {
 			return
+		}
+		for _, item := range n.sqlFields {
+			if c.set(n.id, item.key, item.value); c.err != nil {
+				return
+			}
+			if c.set(n.id, combinID(item.key, "constraint"), item.constraint); c.err != nil {
+				return
+			}
 		}
 	}
 	for _, con := range c.connections {
@@ -75,10 +94,6 @@ func (c *Cdor) genSvg() (svg []byte) {
 		c.direction = "down"
 	}
 
-	if c.graph, c.err = d2oracle.Set(c.graph, nil, "direction", nil, &c.direction); c.err != nil {
-		return
-	}
-
 	var ruler *textmeasure.Ruler
 	if ruler, c.err = textmeasure.NewRuler(); c.err != nil {
 		return
@@ -88,18 +103,19 @@ func (c *Cdor) genSvg() (svg []byte) {
 		return
 	}
 
+	ctx := context.Background()
 	if c.config.elkLayout {
-		if c.err = d2elklayout.Layout(context.Background(), c.graph, nil); c.err != nil {
+		if c.err = d2elklayout.Layout(ctx, c.graph, nil); c.err != nil {
 			return
 		}
 	} else {
-		if c.err = d2dagrelayout.Layout(context.Background(), c.graph, nil); c.err != nil {
+		if c.err = d2dagrelayout.Layout(ctx, c.graph, nil); c.err != nil {
 			return
 		}
 	}
 
 	var diagram *d2target.Diagram
-	diagram, c.err = d2exporter.Export(context.Background(), c.graph, nil)
+	diagram, c.err = d2exporter.Export(ctx, c.graph, nil)
 	if c.err != nil {
 		return
 	}
@@ -192,5 +208,8 @@ func combinID(parts ...string) string {
 }
 
 func (c *connection) genKey() string {
+	if c.isSingle {
+		return fmt.Sprintf("%s -> %s", c.src, c.dst)
+	}
 	return fmt.Sprintf("%s <-> %s", c.src, c.dst)
 }

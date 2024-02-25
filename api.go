@@ -34,8 +34,19 @@ func (c *Cdor) Node(id string, opt ...*option) *node {
 	return node
 }
 
+// connection
 func (c *Cdor) Con(src, dst string, opt ...*option) *connection {
 	con := &connection{src: src, dst: dst, option: c.option.Copy(), arrow: c.arrow.Copy()}
+	if len(opt) > 0 {
+		con.option = opt[0]
+	}
+	c.connections = append(c.connections, con)
+	return con
+}
+
+// single connection
+func (c *Cdor) Scon(src, dst string, opt ...*option) *connection {
+	con := &connection{src: src, dst: dst, isSingle: true, option: c.option.Copy(), arrow: c.arrow.Copy()}
 	if len(opt) > 0 {
 		con.option = opt[0]
 	}
@@ -74,6 +85,7 @@ func (c *Cdor) Clear() {
 	c.nodes = nil
 	c.connections = nil
 	c.built = false
+	c.isSequence = false
 }
 
 // --- node ---
@@ -118,6 +130,22 @@ func (n *node) Code(tag, code string) *node {
 
 func (n *node) Icon(icon string) *node {
 	n.icon = icon
+	return n
+}
+
+func (n *node) Field(s ...string) *node {
+	if len(s) < 2 {
+		return n
+	}
+	key := s[0]
+	if key[0] == '#' {
+		key = `\` + key
+	}
+	if len(s) == 2 {
+		n.sqlFields = append(n.sqlFields, sqlField{key: key, value: s[1]})
+	} else if len(s) > 2 {
+		n.sqlFields = append(n.sqlFields, sqlField{key: key, value: s[1], constraint: strings.Join(s[2:], " ")})
+	}
 	return n
 }
 
@@ -270,6 +298,11 @@ func (c *config) DarkThemeOverrides(ov *ThemeOverrides) *config {
 
 func (c *config) Direction(dir string) *config {
 	c.direction = dir
+	return c
+}
+
+func (c *config) Sequence(b ...bool) *config {
+	c.isSequence = *c.solveBool(b)
 	return c
 }
 
