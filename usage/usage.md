@@ -1,5 +1,6 @@
 # usage
 
+## pre
 Initialize your diagram project
 
 ```shell
@@ -24,10 +25,11 @@ saveFile "hi.svg"
 then run:
 
 ```shell
-gop run
+gop mod tidy
+gop run .
 ```
 
-then you'll find `hi.svg` generated, rendered like:
+you'll find `hi.svg` generated, rendered like:
 
 ![hi](single.svg)
 
@@ -48,13 +50,7 @@ modify `main_cdor.gox` to:
 saveFiles
 ```
 
-after `gop run`, you'll find `hi1.svg` and `hi2.svg` generated:
-
-hi1.svg
-![hi1](hi1.svg)
-
-hi2.svg
-![hi2](hi2.svg)
+after `gop run`, you'll find `hi1.svg` and `hi2.svg` generated.
 
 ### merge diagrams
 
