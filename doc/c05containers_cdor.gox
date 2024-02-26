@@ -1,4 +1,5 @@
 direction "right"
+cfg.elkLayout
 mdCode `opt := arrowOpt().srcHeadShape("none")
 node("clouds").children(
 	node("aws").label("AWS").cons(

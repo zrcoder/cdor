@@ -10,16 +10,7 @@ Write Go+/Go code to make diagrams.
 
 ## examples
 
-![hello](examples/hello.svg)
-![id](examples/id.svg)
-![shape](examples/shape.svg)
-![connections](examples/connections.svg)
-![containers](examples/containers.svg)
-![md](examples/md.svg)
-![latex](examples/latex.svg)
-![sql_table](examples/sql_table.svg)
-![class](examples/class.svg)
-
+{{ .Examples }}
 see [doc](doc) for details.
 
 ## config
