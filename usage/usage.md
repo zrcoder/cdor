@@ -1,6 +1,5 @@
 # usage
 
-## pre
 Initialize your diagram project
 
 ```shell
