@@ -17,6 +17,8 @@ type IApp interface {
 type IWorker interface {
 	init()
 	Gen() ([]byte, error)
+	getNodes() []*node
+	getCons() []*connection
 }
 
 var _ IApp = (*App)(nil)
@@ -25,12 +27,10 @@ var _ IWorker = (*Cdor)(nil)
 func Gopt_App_Main(app IApp, workers ...IWorker) {
 	app.init()
 	app.setWorkers(workers)
-
 	for _, worker := range workers {
 		worker.init()
 		worker.(interface{ Main() }).Main()
 	}
-
 	app.(interface{ MainEntry() }).MainEntry()
 }
 
@@ -70,6 +70,13 @@ func (a *App) SaveFiles(dir ...string) (err error) {
 		}
 	}
 	return nil
+}
+
+func (a *App) Merge() {
+	for _, worker := range a.Workers {
+		a.Cdor.nodes = append(a.Cdor.nodes, worker.getNodes()...)
+		a.Cdor.connections = append(a.Cdor.connections, worker.getCons()...)
+	}
 }
 
 func (a *App) init() {

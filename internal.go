@@ -203,6 +203,13 @@ func (c *Cdor) d2() string {
 	return d2format.Format(c.graph.AST)
 }
 
+func (c *Cdor) getCons() []*connection {
+	return c.connections
+}
+func (c *Cdor) getNodes() []*node {
+	return c.nodes
+}
+
 func combinID(parts ...string) string {
 	return strings.Join(parts, ".")
 }

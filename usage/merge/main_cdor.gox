@@ -1,0 +1,3 @@
+con "a", "x"
+merge
+saveFile "merged.svg"
