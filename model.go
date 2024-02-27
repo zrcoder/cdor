@@ -13,7 +13,7 @@ type Cdor struct {
 	globalConOpt *conOption
 	err          error
 	built        bool
-	config
+	*config
 }
 
 type node struct {

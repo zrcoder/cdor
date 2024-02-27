@@ -15,24 +15,7 @@ func Ctx() *Cdor {
 }
 
 func (c *Cdor) Cfg() *config {
-	return &c.config
-}
-
-func (c *Cdor) Nodes(nodes ...*node) *Cdor {
-	return c
-}
-
-func (c *Cdor) Cons(cons ...*connection) *Cdor {
-	return c
-}
-
-func (c *Cdor) Node(id string, opt ...*option) *node {
-	node := &node{id: id, option: c.globalOption.Copy()}
-	if len(opt) > 0 {
-		node.option = opt[0]
-	}
-	c.nodes = append(c.nodes, node)
-	return node
+	return &config{}
 }
 
 func (c *Cdor) BaseConfig(cfg *config) *Cdor {
@@ -40,8 +23,8 @@ func (c *Cdor) BaseConfig(cfg *config) *Cdor {
 		return c
 	}
 
-	tmp := *cfg
-	c.config = *(tmp.apply(&c.config))
+	tmp := *cfg // copy cfg
+	c.config = tmp.apply(c.config)
 	return c
 }
 
@@ -54,6 +37,8 @@ func (c *Cdor) BaseOption(opt *option) *Cdor {
 	if opt == nil {
 		return c
 	}
+
+	c.globalOption = opt.Copy()
 
 	for _, node := range c.nodes {
 		node.option = opt.Copy().Apply(node.option)
@@ -89,6 +74,8 @@ func (c *Cdor) BaseConOption(opt *conOption) *Cdor {
 		return c
 	}
 
+	c.globalConOpt = opt
+
 	for _, con := range c.connections {
 		con.conOption = opt.Copy().Apply(con.conOption)
 	}
@@ -106,7 +93,17 @@ func (c *Cdor) ApplyConOption(opt *conOption) *Cdor {
 	return c
 }
 
-// connection
+// Node creat a node
+func (c *Cdor) Node(id string, opt ...*option) *node {
+	node := &node{id: id, option: c.globalOption.Copy()}
+	if len(opt) > 0 {
+		node.option = opt[0]
+	}
+	c.nodes = append(c.nodes, node)
+	return node
+}
+
+// Con creat a connection
 func (c *Cdor) Con(src, dst string, opt ...*conOption) *connection {
 	con := &connection{
 		src:       src,
@@ -121,7 +118,7 @@ func (c *Cdor) Con(src, dst string, opt ...*conOption) *connection {
 	return con
 }
 
-// single connection
+// Scon creat a single connection
 func (c *Cdor) Scon(src, dst string, opt ...*conOption) *connection {
 	con := &connection{
 		src:       src,

@@ -20,6 +20,7 @@ import (
 func (c *Cdor) init() {
 	c.globalOption = &option{}
 	c.globalConOpt = &conOption{}
+	c.config = &config{}
 	c.direction = "down"
 	c.config.DarkTheme(DarkMauve)
 	_, c.graph, c.err = d2lib.Compile(context.Background(), "", nil, nil)

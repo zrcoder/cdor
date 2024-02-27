@@ -51,8 +51,10 @@ type c09class struct {
 type App struct {
 	cdor.App
 }
-//line doc/main_cdor.gox:8
+//line doc/main_cdor.gox:6
 func (this *App) MainEntry() {
+//line doc/main_cdor.gox:6:1
+	this.ApplyGlobalConfig(this.Cfg().ElkLayout())
 //line doc/main_cdor.gox:8:1
 	buf := bytes.NewBuffer(nil)
 //line doc/main_cdor.gox:10:1
@@ -67,7 +69,7 @@ func (this *App) MainEntry() {
 //line doc/main_cdor.gox:15:1
 		name = name[3:]
 //line doc/main_cdor.gox:16:1
-		err = os.WriteFile("examples/"+name+".svg", data, 0600)
+		err = os.WriteFile("doc/examples/"+name+".svg", data, 0600)
 //line doc/main_cdor.gox:17:1
 		if err != nil {
 //line doc/main_cdor.gox:18:1
@@ -76,7 +78,7 @@ func (this *App) MainEntry() {
 			return err
 		}
 //line doc/main_cdor.gox:21:1
-		buf.WriteString("![" + name + "](examples/" + name + ".svg)\n")
+		buf.WriteString("![" + name + "](doc/examples/" + name + ".svg)\n")
 //line doc/main_cdor.gox:22:1
 		return nil
 	})

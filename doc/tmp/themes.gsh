@@ -1,4 +1,3 @@
-
 /* shapes
 rectangle
 square
@@ -19,7 +18,6 @@ hexagon
 cloud
 */
 
-
 /* arrow head shapes
 triangle: (default) Can be further styled as style.filled: false.
 arrow: (like triangle but pointier)
@@ -31,12 +29,10 @@ cf-many:
 cf-many-required:
 */
 
-
 /*specia shapes:
 text/code/latex
 node("code").code("tex", `\lim_{h \rightarrow 0 } \frac{f(x+h)-f(x)}{h}`)
 */
-
 
 themes := `
 Available themes:
@@ -63,7 +59,6 @@ Dark:
 - Dark Flagship Terrastruct: 201
 `
 
-
 echo "| Theme | ID |"
 echo "|---|---|"
 
@@ -80,4 +75,3 @@ for line <- themes.Split("\n") {
 	}
 	echo "| ${theme} | ${id} |"
 }
-

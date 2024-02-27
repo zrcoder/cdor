@@ -1,35 +1,35 @@
 import (
-    "bytes"
-    "os"
+	"bytes"
+	"os"
 )
 
-// saveFiles("demo")
+applyGlobalConfig(cfg.elkLayout())
 
 buf := bytes.newBuffer(nil)
 
 rangeDiagrams func(name string, data []byte, err error) error {
-    if err != nil {
-        echo err
-        return err
-    }
-    name = name[3:]
-    err = os.writeFile("examples/${name}.svg", data, 0600)
-    if err != nil {
-        echo err
-        return err
-    }
-    buf.writeString "![${name}](examples/${name}.svg)\n"
-    return nil
+	if err != nil {
+		echo err
+		return err
+	}
+	name = name[3:]
+	err = os.writeFile("doc/examples/${name}.svg", data, 0600)
+	if err != nil {
+		echo err
+		return err
+	}
+	buf.writeString "![${name}](doc/examples/${name}.svg)\n"
+	return nil
 }
 
 readmeTemp, err := os.readFile("doc/readmeTemp.md")
 if err != nil {
-    panic err
+	panic err
 }
 
 readmeContent := string(readmeTemp)
 
 readmeContent = readmeContent.replace("{{ .Examples }}", buf.string, 1)
 if err := os.writeFile("README.md", []byte(readmeContent), 0600); err != nil {
-    panic err
+	panic err
 }

@@ -1,3 +1,0 @@
-con "x", "y"
-
-saveFile "single.svg"
