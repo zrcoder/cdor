@@ -172,32 +172,32 @@ func (this *c05containers) Main() {
 //line doc/c05containers_cdor.gox:2:1
 	this.Cfg().ElkLayout()
 //line doc/c05containers_cdor.gox:3:1
-	this.MdCode(`opt := arrowOpt().srcHeadShape("none")
+	this.MdCode(`opt := conOpt().srcHeadShape("none")
 node("clouds").children(
 	node("aws").label("AWS").cons(
 		con("load_balancer", "api"),
 		con("api", "db"),
 	),
 	node("gcloud").label("Google Cloud").cons(
-		con("auth", "db").arrowOpt(opt),
+		con("auth", "db").opt(opt),
 	)).
 	cons(
-		con("gcloud", "aws").arrowOpt(opt),
+		con("gcloud", "aws").opt(opt),
 	)
-con("users", "clouds.aws.load_balancer").arrowOpt(opt)
-con("users", "clouds.gcloud.auth").arrowOpt(opt)
-con("ci.deploys", "clouds").arrowOpt(opt)
+con("users", "clouds.aws.load_balancer").opt(opt)
+con("users", "clouds.gcloud.auth").opt(opt)
+con("ci.deploys", "clouds").opt(opt)
 `)
 //line doc/c05containers_cdor.gox:19:1
-	opt := this.ArrowOpt().SrcHeadShape("none")
+	opt := this.ConOpt().SrcHeadShape("none")
 //line doc/c05containers_cdor.gox:20:1
-	this.Node("clouds").Children(this.Node("aws").Label("AWS").Cons(this.Con("load_balancer", "api"), this.Con("api", "db")), this.Node("gcloud").Label("Google Cloud").Cons(this.Con("auth", "db").ArrowOpt(opt))).Cons(this.Con("gcloud", "aws").ArrowOpt(opt))
+	this.Node("clouds").Children(this.Node("aws").Label("AWS").Cons(this.Con("load_balancer", "api"), this.Con("api", "db")), this.Node("gcloud").Label("Google Cloud").Cons(this.Con("auth", "db").Opt(opt))).Cons(this.Con("gcloud", "aws").Opt(opt))
 //line doc/c05containers_cdor.gox:31:1
-	this.Con("users", "clouds.aws.load_balancer").ArrowOpt(opt)
+	this.Con("users", "clouds.aws.load_balancer").Opt(opt)
 //line doc/c05containers_cdor.gox:32:1
-	this.Con("users", "clouds.gcloud.auth").ArrowOpt(opt)
+	this.Con("users", "clouds.gcloud.auth").Opt(opt)
 //line doc/c05containers_cdor.gox:33:1
-	this.Con("ci.deploys", "clouds").ArrowOpt(opt)
+	this.Con("ci.deploys", "clouds").Opt(opt)
 }
 //line doc/c06md_cdor.gox:1
 func (this *c06md) Main() {

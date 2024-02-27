@@ -6,13 +6,13 @@ import (
 )
 
 type Cdor struct {
-	graph       *d2graph.Graph
-	nodes       []*node
-	connections []*connection
-	option      *option
-	arrow       *arrow
-	err         error
-	built       bool
+	graph        *d2graph.Graph
+	nodes        []*node
+	connections  []*connection
+	globalOption *option
+	globalConOpt *conOption
+	err          error
+	built        bool
 	config
 }
 
@@ -28,8 +28,8 @@ type node struct {
 }
 
 type connection struct {
-	*option
-	*arrow
+	*Cdor
+	*conOption
 	isSingle bool
 	src, dst string
 }
@@ -51,6 +51,11 @@ type style struct {
 type arrow struct {
 	srcHead option
 	dstHead option
+}
+
+type conOption struct {
+	arrow
+	option
 }
 
 type sqlField struct {

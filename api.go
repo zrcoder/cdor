@@ -27,7 +27,7 @@ func (c *Cdor) Cons(cons ...*connection) *Cdor {
 }
 
 func (c *Cdor) Node(id string, opt ...*option) *node {
-	node := &node{id: id, option: c.option.Copy()}
+	node := &node{id: id, option: c.globalOption.Copy()}
 	if len(opt) > 0 {
 		node.option = opt[0]
 	}
@@ -35,21 +35,103 @@ func (c *Cdor) Node(id string, opt ...*option) *node {
 	return node
 }
 
+func (c *Cdor) BaseConfig(cfg *config) *Cdor {
+	if cfg == nil {
+		return c
+	}
+
+	tmp := *cfg
+	c.config = *(tmp.apply(&c.config))
+	return c
+}
+
+func (c *Cdor) ApplyConfig(cfg *config) *Cdor {
+	c.config.apply(cfg)
+	return c
+}
+
+func (c *Cdor) BaseOption(opt *option) *Cdor {
+	if opt == nil {
+		return c
+	}
+
+	for _, node := range c.nodes {
+		node.option = opt.Copy().Apply(node.option)
+		for _, con := range node.connections {
+			con.option = *opt.Copy().Apply(opt)
+		}
+	}
+	for _, con := range c.connections {
+		con.option = *opt.Copy().Apply(opt)
+	}
+	return c
+}
+
+func (c *Cdor) ApplyOption(opt *option) *Cdor {
+	if opt == nil {
+		return c
+	}
+
+	for _, node := range c.nodes {
+		node.option.Apply(opt)
+		for _, con := range node.connections {
+			con.option.Apply(opt)
+		}
+	}
+	for _, con := range c.connections {
+		con.option.Apply(opt)
+	}
+	return c
+}
+
+func (c *Cdor) BaseConOption(opt *conOption) *Cdor {
+	if opt == nil {
+		return c
+	}
+
+	for _, con := range c.connections {
+		con.conOption = opt.Copy().Apply(con.conOption)
+	}
+	return c
+}
+
+func (c *Cdor) ApplyConOption(opt *conOption) *Cdor {
+	if opt == nil {
+		return c
+	}
+
+	for _, con := range c.connections {
+		con.conOption.Apply(opt)
+	}
+	return c
+}
+
 // connection
-func (c *Cdor) Con(src, dst string, opt ...*option) *connection {
-	con := &connection{src: src, dst: dst, option: c.option.Copy(), arrow: c.arrow.Copy()}
+func (c *Cdor) Con(src, dst string, opt ...*conOption) *connection {
+	con := &connection{
+		src:       src,
+		dst:       dst,
+		conOption: c.globalConOpt.Copy(),
+		Cdor:      c,
+	}
 	if len(opt) > 0 {
-		con.option = opt[0]
+		con.conOption = opt[0]
 	}
 	c.connections = append(c.connections, con)
 	return con
 }
 
 // single connection
-func (c *Cdor) Scon(src, dst string, opt ...*option) *connection {
-	con := &connection{src: src, dst: dst, isSingle: true, option: c.option.Copy(), arrow: c.arrow.Copy()}
+func (c *Cdor) Scon(src, dst string, opt ...*conOption) *connection {
+	con := &connection{
+		src:       src,
+		dst:       dst,
+		isSingle:  true,
+		conOption: c.globalConOpt.Copy(),
+		Cdor:      c,
+	}
 	if len(opt) > 0 {
-		con.option = opt[0]
+		con.conOption = opt[0]
 	}
 	c.connections = append(c.connections, con)
 	return con
@@ -69,8 +151,8 @@ func (c *Cdor) Opt() *option {
 	return &option{}
 }
 
-func (c *Cdor) ArrowOpt() *arrow {
-	return &arrow{}
+func (c *Cdor) ConOpt() *conOption {
+	return &conOption{}
 }
 
 func (c *Cdor) SaveFile(filename string) error {
@@ -107,6 +189,11 @@ func (n *node) Children(children ...*node) *node {
 
 func (n *node) Cons(cons ...*connection) *node {
 	n.connections = append(n.connections, cons...)
+	return n
+}
+
+func (n *node) Opt(opt *option) *node {
+	n.option.Apply(opt)
 	return n
 }
 
@@ -181,7 +268,7 @@ func (c *connection) Stroke(stroke string) *connection {
 }
 
 func (c *connection) SrcHeadShape(shape string) *connection {
-	c.arrow.srcHead.shape = shape
+	c.srcHead.shape = shape
 	return c
 }
 
@@ -200,9 +287,13 @@ func (c *connection) DstHeadLabel(label string) *connection {
 	return c
 }
 
-func (c *connection) ArrowOpt(opt *arrow) *connection {
-	c.arrow = opt
+func (c *connection) Opt(opt *conOption) *connection {
+	c.conOption.Apply(opt)
 	return c
+}
+
+func (c *connection) Con(dst string, opt ...*conOption) *connection {
+	return c.Cdor.Con(c.dst, dst, opt...)
 }
 
 // --- option ---
@@ -232,33 +323,95 @@ func (o *option) Stroke(stroke string) *option {
 	return o
 }
 
+func (o *option) Base(opt *option) *option {
+	if opt == nil {
+		return o
+	}
+	if o == nil {
+		return opt
+	}
+	return opt.Copy().Apply(o)
+}
+
+func (o *option) Apply(opt *option) *option {
+	if opt == nil {
+		return o
+	}
+	o.fill = defaultStr(o.fill, opt.fill)
+	o.stroke = defaultStr(o.stroke, opt.stroke)
+	o.shape = defaultStr(o.shape, opt.shape)
+	o.label = defaultStr(o.label, opt.label)
+	return o
+}
+
 // --- style ---
 
-// --- arrow ---
+// --- arrowOption ---
 
-func (a *arrow) Copy() *arrow {
+func (a *conOption) Copy() *conOption {
 	res := *a
 	return &res
 }
 
-func (a *arrow) SrcHeadLabel(label string) *arrow {
+func (a *conOption) SrcHeadLabel(label string) *conOption {
 	a.srcHead.label = label
 	return a
 }
 
-func (a *arrow) SrcHeadShape(shape string) *arrow {
+func (a *conOption) SrcHeadShape(shape string) *conOption {
 	a.srcHead.shape = shape
 	return a
 }
 
-func (a *arrow) DstHeadLabel(label string) *arrow {
+func (a *conOption) DstHeadLabel(label string) *conOption {
 	a.dstHead.label = label
 	return a
 }
 
-func (a *arrow) DstHeadShape(shape string) *arrow {
+func (a *conOption) DstHeadShape(shape string) *conOption {
 	a.dstHead.shape = shape
 	return a
+}
+
+func (o *conOption) Label(label string) *conOption {
+	o.label = label
+	return o
+}
+
+func (o *conOption) Shape(shape string) *conOption {
+	o.shape = shape
+	return o
+}
+
+func (o *conOption) Fill(fill string) *conOption {
+	o.fill = fill
+	return o
+}
+
+func (o *conOption) Stroke(stroke string) *conOption {
+	o.stroke = stroke
+	return o
+}
+
+func (o *conOption) Base(opt *conOption) *conOption {
+	if o == nil {
+		return opt
+	}
+	if opt == nil {
+		return o
+	}
+
+	return opt.Copy().Apply(o)
+}
+
+func (o *conOption) Apply(opt *conOption) *conOption {
+	if opt == nil {
+		return o
+	}
+	o.arrow.srcHead.Apply(&opt.arrow.srcHead)
+	o.arrow.dstHead.Apply(&opt.arrow.dstHead)
+	o.option.Apply(&opt.option)
+	return o
 }
 
 // --- config ---

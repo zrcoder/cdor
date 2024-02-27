@@ -18,8 +18,8 @@ import (
 )
 
 func (c *Cdor) init() {
-	c.option = &option{}
-	c.arrow = &arrow{}
+	c.globalOption = &option{}
+	c.globalConOpt = &conOption{}
 	c.direction = "down"
 	c.config.DarkTheme(DarkMauve)
 	_, c.graph, c.err = d2lib.Compile(context.Background(), "", nil, nil)
@@ -144,7 +144,7 @@ func (c *Cdor) gen(id string, option *option) (key string) {
 }
 
 func (c *Cdor) genCon(con *connection) (key string) {
-	if key = c.gen(con.genKey(), con.option); c.err != nil {
+	if key = c.gen(con.genKey(), &con.option); c.err != nil {
 		return
 	}
 
@@ -219,4 +219,46 @@ func (c *connection) genKey() string {
 		return fmt.Sprintf("%s -> %s", c.src, c.dst)
 	}
 	return fmt.Sprintf("%s <-> %s", c.src, c.dst)
+}
+
+func (c *config) apply(cfg *config) *config {
+	if cfg == nil {
+		return c
+	}
+
+	c.direction = defaultStr(c.direction, cfg.direction)
+	c.elkLayout = cfg.elkLayout || c.elkLayout
+	c.cfg.Center = defaultBoolPoint(c.cfg.Center, cfg.cfg.Center)
+	c.cfg.ThemeID = defaultInt64Point(c.cfg.ThemeID, cfg.cfg.ThemeID)
+	c.cfg.DarkThemeID = defaultInt64Point(c.cfg.DarkThemeID, cfg.cfg.DarkThemeID)
+	if cfg.cfg.ThemeOverrides != nil {
+		c.cfg.ThemeOverrides = cfg.cfg.ThemeOverrides
+	}
+	if cfg.cfg.DarkThemeOverrides != nil {
+		c.cfg.DarkThemeOverrides = cfg.cfg.DarkThemeOverrides
+	}
+	c.cfg.Pad = defaultInt64Point(c.cfg.Pad, cfg.cfg.Pad)
+	c.cfg.Sketch = defaultBoolPoint(c.cfg.Sketch, cfg.cfg.Sketch)
+	return c
+}
+
+func defaultStr(src, dst string) string {
+	if dst == "" {
+		return src
+	}
+	return dst
+}
+
+func defaultBoolPoint(src, dst *bool) *bool {
+	if dst == nil {
+		return src
+	}
+	return dst
+}
+
+func defaultInt64Point(src, dst *int64) *int64 {
+	if dst == nil {
+		return src
+	}
+	return dst
 }

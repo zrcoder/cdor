@@ -19,6 +19,12 @@ type IWorker interface {
 	Gen() ([]byte, error)
 	getNodes() []*node
 	getCons() []*connection
+	ApplyOption(*option) *Cdor
+	BaseOption(*option) *Cdor
+	ApplyConfig(*config) *Cdor
+	BaseConfig(*config) *Cdor
+	ApplyConOption(opt *conOption) *Cdor
+	BaseConOption(*conOption) *Cdor
 }
 
 var _ IApp = (*App)(nil)
@@ -47,6 +53,42 @@ func (a *App) RangeDiagrams(action func(string, []byte, error) error) {
 		if action(className(w), data, err) != nil {
 			return
 		}
+	}
+}
+
+func (a *App) ApplyGlobalConfig(cfg *config) {
+	for _, w := range a.Workers {
+		w.ApplyConfig(cfg)
+	}
+}
+
+func (a *App) BaseGlobalConfig(cfg *config) {
+	for _, w := range a.Workers {
+		w.BaseConfig(cfg)
+	}
+}
+
+func (a *App) BaseOptionAll(opt *option) {
+	for _, w := range a.Workers {
+		w.BaseOption(opt)
+	}
+}
+
+func (a *App) ApplyOptionAll(opt *option) {
+	for _, w := range a.Workers {
+		w.ApplyOption(opt)
+	}
+}
+
+func (a *App) BaseConOptionAll(opt *conOption) {
+	for _, w := range a.Workers {
+		w.BaseConOption(opt)
+	}
+}
+
+func (a *App) ApployConOptionAll(opt *conOption) {
+	for _, w := range a.Workers {
+		w.ApplyConOption(opt)
 	}
 }
 

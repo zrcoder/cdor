@@ -1,33 +1,33 @@
 direction "right"
 cfg.elkLayout
-mdCode `opt := arrowOpt().srcHeadShape("none")
+mdCode `opt := conOpt().srcHeadShape("none")
 node("clouds").children(
 	node("aws").label("AWS").cons(
 		con("load_balancer", "api"),
 		con("api", "db"),
 	),
 	node("gcloud").label("Google Cloud").cons(
-		con("auth", "db").arrowOpt(opt),
+		con("auth", "db").opt(opt),
 	)).
 	cons(
-		con("gcloud", "aws").arrowOpt(opt),
+		con("gcloud", "aws").opt(opt),
 	)
-con("users", "clouds.aws.load_balancer").arrowOpt(opt)
-con("users", "clouds.gcloud.auth").arrowOpt(opt)
-con("ci.deploys", "clouds").arrowOpt(opt)
+con("users", "clouds.aws.load_balancer").opt(opt)
+con("users", "clouds.gcloud.auth").opt(opt)
+con("ci.deploys", "clouds").opt(opt)
 `
-opt := arrowOpt().srcHeadShape("none")
+opt := conOpt().srcHeadShape("none")
 node("clouds").children(
 	node("aws").label("AWS").cons(
 		con("load_balancer", "api"),
 		con("api", "db"),
 	),
 	node("gcloud").label("Google Cloud").cons(
-		con("auth", "db").arrowOpt(opt),
+		con("auth", "db").opt(opt),
 	)).
 	cons(
-		con("gcloud", "aws").arrowOpt(opt),
+		con("gcloud", "aws").opt(opt),
 	)
-con("users", "clouds.aws.load_balancer").arrowOpt(opt)
-con("users", "clouds.gcloud.auth").arrowOpt(opt)
-con("ci.deploys", "clouds").arrowOpt(opt)
+con("users", "clouds.aws.load_balancer").opt(opt)
+con("users", "clouds.gcloud.auth").opt(opt)
+con("ci.deploys", "clouds").opt(opt)
