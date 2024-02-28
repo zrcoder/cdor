@@ -1,0 +1,15 @@
+code := `// hi1_cdor.gox
+con "x", "y"
+
+// hi2_cdor.gox
+con "a", "b"
+
+// main_cdor.gox
+con "a", "x"
+merge().saveFile "merged.svg"`
+
+mdCode code
+con "x", "y"
+con "a", "b"
+con "a", "x"
+merge().saveFile "merged.svg"

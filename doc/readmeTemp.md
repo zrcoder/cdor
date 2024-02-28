@@ -43,7 +43,7 @@ gop mod tidy
 gop run .
 ```
 
-you'll find `hi.svg` generated, rendered like:
+you'll find `hi.svg` generated:
 
 ![hi](doc/usage/single.svg)
 
@@ -75,7 +75,7 @@ con "a", "x"
 merge().saveFile "merged.svg"
 ```
 
-after `gop run`, we got a generated `merge.svg`:
+after `gop run`, we got a generated `merged.svg`:
 
 ![merged](doc/usage/merged.svg)
 
