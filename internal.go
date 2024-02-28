@@ -18,8 +18,8 @@ import (
 )
 
 func (c *Cdor) init() {
-	c.globalOption = &option{}
-	c.globalConOpt = &conOption{}
+	c.baseOption = &option{}
+	c.baseConOption = &conOption{}
 	c.config = &config{}
 	c.direction = "down"
 	c.config.DarkTheme(DarkMauve)
@@ -209,6 +209,15 @@ func (c *Cdor) getCons() []*connection {
 }
 func (c *Cdor) getNodes() []*node {
 	return c.nodes
+}
+func (c *Cdor) getConfig() *config {
+	return c.config
+}
+func (c *Cdor) getBaseOption() *option {
+	return c.baseOption
+}
+func (c *Cdor) getBaseConOption() *conOption {
+	return c.baseConOption
 }
 
 func combinID(parts ...string) string {

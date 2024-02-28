@@ -54,7 +54,7 @@ type App struct {
 //line doc/main_cdor.gox:6
 func (this *App) MainEntry() {
 //line doc/main_cdor.gox:6:1
-	this.ApplyGlobalConfig(this.Cfg().ElkLayout())
+	this.ApplyConfig(this.Cfg().ElkLayout())
 //line doc/main_cdor.gox:8:1
 	buf := bytes.NewBuffer(nil)
 //line doc/main_cdor.gox:10:1

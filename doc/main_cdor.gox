@@ -3,7 +3,7 @@ import (
 	"os"
 )
 
-applyGlobalConfig(cfg.elkLayout())
+applyConfig(cfg.elkLayout())
 
 buf := bytes.newBuffer(nil)
 

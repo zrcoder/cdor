@@ -38,7 +38,7 @@ func (c *Cdor) BaseOption(opt *option) *Cdor {
 		return c
 	}
 
-	c.globalOption = opt.Copy()
+	c.baseOption = opt.Copy()
 
 	for _, node := range c.nodes {
 		node.option = opt.Copy().Apply(node.option)
@@ -74,7 +74,7 @@ func (c *Cdor) BaseConOption(opt *conOption) *Cdor {
 		return c
 	}
 
-	c.globalConOpt = opt
+	c.baseConOption = opt
 
 	for _, con := range c.connections {
 		con.conOption = opt.Copy().Apply(con.conOption)
@@ -95,7 +95,7 @@ func (c *Cdor) ApplyConOption(opt *conOption) *Cdor {
 
 // Node creat a node
 func (c *Cdor) Node(id string, opt ...*option) *node {
-	node := &node{id: id, option: c.globalOption.Copy()}
+	node := &node{id: id, option: c.baseOption.Copy()}
 	if len(opt) > 0 {
 		node.option = opt[0]
 	}
@@ -108,7 +108,7 @@ func (c *Cdor) Con(src, dst string, opt ...*conOption) *connection {
 	con := &connection{
 		src:       src,
 		dst:       dst,
-		conOption: c.globalConOpt.Copy(),
+		conOption: c.baseConOption.Copy(),
 		Cdor:      c,
 	}
 	if len(opt) > 0 {
@@ -124,7 +124,7 @@ func (c *Cdor) Scon(src, dst string, opt ...*conOption) *connection {
 		src:       src,
 		dst:       dst,
 		isSingle:  true,
-		conOption: c.globalConOpt.Copy(),
+		conOption: c.baseConOption.Copy(),
 		Cdor:      c,
 	}
 	if len(opt) > 0 {

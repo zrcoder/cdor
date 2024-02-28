@@ -6,13 +6,13 @@ import (
 )
 
 type Cdor struct {
-	graph        *d2graph.Graph
-	nodes        []*node
-	connections  []*connection
-	globalOption *option
-	globalConOpt *conOption
-	err          error
-	built        bool
+	graph         *d2graph.Graph
+	nodes         []*node
+	connections   []*connection
+	baseOption    *option
+	baseConOption *conOption
+	err           error
+	built         bool
 	*config
 }
 

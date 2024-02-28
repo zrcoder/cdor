@@ -72,13 +72,18 @@ you can merge all diagrams into a single diagram, and even creat more nodes and 
 
 ```c
 con "a", "x"
-merge
-saveFile "merged.svg"
+merge().saveFile "merged.svg"
 ```
 
 after `gop run`, we got a generated `merge.svg`:
 
 ![merged](doc/usage/merged.svg)
+
+we can also merge specific diagrams by their names:
+
+```c
+merge("hi1", "hi2").saveFile("res.svg")
+```
 
 ## config
 
