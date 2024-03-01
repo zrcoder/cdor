@@ -1,0 +1,11 @@
+data := `{
+   "fruit":"Apple", 
+   "colors": ["Red", "Green"]
+}`
+
+mdCode `node("obj").json ${dotQuote}${data}${dotQuote}
+scon "root", "obj.0"` 
+
+node("obj").json(data)
+scon "root", "obj.0"
+direction "right"

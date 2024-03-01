@@ -1,0 +1,25 @@
+input := `age = 27.0
+children = []
+firstName = "John"
+isAlive = true
+lastName = "Smith"
+
+[address]
+  city = "New York"
+  postalCode = "10021-3100"
+  state = "NY"
+  streetAddress = "21 2nd Street"
+
+[[phoneNumbers]]
+  number = "212 555-1234"
+  type = "home"
+
+[[phoneNumbers]]
+  number = "646 555-4567"
+  type = "office"`
+  
+mdCode `input := ${dotQuote}${input}${dotQuote}
+node("toml").toml(input)`
+
+node("toml").toml(input)
+direction "right"

@@ -1,0 +1,11 @@
+person := Person{Name: "Tom", Age: 27}
+
+mdCode `type Persion struct {
+    Name string
+    Age int
+}
+
+person := Person{Name: "Tom", Age: 27}
+obj person`
+
+obj person

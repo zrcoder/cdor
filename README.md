@@ -19,6 +19,14 @@ Write Go+/Go code to make diagrams.
 ![latex](doc/examples/latex.svg)
 ![sql_table](doc/examples/sql_table.svg)
 ![class](doc/examples/class.svg)
+![json](doc/examples/json.svg)
+![jsonn](doc/examples/jsonn.svg)
+![toml](doc/examples/toml.svg)
+![tomln](doc/examples/tomln.svg)
+![yaml](doc/examples/yaml.svg)
+![yamln](doc/examples/yamln.svg)
+![obj](doc/examples/obj.svg)
+![objn](doc/examples/objn.svg)
 
 see [doc](doc) for details.
 
@@ -129,11 +137,6 @@ theme ids:
 ## TODO
 
 - [ ] special shapes
-    - [x] text/code
-    - [x] sql_table
-    - [x] class uml
     - [ ] sequece
     - [ ] grid
-    - [ ] json/yaml/tomal/object
     - [ ] icons/images
-- [x] support worker classfile

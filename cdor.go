@@ -95,7 +95,11 @@ func (c *Cdor) ApplyConOption(opt *conOption) *Cdor {
 
 // Node creat a node
 func (c *Cdor) Node(id string, opt ...*option) *node {
-	node := &node{id: id, option: c.baseOption.Copy()}
+	node := &node{
+		id:     id,
+		option: c.baseOption.Copy(),
+		Cdor:   c,
+	}
 	if len(opt) > 0 {
 		node.option = opt[0]
 	}
@@ -177,6 +181,37 @@ func (c *Cdor) MdCode(code string, id ...string) *node {
 	return c.Node(key).Code("md", fmt.Sprintf(mdCodeTemp, code))
 }
 
+func (c *Cdor) Json(json string) *Cdor {
+	c.direction = "right"
+	c.elkLayout = true
+	c.json(json)
+	return c
+}
+
+func (c *Cdor) Yaml(yaml string) *Cdor {
+	json := c.yaml2json(yaml)
+	if c.err != nil {
+		return c
+	}
+	return c.Json(json)
+}
+
+func (c *Cdor) Toml(yaml string) *Cdor {
+	json := c.toml2json(yaml)
+	if c.err != nil {
+		return c
+	}
+	return c.Json(json)
+}
+
+func (c *Cdor) Obj(x any) *Cdor {
+	json := c.obj2json(x)
+	if c.err != nil {
+		return c
+	}
+	return c.Json(json)
+}
+
 // --- node ---
 
 func (n *node) Children(children ...*node) *node {
@@ -241,6 +276,37 @@ func (n *node) Field(s ...string) *node {
 		n.sqlFields = append(n.sqlFields, sqlField{key: key, value: s[1], constraint: strings.Join(s[2:], " ")})
 	}
 	return n
+}
+
+func (n *node) Json(json string) *node {
+	nodes, cons := n.Cdor.json(json)
+	n.Children(nodes...)
+	n.Cons(cons...)
+	return n
+}
+
+func (n *node) Yaml(yaml string) *node {
+	json := n.Cdor.yaml2json(yaml)
+	if n.Cdor.err != nil {
+		return n
+	}
+	return n.Json(json)
+}
+
+func (n *node) Toml(toml string) *node {
+	json := n.Cdor.toml2json(toml)
+	if n.Cdor.err != nil {
+		return n
+	}
+	return n.Json(json)
+}
+
+func (n *node) Obj(x any) *node {
+	json := n.Cdor.obj2json(x)
+	if n.Cdor.err != nil {
+		return n
+	}
+	return n.Json(json)
 }
 
 // --- connection ---

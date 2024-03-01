@@ -17,6 +17,7 @@ type Cdor struct {
 }
 
 type node struct {
+	*Cdor
 	children    []*node
 	connections []*connection
 	sqlFields   []sqlField

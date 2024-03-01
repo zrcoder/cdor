@@ -2,10 +2,15 @@ package cdor
 
 import (
 	"context"
+	"encoding/json"
+	"errors"
 	"fmt"
 	"strconv"
 	"strings"
 
+	"github.com/BurntSushi/toml"
+	"github.com/tidwall/gjson"
+	"gopkg.in/yaml.v3"
 	"oss.terrastruct.com/d2/d2exporter"
 	"oss.terrastruct.com/d2/d2format"
 	"oss.terrastruct.com/d2/d2layouts/d2dagrelayout"
@@ -218,6 +223,123 @@ func (c *Cdor) getBaseOption() *option {
 }
 func (c *Cdor) getBaseConOption() *conOption {
 	return c.baseConOption
+}
+func (c *Cdor) json(json string) (nodes []*node, cons []*connection) {
+	if !gjson.Valid(json) {
+		c.err = errors.New("invalid json")
+		return
+	}
+
+	type Info struct {
+		name string
+		id   string
+		obj  gjson.Result
+	}
+
+	_id := -1
+	genID := func() string {
+		_id++
+		return strconv.Itoa(_id)
+	}
+
+	genNode := func(id, name string) *node {
+		node := &node{
+			id:     id,
+			option: c.baseOption.Copy(),
+			Cdor:   c,
+		}
+		node.shape = "sql_table"
+		node.label = name
+		nodes = append(nodes, node)
+		c.nodes = append(c.nodes, node)
+		return node
+	}
+	genCon := func(pid, key, sid string) {
+		con := &connection{
+			src:       combinID(pid, key),
+			dst:       sid,
+			isSingle:  true,
+			conOption: c.baseConOption.Copy(),
+			Cdor:      c,
+		}
+		c.connections = append(c.connections, con)
+		cons = append(cons, con)
+	}
+
+	q := []Info{{id: genID(), obj: gjson.Parse(json)}}
+	for len(q) > 0 {
+		cur := q[0]
+		q = q[1:]
+		if cur.name == "" {
+			cur.name = "*"
+		}
+		switch {
+		case cur.obj.IsObject():
+			node := genNode(cur.id, cur.name)
+			for key, val := range cur.obj.Map() {
+				if val.IsObject() || val.IsArray() {
+					node.Field(key, " ")
+					sonID := genID()
+					genCon(cur.id, key, sonID)
+					q = append(q, Info{name: key, id: sonID, obj: val})
+					continue
+				}
+				node.Field(key, val.String())
+			}
+		case cur.obj.IsArray():
+			node := genNode(cur.id, cur.name)
+			for i, val := range cur.obj.Array() {
+				if val.IsObject() || val.IsArray() {
+					sonID := genID()
+					genCon(cur.id, strconv.Itoa(i), sonID)
+					q = append(q, Info{name: cur.name, id: sonID, obj: val})
+					continue
+				}
+				node.Field(val.String(), " ")
+			}
+		default:
+		}
+
+	}
+	return
+}
+
+func (c *Cdor) yaml2json(input string) string {
+	var obj any
+	yamlData := []byte(input)
+	if err := yaml.Unmarshal(yamlData, &obj); err != nil {
+		c.err = err
+		return ""
+	}
+	if data, err := json.MarshalIndent(obj, "", "  "); err != nil {
+		c.err = err
+		return ""
+	} else {
+		return string(data)
+	}
+}
+
+func (c *Cdor) toml2json(input string) string {
+	var obj any
+	if _, err := toml.Decode(input, &obj); err != nil {
+		c.err = err
+		return ""
+	}
+	if data, err := json.MarshalIndent(obj, "", "  "); err != nil {
+		c.err = err
+		return ""
+	} else {
+		return string(data)
+	}
+}
+
+func (c *Cdor) obj2json(obj any) string {
+	data, err := json.Marshal(obj)
+	if err != nil {
+		c.err = err
+		return ""
+	}
+	return string(data)
 }
 
 func combinID(parts ...string) string {

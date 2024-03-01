@@ -200,6 +200,43 @@ func Example_class() {
 	// }
 }
 
+func Example_json() {
+	c := Ctx()
+	json := `[13, {"37": 37}]`
+	c.Json(json)
+	fmt.Println(c.d2())
+	// Output:
+	// direction: right
+	// 0: * {
+	//   shape: sql_table
+	//   13: " "
+	// }
+	// 1: * {
+	//   shape: sql_table
+	//   37: 37
+	// }
+	// 0.1 -> 1
+}
+
+func Example_node_json() {
+	json := `{
+		"fruit":"Apple"
+	 }`
+
+	c := Ctx()
+	c.Node("ttt").Json(json)
+
+	fmt.Println(c.d2())
+	// Output:
+	// direction: down
+	// ttt: {
+	//   0: * {
+	//     shape: sql_table
+	//     fruit: Apple
+	//   }
+	// }
+}
+
 func Example_sequece() {
 	c := Ctx()
 	c.Sequence()

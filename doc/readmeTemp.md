@@ -120,11 +120,6 @@ theme ids:
 ## TODO
 
 - [ ] special shapes
-    - [x] text/code
-    - [x] sql_table
-    - [x] class uml
     - [ ] sequece
     - [ ] grid
-    - [ ] json/yaml/tomal/object
     - [ ] icons/images
-- [x] support worker classfile

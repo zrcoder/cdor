@@ -11,7 +11,12 @@ import (
 )
 
 const _ = true
+const dotQuote = "`"
 
+type Person struct {
+	Name string
+	Age  int
+}
 type c01hello struct {
 	cdor.Cdor
 	*App
@@ -45,6 +50,38 @@ type c08sql_table struct {
 	*App
 }
 type c09class struct {
+	cdor.Cdor
+	*App
+}
+type c10json struct {
+	cdor.Cdor
+	*App
+}
+type c10jsonn struct {
+	cdor.Cdor
+	*App
+}
+type c11toml struct {
+	cdor.Cdor
+	*App
+}
+type c11tomln struct {
+	cdor.Cdor
+	*App
+}
+type c12yaml struct {
+	cdor.Cdor
+	*App
+}
+type c12yamln struct {
+	cdor.Cdor
+	*App
+}
+type c13obj struct {
+	cdor.Cdor
+	*App
+}
+type c13objn struct {
 	cdor.Cdor
 	*App
 }
@@ -102,7 +139,7 @@ func (this *App) MainEntry() {
 	}
 }
 func main() {
-	cdor.Gopt_App_Main(new(App), new(c01hello), new(c02id), new(c03shape), new(c04connections), new(c05containers), new(c06md), new(c07latex), new(c08sql_table), new(c09class))
+	cdor.Gopt_App_Main(new(App), new(c01hello), new(c02id), new(c03shape), new(c04connections), new(c05containers), new(c06md), new(c07latex), new(c08sql_table), new(c09class), new(c10json), new(c10jsonn), new(c11toml), new(c11tomln), new(c12yaml), new(c12yamln), new(c13obj), new(c13objn))
 }
 //line doc/c01hello_cdor.gox:1
 func (this *c01hello) Main() {
@@ -244,4 +281,199 @@ func (this *c09class) Main() {
 	field("# peekn(n int)", "(s string, eof bool)")`)
 //line doc/c09class_cdor.gox:7:1
 	this.Node("MyClass").Shape("class").Field("Age", "int").Field("+ Field", "[]string").Field("- method(a uint64)", "(x, y int)").Field("# peekn(n int)", "(s string, eof bool)")
+}
+//line doc/c10json_cdor.gox:1
+func (this *c10json) Main() {
+//line doc/c10json_cdor.gox:1:1
+	data := `{
+  "firstName": "John",
+  "lastName": "Smith",
+  "isAlive": true,
+  "age": 27,
+  "address": {
+    "streetAddress": "21 2nd Street",
+    "city": "New York",
+    "state": "NY",
+    "postalCode": "10021-3100"
+  },
+  "phoneNumbers": [
+    {
+      "type": "home",
+      "number": "212 555-1234"
+    },
+    {
+      "type": "office",
+      "number": "646 555-4567"
+    }
+  ],
+  "children": [],
+  "spouse": null
+}`
+//line doc/c10json_cdor.gox:27:1
+	this.MdCode("json `" + data + "`")
+//line doc/c10json_cdor.gox:28:1
+	this.Json(data)
+}
+//line doc/c10jsonn_cdor.gox:1
+func (this *c10jsonn) Main() {
+//line doc/c10jsonn_cdor.gox:1:1
+	data := `{
+   "fruit":"Apple", 
+   "colors": ["Red", "Green"]
+}`
+//line doc/c10jsonn_cdor.gox:6:1
+	this.MdCode(`node("obj").json ` + dotQuote + data + dotQuote + `
+scon "root", "obj.0"`)
+//line doc/c10jsonn_cdor.gox:9:1
+	this.Node("obj").Json(data)
+//line doc/c10jsonn_cdor.gox:10:1
+	this.Scon("root", "obj.0")
+//line doc/c10jsonn_cdor.gox:11:1
+	this.Direction("right")
+}
+//line doc/c11toml_cdor.gox:1
+func (this *c11toml) Main() {
+//line doc/c11toml_cdor.gox:1:1
+	input := `age = 27.0
+children = []
+firstName = "John"
+isAlive = true
+lastName = "Smith"
+
+[address]
+  city = "New York"
+  postalCode = "10021-3100"
+  state = "NY"
+  streetAddress = "21 2nd Street"
+
+[[phoneNumbers]]
+  number = "212 555-1234"
+  type = "home"
+
+[[phoneNumbers]]
+  number = "646 555-4567"
+  type = "office"`
+//line doc/c11toml_cdor.gox:21:1
+	this.MdCode(`input := ` + dotQuote + input + dotQuote + `
+toml input`)
+//line doc/c11toml_cdor.gox:24:1
+	this.Toml(input)
+}
+//line doc/c11tomln_cdor.gox:1
+func (this *c11tomln) Main() {
+//line doc/c11tomln_cdor.gox:1:1
+	input := `age = 27.0
+children = []
+firstName = "John"
+isAlive = true
+lastName = "Smith"
+
+[address]
+  city = "New York"
+  postalCode = "10021-3100"
+  state = "NY"
+  streetAddress = "21 2nd Street"
+
+[[phoneNumbers]]
+  number = "212 555-1234"
+  type = "home"
+
+[[phoneNumbers]]
+  number = "646 555-4567"
+  type = "office"`
+//line doc/c11tomln_cdor.gox:21:1
+	this.MdCode(`input := ` + dotQuote + input + dotQuote + `
+node("toml").toml(input)`)
+//line doc/c11tomln_cdor.gox:24:1
+	this.Node("toml").Toml(input)
+//line doc/c11tomln_cdor.gox:25:1
+	this.Direction("right")
+}
+//line doc/c12yaml_cdor.gox:1
+func (this *c12yaml) Main() {
+//line doc/c12yaml_cdor.gox:1:1
+	input := `address:
+  city: New York
+  postalCode: 10021-3100
+  state: NY
+  streetAddress: 21 2nd Street
+age: 27
+children: []
+firstName: John
+isAlive: true
+lastName: Smith
+phoneNumbers:
+- number: 212 555-1234
+  type: home
+- number: 646 555-4567
+  type: office
+spouse: null
+`
+//line doc/c12yaml_cdor.gox:19:1
+	this.MdCode(`input := ` + dotQuote + input + dotQuote + `
+yaml inlut`)
+//line doc/c12yaml_cdor.gox:22:1
+	this.Yaml(input)
+//line doc/c12yaml_cdor.gox:23:1
+	this.Direction("right")
+}
+//line doc/c12yamln_cdor.gox:1
+func (this *c12yamln) Main() {
+//line doc/c12yamln_cdor.gox:1:1
+	input := `address:
+  city: New York
+  postalCode: 10021-3100
+  state: NY
+  streetAddress: 21 2nd Street
+age: 27
+children: []
+firstName: John
+isAlive: true
+lastName: Smith
+phoneNumbers:
+- number: 212 555-1234
+  type: home
+- number: 646 555-4567
+  type: office
+spouse: null
+`
+//line doc/c12yamln_cdor.gox:19:1
+	this.MdCode(`input:=` + dotQuote + input + dotQuote + `
+node("yaml").yaml(input)`)
+//line doc/c12yamln_cdor.gox:22:1
+	this.Node("yaml").Yaml(input)
+//line doc/c12yamln_cdor.gox:23:1
+	this.Direction("right")
+}
+//line doc/c13obj_cdor.gox:1
+func (this *c13obj) Main() {
+//line doc/c13obj_cdor.gox:1:1
+	person := Person{Name: "Tom", Age: 27}
+//line doc/c13obj_cdor.gox:3:1
+	this.MdCode(`type Persion struct {
+    Name string
+    Age int
+}
+
+person := Person{Name: "Tom", Age: 27}
+obj person`)
+//line doc/c13obj_cdor.gox:11:1
+	this.Obj(person)
+}
+//line doc/c13objn_cdor.gox:1
+func (this *c13objn) Main() {
+//line doc/c13objn_cdor.gox:1:1
+	person := Person{Name: "Tom", Age: 27}
+//line doc/c13objn_cdor.gox:3:1
+	this.MdCode(`type Persion struct {
+    Name string
+    Age int
+}
+
+person := Person{Name: "Tom", Age: 27}
+node("obj").obj(person)`)
+//line doc/c13objn_cdor.gox:11:1
+	this.Node("obj").Obj(person)
+//line doc/c13objn_cdor.gox:12:1
+	this.Direction("right")
 }
