@@ -207,11 +207,11 @@ func Example_json() {
 	fmt.Println(c.d2())
 	// Output:
 	// direction: right
-	// 0: * {
+	// 0: {
 	//   shape: sql_table
 	//   13: " "
 	// }
-	// 1: * {
+	// 1: {
 	//   shape: sql_table
 	//   37: 37
 	// }
@@ -230,7 +230,7 @@ func Example_node_json() {
 	// Output:
 	// direction: down
 	// ttt: {
-	//   0: * {
+	//   0: {
 	//     shape: sql_table
 	//     fruit: Apple
 	//   }

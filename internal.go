@@ -231,9 +231,8 @@ func (c *Cdor) json(json string) (nodes []*node, cons []*connection) {
 	}
 
 	type Info struct {
-		name string
-		id   string
-		obj  gjson.Result
+		id  string
+		obj gjson.Result
 	}
 
 	_id := -1
@@ -242,14 +241,13 @@ func (c *Cdor) json(json string) (nodes []*node, cons []*connection) {
 		return strconv.Itoa(_id)
 	}
 
-	genNode := func(id, name string) *node {
+	genNode := func(id string) *node {
 		node := &node{
 			id:     id,
 			option: c.baseOption.Copy(),
 			Cdor:   c,
 		}
 		node.shape = "sql_table"
-		node.label = name
 		nodes = append(nodes, node)
 		c.nodes = append(c.nodes, node)
 		return node
@@ -270,29 +268,26 @@ func (c *Cdor) json(json string) (nodes []*node, cons []*connection) {
 	for len(q) > 0 {
 		cur := q[0]
 		q = q[1:]
-		if cur.name == "" {
-			cur.name = "*"
-		}
 		switch {
 		case cur.obj.IsObject():
-			node := genNode(cur.id, cur.name)
+			node := genNode(cur.id)
 			for key, val := range cur.obj.Map() {
 				if val.IsObject() || val.IsArray() {
 					node.Field(key, " ")
 					sonID := genID()
 					genCon(cur.id, key, sonID)
-					q = append(q, Info{name: key, id: sonID, obj: val})
+					q = append(q, Info{id: sonID, obj: val})
 					continue
 				}
 				node.Field(key, val.String())
 			}
 		case cur.obj.IsArray():
-			node := genNode(cur.id, cur.name)
+			node := genNode(cur.id)
 			for i, val := range cur.obj.Array() {
 				if val.IsObject() || val.IsArray() {
 					sonID := genID()
 					genCon(cur.id, strconv.Itoa(i), sonID)
-					q = append(q, Info{name: cur.name, id: sonID, obj: val})
+					q = append(q, Info{id: sonID, obj: val})
 					continue
 				}
 				node.Field(val.String(), " ")
