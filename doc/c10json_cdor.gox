@@ -23,6 +23,5 @@ data := `{
   "spouse": null
 }`
 
-
 mdCode("json `${data}`")
 json data

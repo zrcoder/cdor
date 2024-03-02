@@ -17,7 +17,7 @@ lastName = "Smith"
 [[phoneNumbers]]
   number = "646 555-4567"
   type = "office"`
-  
+
 mdCode `input := ${dotQuote}${input}${dotQuote}
 node("toml").toml(input)`
 

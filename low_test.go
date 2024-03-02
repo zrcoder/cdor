@@ -12,7 +12,7 @@ import (
 )
 
 const d2wanted = `
-direction: down
+direction: right
 cat: {
   meow: {style.fill: green}
 }
@@ -22,6 +22,7 @@ cat.meow <-> dog: haha {style.stroke: red}
 
 func common() (string, error) {
 	c := Ctx()
+	c.Direction("right")
 	// c.Node("cat.meow").Fill("green")
 	c.Node("cat").
 		Children(
@@ -45,7 +46,7 @@ func TestHello(t *testing.T) {
 
 func d2() (string, error) {
 	_, graph, _ := d2lib.Compile(context.Background(), "", nil, nil)
-	direction := "down"
+	direction := "right"
 	graph, _ = d2oracle.Set(graph, nil, "direction", nil, &direction)
 	graph, _, _ = d2oracle.Create(graph, nil, "cat")
 	graph, _, _ = d2oracle.Create(graph, nil, "cat.meow")

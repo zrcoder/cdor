@@ -6,13 +6,11 @@ import (
 )
 
 type Cdor struct {
-	graph         *d2graph.Graph
-	nodes         []*node
-	connections   []*connection
-	baseOption    *option
-	baseConOption *conOption
-	err           error
-	built         bool
+	graph        *d2graph.Graph
+	nodes        []*node
+	connections  []*connection
+	globalOption *option
+	err          error
 	*config
 }
 
@@ -36,9 +34,17 @@ type connection struct {
 }
 
 type option struct {
-	label string
-	shape string
-	icon  string
+	label         string
+	blankLabel    bool
+	shape         string
+	icon          string
+	width         int
+	height        int
+	gridRows      int
+	gridCols      int
+	gridGap       int
+	verticalGap   int
+	horizontalGap int
 	style
 }
 

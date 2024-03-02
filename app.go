@@ -28,33 +28,9 @@ func (a *App) ApplyConfig(cfg *config, diagrams ...string) {
 	}, diagrams)
 }
 
-func (a *App) BaseConfig(cfg *config, diagrams ...string) {
-	a.rangeAction(func(name string, worker IWorker) {
-		worker.BaseConfig(cfg)
-	}, diagrams)
-}
-
-func (a *App) BaseOptionAll(opt *option, diagrams ...string) {
-	a.rangeAction(func(name string, worker IWorker) {
-		worker.BaseOption(opt)
-	}, diagrams)
-}
-
 func (a *App) ApplyOptionAll(opt *option, diagrams ...string) {
 	a.rangeAction(func(name string, worker IWorker) {
 		worker.ApplyOption(opt)
-	}, diagrams)
-}
-
-func (a *App) BaseConOptionAll(opt *conOption, diagrams ...string) {
-	a.rangeAction(func(name string, worker IWorker) {
-		worker.BaseConOption(opt)
-	}, diagrams)
-}
-
-func (a *App) ApployConOptionAll(opt *conOption, diagrams ...string) {
-	a.rangeAction(func(name string, worker IWorker) {
-		worker.ApplyConOption(opt)
 	}, diagrams)
 }
 
@@ -62,15 +38,13 @@ func (a *App) Merge(diagrams ...string) *Cdor {
 	res := Ctx()
 	if len(diagrams) == 0 { // merge all diagrams
 		res.ApplyConfig(a.config)
-		res.ApplyOption(a.baseOption)
-		res.ApplyConOption(a.baseConOption)
+		res.ApplyOption(a.globalOption)
 		res.nodes = append(res.nodes, a.nodes...)
 		res.connections = append(res.connections, a.connections...)
 	}
 	a.rangeAction(func(name string, worker IWorker) {
 		res.ApplyConfig(worker.getConfig())
 		res.ApplyOption(worker.getBaseOption())
-		res.ApplyConOption(worker.getBaseConOption())
 		res.nodes = append(res.nodes, worker.getNodes()...)
 		res.connections = append(res.connections, worker.getCons()...)
 	}, diagrams)

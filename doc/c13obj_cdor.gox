@@ -8,4 +8,5 @@ mdCode `type Persion struct {
 person := Person{Name: "Tom", Age: 27}
 obj person`
 
+gridRows 1
 obj person

@@ -9,4 +9,3 @@ person := Person{Name: "Tom", Age: 27}
 node("obj").obj(person)`
 
 node("obj").obj(person)
-direction "right"

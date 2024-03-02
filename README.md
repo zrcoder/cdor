@@ -27,6 +27,9 @@ Write Go+/Go code to make diagrams.
 ![yamln](doc/examples/yamln.svg)
 ![obj](doc/examples/obj.svg)
 ![objn](doc/examples/objn.svg)
+![grid](doc/examples/grid.svg)
+![sequence](doc/examples/sequence.svg)
+![shapes](doc/examples/shapes.svg)
 
 see [doc](doc) for details.
 
@@ -137,6 +140,6 @@ theme ids:
 ## TODO
 
 - [ ] special shapes
-    - [ ] sequece
-    - [ ] grid
+    - [x] sequece
+    - [x] grid
     - [ ] icons/images

@@ -1,3 +1,6 @@
+gridCols(1).gridGap(0)
+
+mdCode "shaped:"
 op := opt.label("").fill("transparent").stroke("transparent")
 
 node("1").opt(op).children(
@@ -25,5 +28,3 @@ node("4").opt(op).children(
 	node("hexagon").shape("hexagon"),
 	node("cloud").shape("cloud"),
 )
-gridCols(1).gridGap(0)
-saveFile "shapes.svg"

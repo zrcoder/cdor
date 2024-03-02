@@ -14,90 +14,11 @@ func Ctx() *Cdor {
 	return c
 }
 
-func (c *Cdor) Cfg() *config {
-	return &config{}
-}
-
-func (c *Cdor) BaseConfig(cfg *config) *Cdor {
-	if cfg == nil {
-		return c
-	}
-
-	tmp := *cfg // copy cfg
-	c.config = tmp.apply(c.config)
-	return c
-}
-
-func (c *Cdor) ApplyConfig(cfg *config) *Cdor {
-	c.config.apply(cfg)
-	return c
-}
-
-func (c *Cdor) BaseOption(opt *option) *Cdor {
-	if opt == nil {
-		return c
-	}
-
-	c.baseOption = opt.Copy()
-
-	for _, node := range c.nodes {
-		node.option = opt.Copy().Apply(node.option)
-		for _, con := range node.connections {
-			con.option = *opt.Copy().Apply(opt)
-		}
-	}
-	for _, con := range c.connections {
-		con.option = *opt.Copy().Apply(opt)
-	}
-	return c
-}
-
-func (c *Cdor) ApplyOption(opt *option) *Cdor {
-	if opt == nil {
-		return c
-	}
-
-	for _, node := range c.nodes {
-		node.option.Apply(opt)
-		for _, con := range node.connections {
-			con.option.Apply(opt)
-		}
-	}
-	for _, con := range c.connections {
-		con.option.Apply(opt)
-	}
-	return c
-}
-
-func (c *Cdor) BaseConOption(opt *conOption) *Cdor {
-	if opt == nil {
-		return c
-	}
-
-	c.baseConOption = opt
-
-	for _, con := range c.connections {
-		con.conOption = opt.Copy().Apply(con.conOption)
-	}
-	return c
-}
-
-func (c *Cdor) ApplyConOption(opt *conOption) *Cdor {
-	if opt == nil {
-		return c
-	}
-
-	for _, con := range c.connections {
-		con.conOption.Apply(opt)
-	}
-	return c
-}
-
 // Node creat a node
 func (c *Cdor) Node(id string, opt ...*option) *node {
 	node := &node{
 		id:     id,
-		option: c.baseOption.Copy(),
+		option: c.Opt(),
 		Cdor:   c,
 	}
 	if len(opt) > 0 {
@@ -112,7 +33,7 @@ func (c *Cdor) Con(src, dst string, opt ...*conOption) *connection {
 	con := &connection{
 		src:       src,
 		dst:       dst,
-		conOption: c.baseConOption.Copy(),
+		conOption: &conOption{},
 		Cdor:      c,
 	}
 	if len(opt) > 0 {
@@ -128,7 +49,7 @@ func (c *Cdor) Scon(src, dst string, opt ...*conOption) *connection {
 		src:       src,
 		dst:       dst,
 		isSingle:  true,
-		conOption: c.baseConOption.Copy(),
+		conOption: &conOption{},
 		Cdor:      c,
 	}
 	if len(opt) > 0 {
@@ -143,13 +64,34 @@ func (c *Cdor) Gen() (svg []byte, err error) {
 		return nil, c.err
 	}
 
-	c.buildGraph()
 	svg = c.genSvg()
 	return svg, c.err
 }
 
+func (c *Cdor) Cfg() *config {
+	res := &config{}
+	return res.DarkTheme(DarkMauve)
+}
+
 func (c *Cdor) Opt() *option {
-	return &option{}
+	return &option{
+		gridGap:       -1,
+		horizontalGap: -1,
+		verticalGap:   -1,
+	}
+}
+
+func (c *Cdor) ApplyConfig(cfg *config) *Cdor {
+	c.config.apply(cfg)
+	return c
+}
+
+func (c *Cdor) ApplyOption(opt *option) *Cdor {
+	if opt == nil {
+		return c
+	}
+	c.globalOption.Apply(opt)
+	return c
 }
 
 func (c *Cdor) ConOpt() *conOption {
@@ -168,7 +110,6 @@ func (c *Cdor) Clear() {
 	c.init()
 	c.nodes = nil
 	c.connections = nil
-	c.built = false
 	c.isSequence = false
 }
 
@@ -212,6 +153,31 @@ func (c *Cdor) Obj(x any) *Cdor {
 	return c.Json(json)
 }
 
+func (c *Cdor) GridRows(rows int) *Cdor {
+	c.globalOption.gridRows = rows
+	return c
+}
+
+func (c *Cdor) GridCols(cols int) *Cdor {
+	c.globalOption.gridCols = cols
+	return c
+}
+
+func (c *Cdor) GridGap(gap int) *Cdor {
+	c.globalOption.gridGap = gap
+	return c
+}
+
+func (c *Cdor) VerticalGap(gap int) *Cdor {
+	c.globalOption.verticalGap = gap
+	return c
+}
+
+func (c *Cdor) HorizontalGap(gap int) *Cdor {
+	c.globalOption.horizontalGap = gap
+	return c
+}
+
 // --- node ---
 
 func (n *node) Children(children ...*node) *node {
@@ -230,6 +196,9 @@ func (n *node) Opt(opt *option) *node {
 }
 
 func (n *node) Label(label string) *node {
+	if label == "" {
+		n.blankLabel = true
+	}
 	n.label = label
 	return n
 }
@@ -238,6 +207,7 @@ func (n *node) Shape(shape string) *node {
 	n.shape = shape
 	return n
 }
+
 func (n *node) Fill(fill string) *node {
 	n.fill = fill
 	return n
@@ -309,6 +279,46 @@ func (n *node) Obj(x any) *node {
 	return n.Json(json)
 }
 
+func (n *node) Width(w int) *node {
+	n.width = w
+	return n
+}
+
+func (n *node) Height(h int) *node {
+	n.height = h
+	return n
+}
+
+func (n *node) GridRows(r int) *node {
+	n.option.gridRows = r
+	return n
+}
+
+func (n *node) GridCols(c int) *node {
+	n.option.gridCols = c
+	return n
+}
+
+func (n *node) GridGap(g int) *node {
+	n.option.gridGap = g
+	return n
+}
+
+func (n *node) VerticalGap(gap int) *node {
+	n.option.verticalGap = gap
+	return n
+}
+
+func (n *node) HorizontalGap(gap int) *node {
+	n.option.horizontalGap = gap
+	return n
+}
+
+func (n *node) Sequence() *node {
+	n.shape = "sequence_diagram"
+	return n
+}
+
 // --- connection ---
 
 func (c *connection) Label(label string) *connection {
@@ -367,6 +377,9 @@ func (o *option) Copy() *option {
 }
 
 func (o *option) Label(label string) *option {
+	if label == "" {
+		o.blankLabel = true
+	}
 	o.label = label
 	return o
 }
@@ -386,24 +399,28 @@ func (o *option) Stroke(stroke string) *option {
 	return o
 }
 
-func (o *option) Base(opt *option) *option {
-	if opt == nil {
-		return o
-	}
-	if o == nil {
-		return opt
-	}
-	return opt.Copy().Apply(o)
+func (o *option) Width(w int) *option {
+	o.width = w
+	return o
+}
+
+func (o *option) Height(h int) *option {
+	o.height = h
+	return o
 }
 
 func (o *option) Apply(opt *option) *option {
 	if opt == nil {
 		return o
 	}
+	o.blankLabel = opt.blankLabel
 	o.fill = defaultStr(o.fill, opt.fill)
 	o.stroke = defaultStr(o.stroke, opt.stroke)
 	o.shape = defaultStr(o.shape, opt.shape)
 	o.label = defaultStr(o.label, opt.label)
+	o.gridGap = defaultGap(o.gridGap, opt.gridGap)
+	o.horizontalGap = defaultGap(o.horizontalGap, opt.horizontalGap)
+	o.verticalGap = defaultGap(o.verticalGap, opt.verticalGap)
 	return o
 }
 
@@ -454,17 +471,6 @@ func (o *conOption) Fill(fill string) *conOption {
 func (o *conOption) Stroke(stroke string) *conOption {
 	o.stroke = stroke
 	return o
-}
-
-func (o *conOption) Base(opt *conOption) *conOption {
-	if o == nil {
-		return opt
-	}
-	if opt == nil {
-		return o
-	}
-
-	return opt.Copy().Apply(o)
 }
 
 func (o *conOption) Apply(opt *conOption) *conOption {

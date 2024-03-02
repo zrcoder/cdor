@@ -120,6 +120,6 @@ theme ids:
 ## TODO
 
 - [ ] special shapes
-    - [ ] sequece
-    - [ ] grid
+    - [x] sequece
+    - [x] grid
     - [ ] icons/images

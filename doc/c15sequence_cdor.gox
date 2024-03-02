@@ -1,0 +1,8 @@
+gridCols(1).gridGap(0)
+mdCode `sequence
+scon("alice", "bob").label("What does it mean\nto be well-adjusted?")
+scon("bob", "alice").label("The ability to play bridge or\ngolf as if they were games.")`
+node("sequence").label("").sequence.cons(
+	scon("alice", "bob").label("What does it mean\nto be well-adjusted?"),
+	scon("bob", "alice").label("The ability to play bridge or\ngolf as if they were games."),
+)

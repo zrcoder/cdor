@@ -13,13 +13,8 @@ type IWorker interface {
 	getCons() []*connection
 	getConfig() *config
 	getBaseOption() *option
-	getBaseConOption() *conOption
 	ApplyOption(*option) *Cdor
-	BaseOption(*option) *Cdor
 	ApplyConfig(*config) *Cdor
-	BaseConfig(*config) *Cdor
-	ApplyConOption(opt *conOption) *Cdor
-	BaseConOption(*conOption) *Cdor
 }
 
 var _ IMain = (*App)(nil)

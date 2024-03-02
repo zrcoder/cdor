@@ -5,48 +5,58 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"os"
 	"strconv"
-	"strings"
 
+	"cdr.dev/slog"
+	"cdr.dev/slog/sloggers/sloghuman"
 	"github.com/BurntSushi/toml"
 	"github.com/tidwall/gjson"
 	"gopkg.in/yaml.v3"
-	"oss.terrastruct.com/d2/d2exporter"
 	"oss.terrastruct.com/d2/d2format"
+	"oss.terrastruct.com/d2/d2graph"
 	"oss.terrastruct.com/d2/d2layouts/d2dagrelayout"
 	"oss.terrastruct.com/d2/d2layouts/d2elklayout"
 	"oss.terrastruct.com/d2/d2lib"
 	"oss.terrastruct.com/d2/d2oracle"
+	"oss.terrastruct.com/d2/d2renderers/d2fonts"
 	"oss.terrastruct.com/d2/d2renderers/d2svg"
 	"oss.terrastruct.com/d2/d2target"
+	"oss.terrastruct.com/d2/lib/log"
 	"oss.terrastruct.com/d2/lib/textmeasure"
 )
 
 func (c *Cdor) init() {
-	c.baseOption = &option{}
-	c.baseConOption = &conOption{}
-	c.config = &config{}
-	c.direction = "down"
-	c.config.DarkTheme(DarkMauve)
-	_, c.graph, c.err = d2lib.Compile(context.Background(), "", nil, nil)
+	c.config = c.Cfg()
+	c.globalOption = c.Opt()
 }
 
 func (c *Cdor) buildGraph() {
-	if c.built || c.err != nil {
+	if c.err != nil {
 		return
 	}
 
-	c.built = true
+	_, c.graph, c.err = d2lib.Compile(context.Background(), "", nil, nil)
 
-	if c.graph, c.err = d2oracle.Set(c.graph, nil, "direction", nil, &c.direction); c.err != nil {
-		return
-	}
+	c.set("", "direction", c.direction)
 
 	if c.isSequence {
-		seq := "sequence_diagram"
-		if c.graph, c.err = d2oracle.Set(c.graph, nil, "shape", nil, &seq); c.err != nil {
-			return
-		}
+		c.set("", "shape", "sequence_diagram")
+	}
+	if c.globalOption.gridRows > 0 {
+		c.set("", "grid-rows", strconv.Itoa(c.globalOption.gridRows))
+	}
+	if c.globalOption.gridCols > 0 {
+		c.set("", "grid-columns", strconv.Itoa(c.globalOption.gridCols))
+	}
+	if c.globalOption.gridGap > -1 {
+		c.set("", "grid-gap", strconv.Itoa(c.globalOption.gridGap))
+	}
+	if c.globalOption.horizontalGap > -1 {
+		c.set("", "horizontal-gap", strconv.Itoa(c.globalOption.horizontalGap))
+	}
+	if c.globalOption.verticalGap > -1 {
+		c.set("", "vertical-gap", strconv.Itoa(c.globalOption.verticalGap))
 	}
 
 	for _, n := range c.nodes {
@@ -96,36 +106,23 @@ func (c *Cdor) genSvg() (svg []byte) {
 		return
 	}
 
-	if c.direction == "" {
-		c.direction = "down"
-	}
-
+	ctx := log.With(context.TODO(), slog.Make(sloghuman.Sink(os.Stdout)))
+	d2 := c.d2()
 	var ruler *textmeasure.Ruler
 	if ruler, c.err = textmeasure.NewRuler(); c.err != nil {
 		return
 	}
-
-	if c.err = c.graph.SetDimensions(nil, ruler, nil); c.err != nil {
-		return
-	}
-
-	ctx := context.Background()
-	if c.config.elkLayout {
-		if c.err = d2elklayout.Layout(ctx, c.graph, nil); c.err != nil {
-			return
+	layoutResolver := func(engine string) (d2graph.LayoutGraph, error) {
+		if c.config.elkLayout {
+			return d2elklayout.DefaultLayout, nil
 		}
-	} else {
-		if c.err = d2dagrelayout.Layout(ctx, c.graph, nil); c.err != nil {
-			return
-		}
+		return d2dagrelayout.DefaultLayout, nil
 	}
-
-	var diagram *d2target.Diagram
-	diagram, c.err = d2exporter.Export(ctx, c.graph, nil)
-	if c.err != nil {
-		return
+	compileOpts := &d2lib.CompileOptions{
+		LayoutResolver: layoutResolver,
+		Ruler:          ruler,
 	}
-	svg, c.err = d2svg.Render(diagram, &d2svg.RenderOpts{
+	renderOpt := &d2svg.RenderOpts{
 		ThemeID:            c.cfg.ThemeID,
 		DarkThemeID:        c.cfg.DarkThemeID,
 		Pad:                c.cfg.Pad,
@@ -133,7 +130,16 @@ func (c *Cdor) genSvg() (svg []byte) {
 		Center:             c.cfg.Center,
 		ThemeOverrides:     c.cfg.ThemeOverrides,
 		DarkThemeOverrides: c.cfg.DarkThemeOverrides,
-	})
+	}
+	if c.config.cfg.Sketch != nil && *(c.config.cfg.Sketch) {
+		renderOpt.Font = string(d2fonts.HandDrawn)
+	}
+	var diagram *d2target.Diagram
+	if diagram, c.graph, c.err = d2lib.Compile(ctx, d2, compileOpts, renderOpt); c.err != nil {
+		return
+	}
+
+	svg, c.err = d2svg.Render(diagram, renderOpt)
 	return
 }
 
@@ -146,13 +152,19 @@ func (c *Cdor) gen(id string, option *option) (key string) {
 		return
 	}
 	c.apply(key, option)
+	c.applyGrid(key, option)
 	return
 }
 
 func (c *Cdor) genCon(con *connection) (key string) {
-	if key = c.gen(con.genKey(), &con.option); c.err != nil {
+	if c.err != nil {
 		return
 	}
+	id := con.genKey()
+	if c.graph, key, c.err = d2oracle.Create(c.graph, nil, id); c.err != nil {
+		return
+	}
+	c.apply(key, &con.option)
 
 	c.set(key, "source-arrowhead.label", con.srcHead.label)
 	c.set(key, "source-arrowhead.shape", con.srcHead.shape)
@@ -181,9 +193,40 @@ func (c *Cdor) apply(id string, o *option) {
 
 	c.set(id, "icon", o.icon) // shoul set icon befor shape
 	c.set(id, "shape", o.shape)
-	c.set(id, "label", o.label)
+	if o.blankLabel {
+		c.setBlank(id, "label")
+	} else {
+		c.set(id, "label", o.label)
+	}
 	c.set(id, "style.fill", o.fill)
 	c.set(id, "style.stroke", o.stroke)
+	if o.width > 0 {
+		c.set(id, "width", strconv.Itoa(o.width))
+	}
+	if o.height > 0 {
+		c.set(id, "height", strconv.Itoa(o.height))
+	}
+}
+
+func (c *Cdor) applyGrid(id string, o *option) {
+	if o == nil {
+		return
+	}
+	if o.gridRows > 0 {
+		c.set(id, "grid-rows", strconv.Itoa(o.gridRows))
+	}
+	if o.gridCols > 0 {
+		c.set(id, "grid-columns", strconv.Itoa(o.gridCols))
+	}
+	if o.gridGap > -1 {
+		c.set(id, "grid-gap", strconv.Itoa(o.gridGap))
+	}
+	if o.horizontalGap > -1 {
+		c.set(id, "horizontal-gap", strconv.Itoa(o.horizontalGap))
+	}
+	if o.verticalGap > -1 {
+		c.set(id, "vertical-gap", strconv.Itoa(o.verticalGap))
+	}
 }
 
 func (c *Cdor) set(id, key, val string) {
@@ -192,6 +235,12 @@ func (c *Cdor) set(id, key, val string) {
 	}
 	id = combinID(id, key)
 	c.graph, c.err = d2oracle.Set(c.graph, nil, id, nil, &val)
+}
+
+func (c *Cdor) setBlank(id, key string) {
+	blank := ""
+	id = combinID(id, key)
+	c.graph, c.err = d2oracle.Set(c.graph, nil, id, nil, &blank)
 }
 
 func (c *Cdor) setCode(id, tag, code string) {
@@ -219,10 +268,7 @@ func (c *Cdor) getConfig() *config {
 	return c.config
 }
 func (c *Cdor) getBaseOption() *option {
-	return c.baseOption
-}
-func (c *Cdor) getBaseConOption() *conOption {
-	return c.baseConOption
+	return c.globalOption
 }
 func (c *Cdor) json(json string) (nodes []*node, cons []*connection) {
 	if !gjson.Valid(json) {
@@ -244,7 +290,7 @@ func (c *Cdor) json(json string) (nodes []*node, cons []*connection) {
 	genNode := func(id string) *node {
 		node := &node{
 			id:     id,
-			option: c.baseOption.Copy(),
+			option: c.globalOption.Copy(),
 			Cdor:   c,
 		}
 		node.shape = "sql_table"
@@ -257,7 +303,7 @@ func (c *Cdor) json(json string) (nodes []*node, cons []*connection) {
 			src:       combinID(pid, key),
 			dst:       sid,
 			isSingle:  true,
-			conOption: c.baseConOption.Copy(),
+			conOption: &conOption{},
 			Cdor:      c,
 		}
 		c.connections = append(c.connections, con)
@@ -337,8 +383,11 @@ func (c *Cdor) obj2json(obj any) string {
 	return string(data)
 }
 
-func combinID(parts ...string) string {
-	return strings.Join(parts, ".")
+func combinID(a, b string) string {
+	if a == "" {
+		return b
+	}
+	return a + "." + b
 }
 
 func (c *connection) genKey() string {
@@ -352,7 +401,6 @@ func (c *config) apply(cfg *config) *config {
 	if cfg == nil {
 		return c
 	}
-
 	c.direction = defaultStr(c.direction, cfg.direction)
 	c.elkLayout = cfg.elkLayout || c.elkLayout
 	c.cfg.Center = defaultBoolPoint(c.cfg.Center, cfg.cfg.Center)
@@ -371,6 +419,12 @@ func (c *config) apply(cfg *config) *config {
 
 func defaultStr(src, dst string) string {
 	if dst == "" {
+		return src
+	}
+	return dst
+}
+func defaultGap(src, dst int) int {
+	if dst == -1 {
 		return src
 	}
 	return dst
