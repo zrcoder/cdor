@@ -3,6 +3,7 @@ module github.com/zrcoder/cdor
 go 1.20
 
 require (
+	cdr.dev/slog v1.4.2-0.20221206192828-e4803b10ae17
 	github.com/BurntSushi/toml v0.3.1
 	github.com/tidwall/gjson v1.17.1
 	gopkg.in/yaml.v3 v3.0.1
@@ -10,7 +11,6 @@ require (
 )
 
 require (
-	cdr.dev/slog v1.4.2-0.20221206192828-e4803b10ae17 // indirect
 	github.com/PuerkitoBio/goquery v1.8.1 // indirect
 	github.com/alecthomas/chroma v0.10.0 // indirect
 	github.com/alecthomas/chroma/v2 v2.5.0 // indirect
