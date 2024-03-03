@@ -7,13 +7,13 @@ import (
 	"reflect"
 )
 
-type App struct {
+type Mgr struct {
 	Cdor
 	workers     map[string]IWorker
 	workerNames []string
 }
 
-func (a *App) RangeDiagrams(action func(string, []byte, error) error, diagrams ...string) {
+func (a *Mgr) RangeDiagrams(action func(string, []byte, error) error, diagrams ...string) {
 	a.rangeAction(func(name string, worker IWorker) {
 		data, err := worker.Gen()
 		if action(name, data, err) != nil {
@@ -22,19 +22,19 @@ func (a *App) RangeDiagrams(action func(string, []byte, error) error, diagrams .
 	}, diagrams)
 }
 
-func (a *App) ApplyConfig(cfg *config, diagrams ...string) {
+func (a *Mgr) ApplyConfig(cfg *config, diagrams ...string) {
 	a.rangeAction(func(name string, worker IWorker) {
 		worker.ApplyConfig(cfg)
 	}, diagrams)
 }
 
-func (a *App) ApplyOptionAll(opt *option, diagrams ...string) {
+func (a *Mgr) ApplyOptionAll(opt *option, diagrams ...string) {
 	a.rangeAction(func(name string, worker IWorker) {
 		worker.ApplyOption(opt)
 	}, diagrams)
 }
 
-func (a *App) Merge(diagrams ...string) *Cdor {
+func (a *Mgr) Merge(diagrams ...string) *Cdor {
 	res := Ctx()
 	if len(diagrams) == 0 { // merge all diagrams
 		res.ApplyConfig(a.config)
@@ -52,29 +52,27 @@ func (a *App) Merge(diagrams ...string) *Cdor {
 	return res
 }
 
-func (a *App) SaveFiles(dir ...string) (err error) {
-	directory := ""
-	if len(dir) == 0 || dir[0] == "" {
-		if directory, err = os.Getwd(); err != nil {
+func (a *Mgr) SaveFiles(dir string, diagrams ...string) (err error) {
+	if dir == "" {
+		if dir, err = os.Getwd(); err != nil {
 			return
 		}
-	} else {
-		directory = dir[0]
 	}
-	var data []byte
-	for name, worker := range a.workers {
+	a.rangeAction(func(name string, worker IWorker) {
+		var data []byte
 		if data, err = worker.Gen(); err != nil {
-			return err
+			return
 		}
-		file := filepath.Join(directory, fmt.Sprintf("%s.svg", name))
+		file := filepath.Join(dir, fmt.Sprintf("%s.svg", name))
 		if err = os.WriteFile(file, data, 0600); err != nil {
-			return err
+			return
 		}
-	}
+	}, diagrams)
+
 	return nil
 }
 
-func (a *App) init(workers []IWorker) {
+func (a *Mgr) init(workers []IWorker) {
 	a.workers = make(map[string]IWorker, len(workers))
 	a.workerNames = make([]string, len(workers))
 	for i, worker := range workers {
@@ -85,7 +83,7 @@ func (a *App) init(workers []IWorker) {
 	a.Cdor.init()
 }
 
-func (a *App) rangeAction(action func(string, IWorker), diagrams []string) {
+func (a *Mgr) rangeAction(action func(string, IWorker), diagrams []string) {
 	if len(diagrams) == 0 {
 		diagrams = a.workerNames // for all workers
 	}

@@ -3,12 +3,17 @@ package cdor
 import (
 	"context"
 	"fmt"
+	"os"
 	"strings"
 	"testing"
 
 	"oss.terrastruct.com/d2/d2format"
+	"oss.terrastruct.com/d2/d2graph"
+	"oss.terrastruct.com/d2/d2layouts/d2elklayout"
 	"oss.terrastruct.com/d2/d2lib"
 	"oss.terrastruct.com/d2/d2oracle"
+	"oss.terrastruct.com/d2/d2renderers/d2svg"
+	"oss.terrastruct.com/d2/lib/textmeasure"
 )
 
 const d2wanted = `
@@ -68,4 +73,34 @@ func d2() (string, error) {
 	graph, _ = d2oracle.Set(graph, nil, fmt.Sprintf("%s.style.stroke", newKey), nil, &red)
 
 	return strings.TrimSpace(d2format.Format(graph.AST)), nil
+}
+
+func TestTmp(t *testing.T) {
+	d2 := `github: {icon: https://icons.terrastruct.com/dev/github.svg}
+	gg: {
+	  icon: https://icons.terrastruct.com/dev/github.svg
+	  shape: image
+	}`
+	var ruler *textmeasure.Ruler
+	var err error
+	if ruler, err = textmeasure.NewRuler(); err != nil {
+		t.Error(err)
+	}
+	layoutResolver := func(engine string) (d2graph.LayoutGraph, error) {
+		return d2elklayout.DefaultLayout, nil
+	}
+	compileOpts := &d2lib.CompileOptions{
+		LayoutResolver: layoutResolver,
+		Ruler:          ruler,
+	}
+	renderOpt := &d2svg.RenderOpts{}
+	diagram, _, _ := d2lib.Compile(context.Background(), d2, compileOpts, renderOpt)
+	data, err := d2svg.Render(diagram, renderOpt)
+	if err != nil {
+		t.Error(err)
+	}
+	err = os.WriteFile("ttt.svg", data, 0600)
+	if err != nil {
+		t.Error(err)
+	}
 }

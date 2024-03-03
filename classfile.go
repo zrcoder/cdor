@@ -17,6 +17,8 @@ type IWorker interface {
 	ApplyConfig(*config) *Cdor
 }
 
+type App = Mgr
+
 var _ IMain = (*App)(nil)
 var _ IWorker = (*Cdor)(nil)
 

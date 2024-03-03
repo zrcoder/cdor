@@ -99,7 +99,7 @@ type c16shapes struct {
 	*App
 }
 type App struct {
-	cdor.App
+	cdor.Mgr
 }
 //line doc/main_cdor.gox:6
 func (this *App) MainEntry() {

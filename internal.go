@@ -443,3 +443,11 @@ func defaultInt64Point(src, dst *int64) *int64 {
 	}
 	return dst
 }
+
+func (c *config) solveBool(b []bool) *bool {
+	if len(b) > 0 {
+		return &b[0]
+	}
+	res := true
+	return &res
+}
