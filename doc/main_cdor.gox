@@ -7,7 +7,7 @@ applyConfig(cfg.elkLayout().sketch())
 
 buf := bytes.newBuffer(nil)
 
-rangeDiagrams func(name string, data []byte, err error) error {
+rangeDiagrams (name, data, err) => {
 	if err != nil {
 		echo err
 		return err

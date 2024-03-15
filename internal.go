@@ -43,21 +43,13 @@ func (c *Cdor) buildGraph() {
 	if c.isSequence {
 		c.set("", "shape", "sequence_diagram")
 	}
-	if c.globalOption.gridRows > 0 {
-		c.set("", "grid-rows", strconv.Itoa(c.globalOption.gridRows))
-	}
-	if c.globalOption.gridCols > 0 {
-		c.set("", "grid-columns", strconv.Itoa(c.globalOption.gridCols))
-	}
-	if c.globalOption.gridGap > -1 {
-		c.set("", "grid-gap", strconv.Itoa(c.globalOption.gridGap))
-	}
-	if c.globalOption.horizontalGap > -1 {
-		c.set("", "horizontal-gap", strconv.Itoa(c.globalOption.horizontalGap))
-	}
-	if c.globalOption.verticalGap > -1 {
-		c.set("", "vertical-gap", strconv.Itoa(c.globalOption.verticalGap))
-	}
+
+	c.setInt("", "grid-rows", c.globalOption.gridRows, 1)
+	c.setInt("", "grid-columns", c.globalOption.gridCols, 1)
+	c.setInt("", "grid-gap", c.globalOption.gridGap)
+	c.setInt("", "horizontal-gap", c.globalOption.horizontalGap)
+	c.setInt("", "vertical-gap", c.globalOption.verticalGap)
+	c.set("", "style.fill-pattern", c.globalOption.fillPattern)
 
 	for _, n := range c.nodes {
 		c.soveID(n)
@@ -206,6 +198,24 @@ func (c *Cdor) apply(id string, o *option) {
 	if o.height > 0 {
 		c.set(id, "height", strconv.Itoa(o.height))
 	}
+	c.setFloat(id, "style.opacity", o.opacity)
+	c.set(id, "style.fill-pattern", o.fillPattern)
+	c.setInt(id, "style.stroke-width", o.strokeWidth)
+	c.setInt(id, "style.stroke-dash", o.strokeDash)
+	c.setInt(id, "style.border-radius", o.borderRadius)
+	c.setBool(id, "style.shadow", o.shadow)
+	c.setBool(id, "style.3d", o.is3d)
+	c.setBool(id, "style.multiple", o.multiple)
+	c.setBool(id, "style.double-border", o.doubleBorder)
+	if o.fontSize >= 8 && o.fontSize <= 100 {
+		c.setInt(id, "style.font-size", o.fontSize)
+	}
+	c.set(id, "style.font-color", o.fontColor)
+	c.set(id, "style.font", o.font)
+	c.setBool(id, "style.animated", o.animated)
+	c.setBool(id, "style.bold", o.bold)
+	c.setBool(id, "style.italic", o.italic)
+	c.setBool(id, "style.underline", o.underline)
 }
 
 func (c *Cdor) applyGrid(id string, o *option) {
@@ -218,15 +228,9 @@ func (c *Cdor) applyGrid(id string, o *option) {
 	if o.gridCols > 0 {
 		c.set(id, "grid-columns", strconv.Itoa(o.gridCols))
 	}
-	if o.gridGap > -1 {
-		c.set(id, "grid-gap", strconv.Itoa(o.gridGap))
-	}
-	if o.horizontalGap > -1 {
-		c.set(id, "horizontal-gap", strconv.Itoa(o.horizontalGap))
-	}
-	if o.verticalGap > -1 {
-		c.set(id, "vertical-gap", strconv.Itoa(o.verticalGap))
-	}
+	c.setInt(id, "grid-gap", o.gridGap)
+	c.setInt(id, "horizontal-gap", o.horizontalGap)
+	c.setInt(id, "vertical-gap", o.verticalGap)
 }
 
 func (c *Cdor) set(id, key, val string) {
@@ -235,6 +239,35 @@ func (c *Cdor) set(id, key, val string) {
 	}
 	id = combinID(id, key)
 	c.graph, c.err = d2oracle.Set(c.graph, nil, id, nil, &val)
+}
+
+func (c *Cdor) setInt(id, key string, val int, mins ...int) {
+	min := 0
+	if len(mins) > 0 {
+		min = mins[0]
+	}
+	if val < min || c.err != nil {
+		return
+	}
+	id = combinID(id, key)
+	sval := strconv.Itoa(val)
+	c.graph, c.err = d2oracle.Set(c.graph, nil, id, nil, &sval)
+}
+func (c *Cdor) setFloat(id, key string, val float64) {
+	if val < 0 || c.err != nil {
+		return
+	}
+	id = combinID(id, key)
+	sval := strconv.FormatFloat(val, 'f', 1, 64)
+	c.graph, c.err = d2oracle.Set(c.graph, nil, id, nil, &sval)
+}
+func (c *Cdor) setBool(id, key string, val bool) {
+	if !val || c.err != nil {
+		return
+	}
+	id = combinID(id, key)
+	sval := "true"
+	c.graph, c.err = d2oracle.Set(c.graph, nil, id, nil, &sval)
 }
 
 func (c *Cdor) setBlank(id, key string) {
@@ -288,25 +321,13 @@ func (c *Cdor) json(json string) (nodes []*node, cons []*connection) {
 	}
 
 	genNode := func(id string) *node {
-		node := &node{
-			id:     id,
-			option: c.globalOption.Copy(),
-			Cdor:   c,
-		}
+		node := c.Node(id)
 		node.shape = "sql_table"
 		nodes = append(nodes, node)
-		c.nodes = append(c.nodes, node)
 		return node
 	}
 	genCon := func(pid, key, sid string) {
-		con := &connection{
-			src:       combinID(pid, key),
-			dst:       sid,
-			isSingle:  true,
-			conOption: &conOption{},
-			Cdor:      c,
-		}
-		c.connections = append(c.connections, con)
+		con := c.Scon(combinID(pid, key), sid)
 		cons = append(cons, con)
 	}
 
@@ -444,7 +465,7 @@ func defaultInt64Point(src, dst *int64) *int64 {
 	return dst
 }
 
-func (c *config) solveBool(b []bool) *bool {
+func solveBool(b []bool) *bool {
 	if len(b) > 0 {
 		return &b[0]
 	}

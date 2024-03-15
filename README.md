@@ -30,6 +30,7 @@ Write Go+/Go code to make diagrams.
 ![grid](doc/examples/grid.svg)
 ![sequence](doc/examples/sequence.svg)
 ![shapes](doc/examples/shapes.svg)
+![opacity](doc/examples/opacity.svg)
 
 see [doc](doc) for details.
 

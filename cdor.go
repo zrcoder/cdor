@@ -39,6 +39,9 @@ func (c *Cdor) Con(src, dst string, opt ...*conOption) *connection {
 	if len(opt) > 0 {
 		con.conOption = opt[0]
 	}
+	con.conOption.option = *c.Opt()
+	con.conOption.arrow.srcHead = *c.Opt()
+	con.conOption.arrow.dstHead = *c.Opt()
 	c.connections = append(c.connections, con)
 	return con
 }
@@ -67,11 +70,16 @@ func (c *Cdor) Cfg() *config {
 
 // Opt creates a default option
 func (c *Cdor) Opt() *option {
-	return &option{
+	res := &option{
 		gridGap:       -1,
 		horizontalGap: -1,
 		verticalGap:   -1,
 	}
+	res.opacity = -1
+	res.strokeWidth = -1
+	res.strokeDash = -1
+	res.borderRadius = -1
+	return res
 }
 
 // ApplyConfig applys the diagram's config
@@ -186,6 +194,11 @@ func (c *Cdor) HorizontalGap(gap int) *Cdor {
 	return c
 }
 
+func (c *Cdor) FillPattern(pattern string) *Cdor {
+	c.globalOption.fillPattern = pattern
+	return c
+}
+
 // --- node ---
 
 // Children adds children for the node
@@ -206,33 +219,6 @@ func (n *node) Opt(opt *option) *node {
 	return n
 }
 
-// Label sets the node's label
-func (n *node) Label(label string) *node {
-	if label == "" {
-		n.blankLabel = true
-	}
-	n.label = label
-	return n
-}
-
-// Shape sets the node's shape
-func (n *node) Shape(shape string) *node {
-	n.shape = shape
-	return n
-}
-
-// Fill sets the node's fill style
-func (n *node) Fill(fill string) *node {
-	n.fill = fill
-	return n
-}
-
-// Stroke sets the node's stroke style
-func (n *node) Stroke(stroke string) *node {
-	n.stroke = stroke
-	return n
-}
-
 // Code creates a code node
 func (n *node) Code(tag, code string) *node {
 	if tag == "latex" || tag == "tex" {
@@ -240,12 +226,6 @@ func (n *node) Code(tag, code string) *node {
 	}
 	n.codeTag = tag
 	n.code = code
-	return n
-}
-
-// Icon creates an icon node
-func (n *node) Icon(icon string) *node {
-	n.icon = icon
 	return n
 }
 
@@ -301,73 +281,145 @@ func (n *node) Obj(x any) *node {
 	return n.Json(json)
 }
 
-// Width sets the node's width
-func (n *node) Width(w int) *node {
-	n.width = w
-	return n
-}
-
-// Height sets the node's height
-func (n *node) Height(h int) *node {
-	n.height = h
-	return n
-}
-
-// GridRows sets the node's grid rows
-func (n *node) GridRows(r int) *node {
-	n.option.gridRows = r
-	return n
-}
-
-// GridCols sets the node's grid columns
-func (n *node) GridCols(c int) *node {
-	n.option.gridCols = c
-	return n
-}
-
-// GridGap sets the node's grid gap
-func (n *node) GridGap(g int) *node {
-	n.option.gridGap = g
-	return n
-}
-
-// VerticalGap sets the node's vertical gap
-func (n *node) VerticalGap(gap int) *node {
-	n.option.verticalGap = gap
-	return n
-}
-
-// HorizontalGap sets the node's horizontal gap
-func (n *node) HorizontalGap(gap int) *node {
-	n.option.horizontalGap = gap
-	return n
-}
-
 // Sequence sets the node's shape as sequence
 func (n *node) Sequence() *node {
 	n.shape = "sequence_diagram"
 	return n
 }
 
+func (n *node) Label(label string) *node {
+	if label == "" {
+		n.blankLabel = true
+	}
+	n.label = label
+	return n
+}
+
+func (n *node) Shape(shape string) *node {
+	n.shape = shape
+	return n
+}
+
+func (n *node) Fill(fill string) *node {
+	n.fill = fill
+	return n
+}
+
+func (n *node) Stroke(stroke string) *node {
+	n.stroke = stroke
+	return n
+}
+
+func (n *node) Width(w int) *node {
+	n.width = w
+	return n
+}
+
+func (n *node) Height(h int) *node {
+	n.height = h
+	return n
+}
+
+func (n *node) GridRows(r int) *node {
+	n.gridRows = r
+	return n
+}
+
+func (n *node) GridCols(c int) *node {
+	n.gridCols = c
+	return n
+}
+
+func (n *node) GridGap(g int) *node {
+	n.gridGap = g
+	return n
+}
+
+func (n *node) VerticalGap(gap int) *node {
+	n.verticalGap = gap
+	return n
+}
+
+func (n *node) HorizontalGap(gap int) *node {
+	n.horizontalGap = gap
+	return n
+}
+
+func (n *node) Icon(i string) *node {
+	n.icon = i
+	return n
+}
+
+func (n *node) Opacity(op float64) *node {
+	n.opacity = op
+	return n
+}
+
+func (n *node) FillPattern(p string) *node {
+	n.fillPattern = p
+	return n
+}
+func (n *node) StrokeWidth(w int) *node {
+	n.strokeWidth = w
+	return n
+}
+func (n *node) StrokeDash(d int) *node {
+	n.strokeDash = d
+	return n
+}
+func (n *node) BorderRadius(r int) *node {
+	n.borderRadius = r
+	return n
+}
+func (n *node) Shadow(s ...bool) *node {
+	b := solveBool(s)
+	n.shadow = *b
+	return n
+}
+func (n *node) Is3d(d ...bool) *node {
+	b := solveBool(d)
+	n.is3d = *b
+	return n
+}
+func (n *node) Multiple(m ...bool) *node {
+	b := solveBool(m)
+	n.multiple = *b
+	return n
+}
+func (n *node) DoubleBorder(d ...bool) *node {
+	b := solveBool(d)
+	n.doubleBorder = *b
+	return n
+}
+func (n *node) FontSize(s int) *node {
+	n.fontSize = s
+	return n
+}
+func (n *node) FontColor(c string) *node {
+	n.fontColor = c
+	return n
+}
+func (n *node) Font(f string) *node {
+	n.font = f
+	return n
+}
+func (n *node) Bold(bold ...bool) *node {
+	b := solveBool(bold)
+	n.bold = *b
+	return n
+}
+func (n *node) Italic(i ...bool) *node {
+	b := solveBool(i)
+	n.italic = *b
+	return n
+}
+func (n *node) Underline(u ...bool) *node {
+	b := solveBool(u)
+	n.underline = *b
+	return n
+}
+
 // --- connection ---
-
-// Label sets the connection's label
-func (c *connection) Label(label string) *connection {
-	c.label = label
-	return c
-}
-
-// Fill sets the connection's fill
-func (c *connection) Fill(fill string) *connection {
-	c.fill = fill
-	return c
-}
-
-// Stroke sets the connection's stroke
-func (c *connection) Stroke(stroke string) *connection {
-	c.stroke = stroke
-	return c
-}
 
 // SrcHeadShape sets the connection's source head shape
 func (c *connection) SrcHeadShape(shape string) *connection {
@@ -404,6 +456,74 @@ func (c *connection) Con(dst string, opt ...*conOption) *connection {
 	return c.Cdor.Con(c.dst, dst, opt...)
 }
 
+func (c *connection) Label(label string) *connection {
+	if label == "" {
+		c.blankLabel = true
+	}
+	c.label = label
+	return c
+}
+func (c *connection) Shape(shape string) *connection {
+	c.shape = shape
+	return c
+}
+func (c *connection) Stroke(stroke string) *connection {
+	c.stroke = stroke
+	return c
+}
+func (c *connection) Icon(i string) *connection {
+	c.icon = i
+	return c
+}
+func (c *connection) Opacity(op float64) *connection {
+	c.opacity = op
+	return c
+}
+func (c *connection) StrokeWidth(w int) *connection {
+	c.strokeWidth = w
+	return c
+}
+func (c *connection) StrokeDash(d int) *connection {
+	c.strokeDash = d
+	return c
+}
+func (c *connection) BorderRadius(r int) *connection {
+	c.borderRadius = r
+	return c
+}
+func (c *connection) FontSize(s int) *connection {
+	c.fontSize = s
+	return c
+}
+func (c *connection) FontColor(color string) *connection {
+	c.fontColor = color
+	return c
+}
+func (c *connection) Font(f string) *connection {
+	c.font = f
+	return c
+}
+func (c *connection) Bold(bold ...bool) *connection {
+	b := solveBool(bold)
+	c.bold = *b
+	return c
+}
+func (c *connection) Italic(i ...bool) *connection {
+	b := solveBool(i)
+	c.italic = *b
+	return c
+}
+func (c *connection) Underline(u ...bool) *connection {
+	b := solveBool(u)
+	c.underline = *b
+	return c
+}
+func (c *connection) Animated(a ...bool) *connection {
+	b := solveBool(a)
+	c.animated = *b
+	return c
+}
+
 // --- option ---
 
 // Copy copies the option
@@ -412,7 +532,6 @@ func (o *option) Copy() *option {
 	return &res
 }
 
-// Label sets the option's label
 func (o *option) Label(label string) *option {
 	if label == "" {
 		o.blankLabel = true
@@ -421,37 +540,131 @@ func (o *option) Label(label string) *option {
 	return o
 }
 
-// Shape sets the option's shape
 func (o *option) Shape(shape string) *option {
 	o.shape = shape
 	return o
 }
 
-// Fill sets the option's fill style
 func (o *option) Fill(fill string) *option {
 	o.fill = fill
 	return o
 }
 
-// Stroke sets the option's stroke style
 func (o *option) Stroke(stroke string) *option {
 	o.stroke = stroke
 	return o
 }
 
-// Width sets the option's width
 func (o *option) Width(w int) *option {
 	o.width = w
 	return o
 }
 
-// Height sets the option's height
 func (o *option) Height(h int) *option {
 	o.height = h
 	return o
 }
 
-// Apply applies the option
+func (o *option) GridRows(r int) *option {
+	o.gridRows = r
+	return o
+}
+
+func (o *option) GridCols(c int) *option {
+	o.gridCols = c
+	return o
+}
+
+func (o *option) GridGap(g int) *option {
+	o.gridGap = g
+	return o
+}
+
+func (o *option) VerticalGap(gap int) *option {
+	o.verticalGap = gap
+	return o
+}
+
+func (o *option) HorizontalGap(gap int) *option {
+	o.horizontalGap = gap
+	return o
+}
+
+func (o *option) Icon(i string) *option {
+	o.icon = i
+	return o
+}
+
+func (o *option) Opacity(op float64) *option {
+	o.opacity = op
+	return o
+}
+
+func (o *option) FillPattern(p string) *option {
+	o.fillPattern = p
+	return o
+}
+func (o *option) StrokeWidth(w int) *option {
+	o.strokeWidth = w
+	return o
+}
+func (o *option) StrokeDash(d int) *option {
+	o.strokeDash = d
+	return o
+}
+func (o *option) BorderRadius(r int) *option {
+	o.borderRadius = r
+	return o
+}
+func (o *option) Shadow(s ...bool) *option {
+	b := solveBool(s)
+	o.shadow = *b
+	return o
+}
+func (o *option) Is3d(d ...bool) *option {
+	b := solveBool(d)
+	o.is3d = *b
+	return o
+}
+func (o *option) Multiple(m ...bool) *option {
+	b := solveBool(m)
+	o.multiple = *b
+	return o
+}
+func (o *option) DoubleBorder(d ...bool) *option {
+	b := solveBool(d)
+	o.doubleBorder = *b
+	return o
+}
+func (o *option) FontSize(s int) *option {
+	o.fontSize = s
+	return o
+}
+func (o *option) FontColor(c string) *option {
+	o.fontColor = c
+	return o
+}
+func (o *option) Bold(bold ...bool) *option {
+	b := solveBool(bold)
+	o.bold = *b
+	return o
+}
+func (o *option) Italic(i ...bool) *option {
+	b := solveBool(i)
+	o.italic = *b
+	return o
+}
+func (o *option) Underline(u ...bool) *option {
+	b := solveBool(u)
+	o.underline = *b
+	return o
+}
+func (o *option) Animated(a ...bool) *option {
+	b := solveBool(a)
+	o.animated = *b
+	return o
+}
+
 func (o *option) Apply(opt *option) *option {
 	if opt == nil {
 		return o
@@ -464,6 +677,7 @@ func (o *option) Apply(opt *option) *option {
 	o.gridGap = defaultGap(o.gridGap, opt.gridGap)
 	o.horizontalGap = defaultGap(o.horizontalGap, opt.horizontalGap)
 	o.verticalGap = defaultGap(o.verticalGap, opt.verticalGap)
+	// todo
 	return o
 }
 
@@ -501,24 +715,6 @@ func (a *conOption) DstHeadShape(shape string) *conOption {
 	return a
 }
 
-// Label sets the option's label
-func (o *conOption) Label(label string) *conOption {
-	o.label = label
-	return o
-}
-
-// Fill sets the option's fill style
-func (o *conOption) Fill(fill string) *conOption {
-	o.fill = fill
-	return o
-}
-
-// Stroke sets the option's stroke style
-func (o *conOption) Stroke(stroke string) *conOption {
-	o.stroke = stroke
-	return o
-}
-
 // Apply applies the option
 func (o *conOption) Apply(opt *conOption) *conOption {
 	if opt == nil {
@@ -534,19 +730,19 @@ func (o *conOption) Apply(opt *conOption) *conOption {
 
 // Sketch sets if the diagram is sketch style
 func (c *config) Sketch(b ...bool) *config {
-	c.cfg.Sketch = c.solveBool(b)
+	c.cfg.Sketch = solveBool(b)
 	return c
 }
 
 // ElkLayout sets if the diagram is elk layouted
 func (c *config) ElkLayout(b ...bool) *config {
-	c.elkLayout = *c.solveBool(b)
+	c.elkLayout = *solveBool(b)
 	return c
 }
 
 // Center sets if the diagram is centered
 func (c *config) Center(b ...bool) *config {
-	c.cfg.Center = c.solveBool(b)
+	c.cfg.Center = solveBool(b)
 	return c
 }
 
@@ -591,7 +787,7 @@ func (c *config) Direction(dir string) *config {
 
 // Sequence sets if the diagram is a sequence
 func (c *config) Sequence(b ...bool) *config {
-	c.isSequence = *c.solveBool(b)
+	c.isSequence = *solveBool(b)
 	return c
 }
 

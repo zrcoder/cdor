@@ -49,10 +49,26 @@ type option struct {
 }
 
 type style struct {
-	fill       string
-	filled     bool
-	filledFlag bool
-	stroke     string
+	fill         string
+	filled       bool
+	filledFlag   bool
+	stroke       string
+	opacity      float64
+	fillPattern  string
+	strokeWidth  int
+	strokeDash   int
+	borderRadius int
+	shadow       bool
+	is3d         bool
+	multiple     bool
+	doubleBorder bool
+	fontSize     int
+	fontColor    string
+	font         string
+	animated     bool
+	bold         bool
+	italic       bool
+	underline    bool
 }
 
 type arrow struct {

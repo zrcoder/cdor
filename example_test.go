@@ -283,3 +283,154 @@ func Example_sequece() {
 	// alice -> bob: "What does it mean\nto be well-adjusted?"
 	// bob -> alice: "The ability to play bridge or\ngolf as if they were games."
 }
+
+func Example_opacity() {
+	c := Ctx()
+	c.Direction("right")
+	c.Node("x").Opacity(0)
+	c.Node("y").Opacity(0.7)
+	c.Scon("x", "y").Opacity(0.4)
+	fmt.Println(c.d2())
+	// Output:
+	// direction: right
+	// x: {style.opacity: 0.0}
+	// y: {style.opacity: 0.7}
+	// x -> y: {style.opacity: 0.4}
+}
+
+func Example_fillpattern() {
+	c := Ctx()
+	c.Direction("right")
+	c.FillPattern("dots")
+	c.Node("x").FillPattern("lines")
+	c.Node("y").FillPattern("grain")
+	c.Scon("x", "y").Label("hi")
+	fmt.Println(c.d2())
+	// Output:
+	// direction: right
+	// style.fill-pattern: dots
+	// x: {style.fill-pattern: lines}
+	// y: {style.fill-pattern: grain}
+	// x -> y: hi
+}
+
+func Example_strokeWidth() {
+	c := Ctx()
+	c.Direction("right")
+	c.Node("x").StrokeWidth(1)
+	c.Scon("x", "y").StrokeWidth(8)
+	fmt.Println(c.d2())
+	// Output:
+	// direction: right
+	// x: {style.stroke-width: 1}
+	// x -> y: {style.stroke-width: 8}
+}
+
+func Example_strokeDash() {
+	c := Ctx()
+	c.Node("x").StrokeDash(5)
+	c.Scon("x", "y").Label("hi").StrokeDash(3)
+	fmt.Println(c.d2())
+	// Output:
+	// x: {style.stroke-dash: 5}
+	// x -> y: hi {style.stroke-dash: 3}
+}
+
+func Example_borderRadius() {
+	c := Ctx()
+	c.Node("x").BorderRadius(3)
+	c.Node("y").BorderRadius(8)
+	c.Scon("x", "y").Label("hi")
+	fmt.Println(c.d2())
+	// Output:
+	// x: {style.border-radius: 3}
+	// y: {style.border-radius: 8}
+	// x -> y: hi
+}
+
+func Example_shadow() {
+	c := Ctx()
+	c.Node("x").Shadow()
+	c.Scon("x", "y").Label("hi")
+	fmt.Println(c.d2())
+	// Output:
+	// x: {style.shadow: true}
+	// x -> y: hi
+}
+
+func Example_3d() {
+	c := Ctx()
+	c.Node("x").Is3d()
+	c.Scon("x", "y").Label("hi")
+	fmt.Println(c.d2())
+	// Output:
+	// x: {style.3d: true}
+	// x -> y: hi
+}
+func Example_multiple() {
+	c := Ctx()
+	c.Node("x").Multiple()
+	c.Scon("x", "y").Label("hi")
+	fmt.Println(c.d2())
+	// Output:
+	// x: {style.multiple: true}
+	// x -> y: hi
+}
+
+func Example_doubleBorder() {
+	c := Ctx()
+	c.Node("x").DoubleBorder()
+	c.Node("y").Shape("circle").DoubleBorder()
+	c.Scon("x", "y").Label("hi")
+	fmt.Println(c.d2())
+	// Output:
+	// x: {style.double-border: true}
+	// y: {
+	//   shape: circle
+	//   style.double-border: true
+	// }
+	// x -> y: hi
+}
+
+func Example_font() {
+	c := Ctx()
+	c.Node("x").Font("mono").FontSize(8)
+	c.Node("y").Font("mono").FontSize(55).FontColor("#f4a261")
+	c.Scon("x", "y").Label("hi").Font("mono").FontSize(28).FontColor("red")
+	fmt.Println(c.d2())
+	// Output:
+	// x: {
+	//   style.font-size: 8
+	//   style.font: mono
+	// }
+	// y: {
+	//   style.font-size: 55
+	//   style.font-color: "#f4a261"
+	//   style.font: mono
+	// }
+	// x -> y: hi {
+	//   style.font-size: 28
+	//   style.font-color: red
+	//   style.font: mono
+	// }
+}
+
+func Example_animated() {
+	c := Ctx()
+	c.Scon("x", "y").Animated()
+	fmt.Println(c.d2())
+	// Output:
+	// x -> y: {style.animated: true}
+}
+
+func Example_boldItalicUnderline() {
+	c := Ctx()
+	c.Node("x").Underline()
+	c.Node("y").Italic()
+	c.Scon("x", "y").Label("hi").Bold()
+	fmt.Println(c.d2())
+	// Output:
+	// x: {style.underline: true}
+	// y: {style.italic: true}
+	// x -> y: hi {style.bold: true}
+}

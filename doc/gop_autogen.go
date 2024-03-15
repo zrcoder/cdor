@@ -5,6 +5,7 @@ package main
 import (
 	"bytes"
 	"fmt"
+	"github.com/qiniu/x/stringutil"
 	"github.com/zrcoder/cdor"
 	"os"
 	"strconv"
@@ -98,6 +99,10 @@ type c16shapes struct {
 	cdor.Cdor
 	*App
 }
+type c17opacity struct {
+	cdor.Cdor
+	*App
+}
 type App struct {
 	cdor.Mgr
 }
@@ -119,7 +124,7 @@ func (this *App) MainEntry() {
 //line doc/main_cdor.gox:15:1
 		name = name[3:]
 //line doc/main_cdor.gox:16:1
-		err = os.WriteFile("doc/examples/"+name+".svg", data, 0600)
+		err = os.WriteFile(stringutil.Concat("doc/examples/", name, ".svg"), data, 0600)
 //line doc/main_cdor.gox:17:1
 		if err != nil {
 //line doc/main_cdor.gox:18:1
@@ -128,7 +133,7 @@ func (this *App) MainEntry() {
 			return err
 		}
 //line doc/main_cdor.gox:21:1
-		buf.WriteString("![" + name + "](doc/examples/" + name + ".svg)\n")
+		buf.WriteString(stringutil.Concat("![", name, "](doc/examples/", name, ".svg)\n"))
 //line doc/main_cdor.gox:22:1
 		return nil
 	})
@@ -152,7 +157,7 @@ func (this *App) MainEntry() {
 	}
 }
 func main() {
-	cdor.Gopt_App_Main(new(App), new(c01hello), new(c02id), new(c03shape), new(c04connections), new(c05containers), new(c06md), new(c07latex), new(c08sql_table), new(c09class), new(c10json), new(c10jsonn), new(c11toml), new(c11tomln), new(c12yaml), new(c12yamln), new(c13obj), new(c13objn), new(c14grid), new(c15sequence), new(c16shapes))
+	cdor.Gopt_App_Main(new(App), new(c01hello), new(c02id), new(c03shape), new(c04connections), new(c05containers), new(c06md), new(c07latex), new(c08sql_table), new(c09class), new(c10json), new(c10jsonn), new(c11toml), new(c11tomln), new(c12yaml), new(c12yamln), new(c13obj), new(c13objn), new(c14grid), new(c15sequence), new(c16shapes), new(c17opacity))
 }
 //line doc/c01hello_cdor.gox:1
 func (this *c01hello) Main() {
@@ -261,7 +266,7 @@ func (this *c06md) Main() {
   And other normal markdown stuff
 `
 //line doc/c06md_cdor.gox:7:1
-	this.MdCode("mdContent := `" + mdContent + "`\nnode(\"markdown\").code(\"md\", mdContent)")
+	this.MdCode(stringutil.Concat("mdContent := `", mdContent, "`\nnode(\"markdown\").code(\"md\", mdContent)"))
 //line doc/c06md_cdor.gox:8:1
 	this.Node("markdown").Code("md", mdContent)
 }
@@ -270,7 +275,7 @@ func (this *c07latex) Main() {
 //line doc/c07latex_cdor.gox:1:1
 	tex := `\lim_{h \rightarrow 0 } \frac{f(x+h)-f(x)}{h}`
 //line doc/c07latex_cdor.gox:2:1
-	this.MdCode("tex := `" + tex + "`\nnode(\"tex\").code(\"latex\", tex)")
+	this.MdCode(stringutil.Concat("tex := `", tex, "`\nnode(\"tex\").code(\"latex\", tex)"))
 //line doc/c07latex_cdor.gox:3:1
 	this.Node("tex").Code("latex", tex)
 }
@@ -323,7 +328,7 @@ func (this *c10json) Main() {
   "spouse": null
 }`
 //line doc/c10json_cdor.gox:26:1
-	this.MdCode("json `" + data + "`")
+	this.MdCode(stringutil.Concat("json `", data, "`"))
 //line doc/c10json_cdor.gox:27:1
 	this.Json(data)
 }
@@ -335,8 +340,8 @@ func (this *c10jsonn) Main() {
    "colors": ["Red", "Green"]
 }`
 //line doc/c10jsonn_cdor.gox:6:1
-	this.MdCode(`node("obj").json ` + dotQuote + data + dotQuote + `
-scon "root", "obj.0"`)
+	this.MdCode(stringutil.Concat(`node("obj").json `, dotQuote, data, dotQuote, `
+scon "root", "obj.0"`))
 //line doc/c10jsonn_cdor.gox:9:1
 	this.Node("obj").Json(data)
 //line doc/c10jsonn_cdor.gox:10:1
@@ -367,8 +372,8 @@ lastName = "Smith"
   number = "646 555-4567"
   type = "office"`
 //line doc/c11toml_cdor.gox:21:1
-	this.MdCode(`input := ` + dotQuote + input + dotQuote + `
-toml input`)
+	this.MdCode(stringutil.Concat(`input := `, dotQuote, input, dotQuote, `
+toml input`))
 //line doc/c11toml_cdor.gox:24:1
 	this.Toml(input)
 }
@@ -395,8 +400,8 @@ lastName = "Smith"
   number = "646 555-4567"
   type = "office"`
 //line doc/c11tomln_cdor.gox:21:1
-	this.MdCode(`input := ` + dotQuote + input + dotQuote + `
-node("toml").toml(input)`)
+	this.MdCode(stringutil.Concat(`input := `, dotQuote, input, dotQuote, `
+node("toml").toml(input)`))
 //line doc/c11tomln_cdor.gox:24:1
 	this.Node("toml").Toml(input)
 //line doc/c11tomln_cdor.gox:25:1
@@ -423,8 +428,8 @@ phoneNumbers:
 spouse: null
 `
 //line doc/c12yaml_cdor.gox:19:1
-	this.MdCode(`input := ` + dotQuote + input + dotQuote + `
-yaml inlut`)
+	this.MdCode(stringutil.Concat(`input := `, dotQuote, input, dotQuote, `
+yaml inlut`))
 //line doc/c12yaml_cdor.gox:22:1
 	this.Yaml(input)
 //line doc/c12yaml_cdor.gox:23:1
@@ -451,8 +456,8 @@ phoneNumbers:
 spouse: null
 `
 //line doc/c12yamln_cdor.gox:19:1
-	this.MdCode(`input:=` + dotQuote + input + dotQuote + `
-node("yaml").yaml(input)`)
+	this.MdCode(stringutil.Concat(`input:=`, dotQuote, input, dotQuote, `
+node("yaml").yaml(input)`))
 //line doc/c12yamln_cdor.gox:22:1
 	this.Node("yaml").Yaml(input)
 //line doc/c12yamln_cdor.gox:23:1
@@ -546,4 +551,15 @@ func (this *c16shapes) Main() {
 	this.Node("3").Opt(op).Children(this.Node("callout").Shape("callout"), this.Node("stored_data").Shape("stored_data"), this.Node("person").Shape("person"), this.Node("diamond").Shape("diamond"))
 //line doc/c16shapes_cdor.gox:25:1
 	this.Node("4").Opt(op).Children(this.Node("oval").Shape("oval"), this.Node("circle").Shape("circle"), this.Node("hexagon").Shape("hexagon"), this.Node("cloud").Shape("cloud"))
+}
+//line doc/c17opacity_cdor.gox:1
+func (this *c17opacity) Main() {
+//line doc/c17opacity_cdor.gox:1:1
+	this.Direction("right")
+//line doc/c17opacity_cdor.gox:2:1
+	this.Node("x").Opacity(0)
+//line doc/c17opacity_cdor.gox:3:1
+	this.Node("y").Opacity(0.7)
+//line doc/c17opacity_cdor.gox:4:1
+	this.Scon("x", "y").Opacity(0.4)
 }
