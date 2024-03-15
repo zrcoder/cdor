@@ -1,13 +1,30 @@
 import (
 	"bytes"
 	"os"
+	"path/filepath"
 )
+
+const cdorSuffix = "_cdor.gox"
 
 applyConfig(cfg.elkLayout().sketch())
 
 buf := bytes.newBuffer(nil)
 
-rangeDiagrams (name, data, err) => {
+rangeCdors (name, cdor, err) => {
+	if err != nil {
+		echo err
+		return err
+	}
+
+	var code []byte
+	code, err = os.readFile(filepath.join("doc", name+cdorSuffix))
+	if err != nil {
+		echo err
+		return err
+	}
+	cdor.mdCode string(code)
+	var data []byte
+	data, err = cdor.Gen()
 	if err != nil {
 		echo err
 		return err

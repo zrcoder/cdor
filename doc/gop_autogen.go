@@ -8,6 +8,7 @@ import (
 	"github.com/qiniu/x/stringutil"
 	"github.com/zrcoder/cdor"
 	"os"
+	"path/filepath"
 	"strconv"
 	"strings"
 )
@@ -19,23 +20,10 @@ type Person struct {
 	Name string
 	Age  int
 }
+
+const cdorSuffix = "_cdor.gox"
+
 type c01hello struct {
-	cdor.Cdor
-	*App
-}
-type c02id struct {
-	cdor.Cdor
-	*App
-}
-type c03shape struct {
-	cdor.Cdor
-	*App
-}
-type c04connections struct {
-	cdor.Cdor
-	*App
-}
-type c05containers struct {
 	cdor.Cdor
 	*App
 }
@@ -55,35 +43,11 @@ type c09class struct {
 	cdor.Cdor
 	*App
 }
-type c10json struct {
-	cdor.Cdor
-	*App
-}
 type c10jsonn struct {
 	cdor.Cdor
 	*App
 }
-type c11toml struct {
-	cdor.Cdor
-	*App
-}
-type c11tomln struct {
-	cdor.Cdor
-	*App
-}
-type c12yaml struct {
-	cdor.Cdor
-	*App
-}
-type c12yamln struct {
-	cdor.Cdor
-	*App
-}
 type c13obj struct {
-	cdor.Cdor
-	*App
-}
-type c13objn struct {
 	cdor.Cdor
 	*App
 }
@@ -99,162 +63,96 @@ type c16shapes struct {
 	cdor.Cdor
 	*App
 }
-type c17opacity struct {
+type c18icon struct {
 	cdor.Cdor
 	*App
 }
 type App struct {
 	cdor.Mgr
 }
-//line doc/main_cdor.gox:6
+//line doc/main_cdor.gox:9
 func (this *App) MainEntry() {
-//line doc/main_cdor.gox:6:1
+//line doc/main_cdor.gox:9:1
 	this.ApplyConfig(this.Cfg().ElkLayout().Sketch())
-//line doc/main_cdor.gox:8:1
-	buf := bytes.NewBuffer(nil)
-//line doc/main_cdor.gox:10:1
-	this.RangeDiagrams(func(name string, data []byte, err error) error {
 //line doc/main_cdor.gox:11:1
-		if err != nil {
-//line doc/main_cdor.gox:12:1
-			fmt.Println(err)
+	buf := bytes.NewBuffer(nil)
 //line doc/main_cdor.gox:13:1
-			return err
-		}
-//line doc/main_cdor.gox:15:1
-		name = name[3:]
-//line doc/main_cdor.gox:16:1
-		err = os.WriteFile(stringutil.Concat("doc/examples/", name, ".svg"), data, 0600)
-//line doc/main_cdor.gox:17:1
+	this.RangeCdors(func(name string, cdor *cdor.Cdor, err error) error {
+//line doc/main_cdor.gox:14:1
 		if err != nil {
-//line doc/main_cdor.gox:18:1
+//line doc/main_cdor.gox:15:1
 			fmt.Println(err)
-//line doc/main_cdor.gox:19:1
+//line doc/main_cdor.gox:16:1
 			return err
 		}
+//line doc/main_cdor.gox:19:1
+		var code []byte
+//line doc/main_cdor.gox:20:1
+		code, err = os.ReadFile(filepath.Join("doc", name+cdorSuffix))
 //line doc/main_cdor.gox:21:1
-		buf.WriteString(stringutil.Concat("![", name, "](doc/examples/", name, ".svg)\n"))
+		if err != nil {
 //line doc/main_cdor.gox:22:1
+			fmt.Println(err)
+//line doc/main_cdor.gox:23:1
+			return err
+		}
+//line doc/main_cdor.gox:25:1
+		cdor.MdCode(string(code))
+//line doc/main_cdor.gox:26:1
+		var data []byte
+//line doc/main_cdor.gox:27:1
+		data, err = cdor.Gen()
+//line doc/main_cdor.gox:28:1
+		if err != nil {
+//line doc/main_cdor.gox:29:1
+			fmt.Println(err)
+//line doc/main_cdor.gox:30:1
+			return err
+		}
+//line doc/main_cdor.gox:32:1
+		name = name[3:]
+//line doc/main_cdor.gox:33:1
+		err = os.WriteFile(stringutil.Concat("doc/examples/", name, ".svg"), data, 0600)
+//line doc/main_cdor.gox:34:1
+		if err != nil {
+//line doc/main_cdor.gox:35:1
+			fmt.Println(err)
+//line doc/main_cdor.gox:36:1
+			return err
+		}
+//line doc/main_cdor.gox:38:1
+		buf.WriteString(stringutil.Concat("![", name, "](doc/examples/", name, ".svg)\n"))
+//line doc/main_cdor.gox:39:1
 		return nil
 	})
-//line doc/main_cdor.gox:25:1
+//line doc/main_cdor.gox:42:1
 	readmeTemp, err := os.ReadFile("doc/readmeTemp.md")
-//line doc/main_cdor.gox:26:1
+//line doc/main_cdor.gox:43:1
 	if err != nil {
-//line doc/main_cdor.gox:27:1
+//line doc/main_cdor.gox:44:1
 		panic(err)
 	}
-//line doc/main_cdor.gox:30:1
+//line doc/main_cdor.gox:47:1
 	readmeContent := string(readmeTemp)
-//line doc/main_cdor.gox:32:1
+//line doc/main_cdor.gox:49:1
 	readmeContent = strings.Replace(readmeContent, "{{ .Examples }}", buf.String(), 1)
-//line doc/main_cdor.gox:33:1
+//line doc/main_cdor.gox:50:1
 	if
-//line doc/main_cdor.gox:33:1
+//line doc/main_cdor.gox:50:1
 	err := os.WriteFile("README.md", []byte(readmeContent), 0600); err != nil {
-//line doc/main_cdor.gox:34:1
+//line doc/main_cdor.gox:51:1
 		panic(err)
 	}
 }
 func main() {
-	cdor.Gopt_App_Main(new(App), new(c01hello), new(c02id), new(c03shape), new(c04connections), new(c05containers), new(c06md), new(c07latex), new(c08sql_table), new(c09class), new(c10json), new(c10jsonn), new(c11toml), new(c11tomln), new(c12yaml), new(c12yamln), new(c13obj), new(c13objn), new(c14grid), new(c15sequence), new(c16shapes), new(c17opacity))
+	cdor.Gopt_App_Main(new(App), new(c01hello), new(c06md), new(c07latex), new(c08sql_table), new(c09class), new(c10jsonn), new(c13obj), new(c14grid), new(c15sequence), new(c16shapes), new(c18icon))
 }
 //line doc/c01hello_cdor.gox:1
 func (this *c01hello) Main() {
 //line doc/c01hello_cdor.gox:1:1
 	this.Direction("right")
 //line doc/c01hello_cdor.gox:2:1
-	this.MdCode(`con("Go+", "Go").label("cdor")`)
-//line doc/c01hello_cdor.gox:3:1
 	this.Con("Go+", "Go").Label("cdor")
-}
-//line doc/c02id_cdor.gox:1
-func (this *c02id) Main() {
-//line doc/c02id_cdor.gox:1:1
-	this.MdCode(`node "imAShape"
-node "im_a_shape"
-node "im a shape"
-node "i'm a shape"
-node "a-shape"
-`)
-//line doc/c02id_cdor.gox:7:1
-	this.Node("imAShape")
-//line doc/c02id_cdor.gox:8:1
-	this.Node("im_a_shape")
-//line doc/c02id_cdor.gox:9:1
-	this.Node("im a shape")
-//line doc/c02id_cdor.gox:10:1
-	this.Node("i'm a shape")
-//line doc/c02id_cdor.gox:11:1
-	this.Node("a-shape")
-}
-//line doc/c03shape_cdor.gox:1
-func (this *c03shape) Main() {
-//line doc/c03shape_cdor.gox:1:1
-	this.MdCode(`node("pg").label("PostgreSQL")
-node("Cloud").label("my cloud").shape("cloud")`)
-//line doc/c03shape_cdor.gox:3:1
-	this.Node("pg").Label("PostgreSQL")
-//line doc/c03shape_cdor.gox:4:1
-	this.Node("Cloud").Label("my cloud").Shape("cloud")
-}
-//line doc/c04connections_cdor.gox:1
-func (this *c04connections) Main() {
-//line doc/c04connections_cdor.gox:1:1
-	this.Cfg().ElkLayout()
-//line doc/c04connections_cdor.gox:2:1
-	this.MdCode(`con("x", "y").srcHeadShape("none").stroke("orange")
-con("x", "y").dstHeadShape("none").stroke("green")
-con("x", "y").srcHeadShape("none").dstHeadShape("none")
-con("a", "b").srcHeadShape("circle")
-con("b", "c").srcHeadShape("circle")
-con("c", "a")`)
-//line doc/c04connections_cdor.gox:8:1
-	this.Con("x", "y").SrcHeadShape("none").Stroke("orange")
-//line doc/c04connections_cdor.gox:9:1
-	this.Con("x", "y").DstHeadShape("none").Stroke("green")
-//line doc/c04connections_cdor.gox:10:1
-	this.Con("x", "y").SrcHeadShape("none").DstHeadShape("none")
-//line doc/c04connections_cdor.gox:11:1
-	this.Con("a", "b").SrcHeadShape("circle")
-//line doc/c04connections_cdor.gox:12:1
-	this.Con("b", "c").SrcHeadShape("circle")
-//line doc/c04connections_cdor.gox:13:1
-	this.Con("c", "a")
-}
-//line doc/c05containers_cdor.gox:1
-func (this *c05containers) Main() {
-//line doc/c05containers_cdor.gox:1:1
-	this.Direction("right")
-//line doc/c05containers_cdor.gox:2:1
-	this.Cfg().ElkLayout()
-//line doc/c05containers_cdor.gox:3:1
-	this.MdCode(`opt := conOpt().srcHeadShape("none")
-node("clouds").children(
-	node("aws").label("AWS").cons(
-		con("load_balancer", "api"),
-		con("api", "db"),
-	),
-	node("gcloud").label("Google Cloud").cons(
-		con("auth", "db").opt(opt),
-	)).
-	cons(
-		con("gcloud", "aws").opt(opt),
-	)
-con("users", "clouds.aws.load_balancer").opt(opt)
-con("users", "clouds.gcloud.auth").opt(opt)
-con("ci.deploys", "clouds").opt(opt)
-`)
-//line doc/c05containers_cdor.gox:19:1
-	opt := this.ConOpt().SrcHeadShape("none")
-//line doc/c05containers_cdor.gox:20:1
-	this.Node("clouds").Children(this.Node("aws").Label("AWS").Cons(this.Con("load_balancer", "api"), this.Con("api", "db")), this.Node("gcloud").Label("Google Cloud").Cons(this.Con("auth", "db").Opt(opt))).Cons(this.Con("gcloud", "aws").Opt(opt))
-//line doc/c05containers_cdor.gox:31:1
-	this.Con("users", "clouds.aws.load_balancer").Opt(opt)
-//line doc/c05containers_cdor.gox:32:1
-	this.Con("users", "clouds.gcloud.auth").Opt(opt)
-//line doc/c05containers_cdor.gox:33:1
-	this.Con("ci.deploys", "clouds").Opt(opt)
 }
 //line doc/c06md_cdor.gox:1
 func (this *c06md) Main() {
@@ -266,8 +164,6 @@ func (this *c06md) Main() {
   And other normal markdown stuff
 `
 //line doc/c06md_cdor.gox:7:1
-	this.MdCode(stringutil.Concat("mdContent := `", mdContent, "`\nnode(\"markdown\").code(\"md\", mdContent)"))
-//line doc/c06md_cdor.gox:8:1
 	this.Node("markdown").Code("md", mdContent)
 }
 //line doc/c07latex_cdor.gox:1
@@ -275,62 +171,17 @@ func (this *c07latex) Main() {
 //line doc/c07latex_cdor.gox:1:1
 	tex := `\lim_{h \rightarrow 0 } \frac{f(x+h)-f(x)}{h}`
 //line doc/c07latex_cdor.gox:2:1
-	this.MdCode(stringutil.Concat("tex := `", tex, "`\nnode(\"tex\").code(\"latex\", tex)"))
-//line doc/c07latex_cdor.gox:3:1
 	this.Node("tex").Code("latex", tex)
 }
 //line doc/c08sql_table_cdor.gox:1
 func (this *c08sql_table) Main() {
 //line doc/c08sql_table_cdor.gox:1:1
-	this.MdCode(`node("table").shape("sql_table").
-	field("id", "int", "primary_key").
-	field("last_updated", "timestamp with time zone")`)
-//line doc/c08sql_table_cdor.gox:4:1
 	this.Node("table").Shape("sql_table").Field("id", "int", "primary_key").Field("last_updated", "timestamp with time zone")
 }
 //line doc/c09class_cdor.gox:1
 func (this *c09class) Main() {
 //line doc/c09class_cdor.gox:1:1
-	this.MdCode(`node("MyClass").
-	shape("class").
-	field("Age", "int").
-	field("+ Field", "[]string").
-	field("- method(a uint64)", "(x, y int)").
-	field("# peekn(n int)", "(s string, eof bool)")`)
-//line doc/c09class_cdor.gox:7:1
 	this.Node("MyClass").Shape("class").Field("Age", "int").Field("+ Field", "[]string").Field("- method(a uint64)", "(x, y int)").Field("# peekn(n int)", "(s string, eof bool)")
-}
-//line doc/c10json_cdor.gox:1
-func (this *c10json) Main() {
-//line doc/c10json_cdor.gox:1:1
-	data := `{
-  "firstName": "John",
-  "lastName": "Smith",
-  "isAlive": true,
-  "age": 27,
-  "address": {
-    "streetAddress": "21 2nd Street",
-    "city": "New York",
-    "state": "NY",
-    "postalCode": "10021-3100"
-  },
-  "phoneNumbers": [
-    {
-      "type": "home",
-      "number": "212 555-1234"
-    },
-    {
-      "type": "office",
-      "number": "646 555-4567"
-    }
-  ],
-  "children": [],
-  "spouse": null
-}`
-//line doc/c10json_cdor.gox:26:1
-	this.MdCode(stringutil.Concat("json `", data, "`"))
-//line doc/c10json_cdor.gox:27:1
-	this.Json(data)
 }
 //line doc/c10jsonn_cdor.gox:1
 func (this *c10jsonn) Main() {
@@ -340,127 +191,10 @@ func (this *c10jsonn) Main() {
    "colors": ["Red", "Green"]
 }`
 //line doc/c10jsonn_cdor.gox:6:1
-	this.MdCode(stringutil.Concat(`node("obj").json `, dotQuote, data, dotQuote, `
-scon "root", "obj.0"`))
-//line doc/c10jsonn_cdor.gox:9:1
 	this.Node("obj").Json(data)
-//line doc/c10jsonn_cdor.gox:10:1
+//line doc/c10jsonn_cdor.gox:7:1
 	this.Scon("root", "obj.0")
-//line doc/c10jsonn_cdor.gox:11:1
-	this.Direction("right")
-}
-//line doc/c11toml_cdor.gox:1
-func (this *c11toml) Main() {
-//line doc/c11toml_cdor.gox:1:1
-	input := `age = 27.0
-children = []
-firstName = "John"
-isAlive = true
-lastName = "Smith"
-
-[address]
-  city = "New York"
-  postalCode = "10021-3100"
-  state = "NY"
-  streetAddress = "21 2nd Street"
-
-[[phoneNumbers]]
-  number = "212 555-1234"
-  type = "home"
-
-[[phoneNumbers]]
-  number = "646 555-4567"
-  type = "office"`
-//line doc/c11toml_cdor.gox:21:1
-	this.MdCode(stringutil.Concat(`input := `, dotQuote, input, dotQuote, `
-toml input`))
-//line doc/c11toml_cdor.gox:24:1
-	this.Toml(input)
-}
-//line doc/c11tomln_cdor.gox:1
-func (this *c11tomln) Main() {
-//line doc/c11tomln_cdor.gox:1:1
-	input := `age = 27.0
-children = []
-firstName = "John"
-isAlive = true
-lastName = "Smith"
-
-[address]
-  city = "New York"
-  postalCode = "10021-3100"
-  state = "NY"
-  streetAddress = "21 2nd Street"
-
-[[phoneNumbers]]
-  number = "212 555-1234"
-  type = "home"
-
-[[phoneNumbers]]
-  number = "646 555-4567"
-  type = "office"`
-//line doc/c11tomln_cdor.gox:21:1
-	this.MdCode(stringutil.Concat(`input := `, dotQuote, input, dotQuote, `
-node("toml").toml(input)`))
-//line doc/c11tomln_cdor.gox:24:1
-	this.Node("toml").Toml(input)
-//line doc/c11tomln_cdor.gox:25:1
-	this.Direction("right")
-}
-//line doc/c12yaml_cdor.gox:1
-func (this *c12yaml) Main() {
-//line doc/c12yaml_cdor.gox:1:1
-	input := `address:
-  city: New York
-  postalCode: 10021-3100
-  state: NY
-  streetAddress: 21 2nd Street
-age: 27
-children: []
-firstName: John
-isAlive: true
-lastName: Smith
-phoneNumbers:
-- number: 212 555-1234
-  type: home
-- number: 646 555-4567
-  type: office
-spouse: null
-`
-//line doc/c12yaml_cdor.gox:19:1
-	this.MdCode(stringutil.Concat(`input := `, dotQuote, input, dotQuote, `
-yaml inlut`))
-//line doc/c12yaml_cdor.gox:22:1
-	this.Yaml(input)
-//line doc/c12yaml_cdor.gox:23:1
-	this.Direction("right")
-}
-//line doc/c12yamln_cdor.gox:1
-func (this *c12yamln) Main() {
-//line doc/c12yamln_cdor.gox:1:1
-	input := `address:
-  city: New York
-  postalCode: 10021-3100
-  state: NY
-  streetAddress: 21 2nd Street
-age: 27
-children: []
-firstName: John
-isAlive: true
-lastName: Smith
-phoneNumbers:
-- number: 212 555-1234
-  type: home
-- number: 646 555-4567
-  type: office
-spouse: null
-`
-//line doc/c12yamln_cdor.gox:19:1
-	this.MdCode(stringutil.Concat(`input:=`, dotQuote, input, dotQuote, `
-node("yaml").yaml(input)`))
-//line doc/c12yamln_cdor.gox:22:1
-	this.Node("yaml").Yaml(input)
-//line doc/c12yamln_cdor.gox:23:1
+//line doc/c10jsonn_cdor.gox:8:1
 	this.Direction("right")
 }
 //line doc/c13obj_cdor.gox:1
@@ -468,71 +202,18 @@ func (this *c13obj) Main() {
 //line doc/c13obj_cdor.gox:1:1
 	person := Person{Name: "Tom", Age: 27}
 //line doc/c13obj_cdor.gox:3:1
-	this.MdCode(`type Persion struct {
-    Name string
-    Age int
-}
-
-person := Person{Name: "Tom", Age: 27}
-obj person`)
-//line doc/c13obj_cdor.gox:11:1
-	this.GridRows(1)
-//line doc/c13obj_cdor.gox:12:1
 	this.Obj(person)
-}
-//line doc/c13objn_cdor.gox:1
-func (this *c13objn) Main() {
-//line doc/c13objn_cdor.gox:1:1
-	person := Person{Name: "Tom", Age: 27}
-//line doc/c13objn_cdor.gox:3:1
-	this.MdCode(`type Persion struct {
-    Name string
-    Age int
-}
-
-person := Person{Name: "Tom", Age: 27}
-node("obj").obj(person)`)
-//line doc/c13objn_cdor.gox:11:1
-	this.Node("obj").Obj(person)
 }
 //line doc/c14grid_cdor.gox:3
 func (this *c14grid) Main() {
 //line doc/c14grid_cdor.gox:3:1
 	this.GridGap(0)
 //line doc/c14grid_cdor.gox:5:1
-	this.MdCode(`node("table").label("").gridRows(1).gridCols(4).gridGap(0).children(
-	node("Element"),
-	node("Atomic Number"),
-	node("Atomic Mass"),
-	node("Melting Point"),
-
-	node("Hydrogen"),
-	node("1"),
-	node(strconv.quote("1.008")),
-	node(strconv.quote("-259.16")),
-
-	node("Carbon"),
-	node("6"),
-	node(strconv.quote("12.011")),
-	node("3500"),
-
-	node("Oxygen"),
-	node("8"),
-	node(strconv.quote("15.999")),
-	node(strconv.quote("-218.79")),
-)`)
-//line doc/c14grid_cdor.gox:27:1
 	this.Node("table").Label("").GridRows(1).GridCols(4).GridGap(0).Children(this.Node("Element"), this.Node("Atomic Number"), this.Node("Atomic Mass"), this.Node("Melting Point"), this.Node("Hydrogen"), this.Node("1"), this.Node(strconv.Quote("1.008")), this.Node(strconv.Quote("-259.16")), this.Node("Carbon"), this.Node("6"), this.Node(strconv.Quote("12.011")), this.Node("3500"), this.Node("Oxygen"), this.Node("8"), this.Node(strconv.Quote("15.999")), this.Node(strconv.Quote("-218.79")))
 }
 //line doc/c15sequence_cdor.gox:1
 func (this *c15sequence) Main() {
 //line doc/c15sequence_cdor.gox:1:1
-	this.GridCols(1).GridGap(0)
-//line doc/c15sequence_cdor.gox:2:1
-	this.MdCode(`sequence
-scon("alice", "bob").label("What does it mean\nto be well-adjusted?")
-scon("bob", "alice").label("The ability to play bridge or\ngolf as if they were games.")`)
-//line doc/c15sequence_cdor.gox:5:1
 	this.Node("sequence").Label("").Sequence().Cons(this.Scon("alice", "bob").Label("What does it mean\nto be well-adjusted?"), this.Scon("bob", "alice").Label("The ability to play bridge or\ngolf as if they were games."))
 }
 //line doc/c16shapes_cdor.gox:1
@@ -540,26 +221,22 @@ func (this *c16shapes) Main() {
 //line doc/c16shapes_cdor.gox:1:1
 	this.GridCols(1).GridGap(0)
 //line doc/c16shapes_cdor.gox:3:1
-	this.MdCode("shapes:")
-//line doc/c16shapes_cdor.gox:4:1
 	op := this.Opt().Label("").Fill("transparent").Stroke("transparent")
-//line doc/c16shapes_cdor.gox:6:1
+//line doc/c16shapes_cdor.gox:5:1
 	this.Node("1").Opt(op).Children(this.Node("rectangle").Shape("rectangle"), this.Node("square").Shape("square"), this.Node("page").Shape("page"), this.Node("parallelogram").Shape("parallelogram"))
-//line doc/c16shapes_cdor.gox:12:1
+//line doc/c16shapes_cdor.gox:11:1
 	this.Node("2").Opt(op).Children(this.Node("document").Shape("document"), this.Node("cylinder").Shape("cylinder"), this.Node("queue").Shape("queue"), this.Node("package").Shape("package"), this.Node("step").Shape("step"))
-//line doc/c16shapes_cdor.gox:19:1
+//line doc/c16shapes_cdor.gox:18:1
 	this.Node("3").Opt(op).Children(this.Node("callout").Shape("callout"), this.Node("stored_data").Shape("stored_data"), this.Node("person").Shape("person"), this.Node("diamond").Shape("diamond"))
-//line doc/c16shapes_cdor.gox:25:1
+//line doc/c16shapes_cdor.gox:24:1
 	this.Node("4").Opt(op).Children(this.Node("oval").Shape("oval"), this.Node("circle").Shape("circle"), this.Node("hexagon").Shape("hexagon"), this.Node("cloud").Shape("cloud"))
 }
-//line doc/c17opacity_cdor.gox:1
-func (this *c17opacity) Main() {
-//line doc/c17opacity_cdor.gox:1:1
-	this.Direction("right")
-//line doc/c17opacity_cdor.gox:2:1
-	this.Node("x").Opacity(0)
-//line doc/c17opacity_cdor.gox:3:1
-	this.Node("y").Opacity(0.7)
-//line doc/c17opacity_cdor.gox:4:1
-	this.Scon("x", "y").Opacity(0.4)
+//line doc/c18icon_cdor.gox:3
+func (this *c18icon) Main() {
+//line doc/c18icon_cdor.gox:3:1
+	iconPath := filepath.Join("doc", "examples", "icons", "github.svg")
+//line doc/c18icon_cdor.gox:4:1
+	this.Node("github").Icon(iconPath)
+//line doc/c18icon_cdor.gox:5:1
+	this.Node("gg").Icon(iconPath).Shape("image")
 }

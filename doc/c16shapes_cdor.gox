@@ -1,6 +1,5 @@
 gridCols(1).gridGap(0)
 
-mdCode "shapes:"
 op := opt.label("").fill("transparent").stroke("transparent")
 
 node("1").opt(op).children(

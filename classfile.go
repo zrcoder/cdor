@@ -8,13 +8,7 @@ type IMain interface {
 
 type IWorker interface {
 	init()
-	Gen() ([]byte, error)
-	getNodes() []*node
-	getCons() []*connection
-	getConfig() *config
-	getBaseOption() *option
-	ApplyOption(*option) *Cdor
-	ApplyConfig(*config) *Cdor
+	cdor() *Cdor
 }
 
 type App = Mgr

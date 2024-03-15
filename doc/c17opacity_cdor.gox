@@ -1,6 +1,0 @@
-direction "right"
-node("x").opacity(0)
-node("y").opacity(0.7)
-scon("x", "y").opacity(0.4)
-
-

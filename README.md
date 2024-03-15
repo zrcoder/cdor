@@ -11,26 +11,16 @@ Write Go+/Go code to make diagrams.
 ## examples
 
 ![hello](doc/examples/hello.svg)
-![id](doc/examples/id.svg)
-![shape](doc/examples/shape.svg)
-![connections](doc/examples/connections.svg)
-![containers](doc/examples/containers.svg)
 ![md](doc/examples/md.svg)
 ![latex](doc/examples/latex.svg)
 ![sql_table](doc/examples/sql_table.svg)
 ![class](doc/examples/class.svg)
-![json](doc/examples/json.svg)
 ![jsonn](doc/examples/jsonn.svg)
-![toml](doc/examples/toml.svg)
-![tomln](doc/examples/tomln.svg)
-![yaml](doc/examples/yaml.svg)
-![yamln](doc/examples/yamln.svg)
 ![obj](doc/examples/obj.svg)
-![objn](doc/examples/objn.svg)
 ![grid](doc/examples/grid.svg)
 ![sequence](doc/examples/sequence.svg)
 ![shapes](doc/examples/shapes.svg)
-![opacity](doc/examples/opacity.svg)
+![icon](doc/examples/icon.svg)
 
 see [doc](doc) for details.
 
@@ -82,7 +72,7 @@ con "a", "b"
 
 modify `main_cdor.gox` to:
 ```c
-saveFiles
+saveFiles ""
 ```
 
 after `gop run`, you'll find `hi1.svg` and `hi2.svg` generated.
@@ -138,9 +128,3 @@ theme ids:
 | Dark Mauve |  200 |
 | Dark Flagship Terrastruct |  201 |
 
-## TODO
-
-- [ ] special shapes
-    - [x] sequece
-    - [x] grid
-    - [ ] icons/images

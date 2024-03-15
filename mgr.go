@@ -13,10 +13,10 @@ type Mgr struct {
 	workerNames []string
 }
 
-func (a *Mgr) RangeDiagrams(action func(string, []byte, error) error, diagrams ...string) {
-	a.rangeAction(func(name string, worker IWorker) {
-		data, err := worker.Gen()
-		if action(name, data, err) != nil {
+func (m *Mgr) RangeCdors(action func(string, *Cdor, error) error, diagrams ...string) {
+	m.rangeAction(func(name string, worker IWorker) {
+		c := worker.cdor()
+		if action(name, c, c.err) != nil {
 			return
 		}
 	}, diagrams)
@@ -24,13 +24,13 @@ func (a *Mgr) RangeDiagrams(action func(string, []byte, error) error, diagrams .
 
 func (a *Mgr) ApplyConfig(cfg *config, diagrams ...string) {
 	a.rangeAction(func(name string, worker IWorker) {
-		worker.ApplyConfig(cfg)
+		worker.cdor().ApplyConfig(cfg)
 	}, diagrams)
 }
 
-func (a *Mgr) ApplyOptionAll(opt *option, diagrams ...string) {
+func (a *Mgr) ApplyOption(opt *option, diagrams ...string) {
 	a.rangeAction(func(name string, worker IWorker) {
-		worker.ApplyOption(opt)
+		worker.cdor().ApplyOption(opt)
 	}, diagrams)
 }
 
@@ -43,10 +43,10 @@ func (a *Mgr) Merge(diagrams ...string) *Cdor {
 		res.connections = append(res.connections, a.connections...)
 	}
 	a.rangeAction(func(name string, worker IWorker) {
-		res.ApplyConfig(worker.getConfig())
-		res.ApplyOption(worker.getBaseOption())
-		res.nodes = append(res.nodes, worker.getNodes()...)
-		res.connections = append(res.connections, worker.getCons()...)
+		res.ApplyConfig(worker.cdor().config)
+		res.ApplyOption(worker.cdor().cdor().globalOption)
+		res.nodes = append(res.nodes, worker.cdor().nodes...)
+		res.connections = append(res.connections, worker.cdor().connections...)
 	}, diagrams)
 
 	return res
@@ -60,7 +60,7 @@ func (a *Mgr) SaveFiles(dir string, diagrams ...string) (err error) {
 	}
 	a.rangeAction(func(name string, worker IWorker) {
 		var data []byte
-		if data, err = worker.Gen(); err != nil {
+		if data, err = worker.cdor().Gen(); err != nil {
 			return
 		}
 		file := filepath.Join(dir, fmt.Sprintf("%s.svg", name))

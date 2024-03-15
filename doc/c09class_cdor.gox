@@ -1,9 +1,3 @@
-mdCode `node("MyClass").
-	shape("class").
-	field("Age", "int").
-	field("+ Field", "[]string").
-	field("- method(a uint64)", "(x, y int)").
-	field("# peekn(n int)", "(s string, eof bool)")`
 node("MyClass").
 	shape("class").
 	field("Age", "int").

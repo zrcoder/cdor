@@ -22,13 +22,19 @@ import (
 	"oss.terrastruct.com/d2/d2renderers/d2fonts"
 	"oss.terrastruct.com/d2/d2renderers/d2svg"
 	"oss.terrastruct.com/d2/d2target"
+	"oss.terrastruct.com/d2/lib/imgbundler"
 	"oss.terrastruct.com/d2/lib/log"
+	"oss.terrastruct.com/d2/lib/simplelog"
 	"oss.terrastruct.com/d2/lib/textmeasure"
 )
 
 func (c *Cdor) init() {
 	c.config = c.Cfg()
 	c.globalOption = c.Opt()
+}
+
+func (c *Cdor) cdor() *Cdor {
+	return c
 }
 
 func (c *Cdor) buildGraph() {
@@ -131,7 +137,14 @@ func (c *Cdor) genSvg() (svg []byte) {
 		return
 	}
 
-	svg, c.err = d2svg.Render(diagram, renderOpt)
+	if svg, c.err = d2svg.Render(diagram, renderOpt); c.err != nil {
+		return
+	}
+	lg := simplelog.FromLibLog(ctx)
+	if svg, c.err = imgbundler.BundleLocal(ctx, lg, svg, true); c.err != nil {
+		return
+	}
+	svg, c.err = imgbundler.BundleRemote(ctx, lg, svg, true)
 	return
 }
 
@@ -291,18 +304,6 @@ func (c *Cdor) d2() string {
 	return d2format.Format(c.graph.AST)
 }
 
-func (c *Cdor) getCons() []*connection {
-	return c.connections
-}
-func (c *Cdor) getNodes() []*node {
-	return c.nodes
-}
-func (c *Cdor) getConfig() *config {
-	return c.config
-}
-func (c *Cdor) getBaseOption() *option {
-	return c.globalOption
-}
 func (c *Cdor) json(json string) (nodes []*node, cons []*connection) {
 	if !gjson.Valid(json) {
 		c.err = errors.New("invalid json")

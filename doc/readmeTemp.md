@@ -61,7 +61,7 @@ con "a", "b"
 
 modify `main_cdor.gox` to:
 ```c
-saveFiles
+saveFiles ""
 ```
 
 after `gop run`, you'll find `hi1.svg` and `hi2.svg` generated.
@@ -117,9 +117,3 @@ theme ids:
 | Dark Mauve |  200 |
 | Dark Flagship Terrastruct |  201 |
 
-## TODO
-
-- [ ] special shapes
-    - [x] sequece
-    - [x] grid
-    - [ ] icons/images
