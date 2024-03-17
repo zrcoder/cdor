@@ -1,3 +1,0 @@
-person := Person{Name: "Tom", Age: 27}
-
-obj person

@@ -14,13 +14,9 @@ Write Go+/Go code to make diagrams.
 ![md](doc/examples/md.svg)
 ![latex](doc/examples/latex.svg)
 ![sql_table](doc/examples/sql_table.svg)
-![class](doc/examples/class.svg)
 ![jsonn](doc/examples/jsonn.svg)
-![obj](doc/examples/obj.svg)
-![grid](doc/examples/grid.svg)
-![sequence](doc/examples/sequence.svg)
-![shapes](doc/examples/shapes.svg)
 ![icon](doc/examples/icon.svg)
+![shapes](doc/examples/shapes.svg)
 
 see [doc](doc) for details.
 
@@ -54,10 +50,6 @@ gop mod tidy
 gop run .
 ```
 
-you'll find `hi.svg` generated:
-
-![hi](doc/usage/single.svg)
-
 #### multiple diagrams
 
 create `hi1_cdor.gox` with content:
@@ -86,14 +78,30 @@ con "a", "x"
 merge().saveFile "merged.svg"
 ```
 
-after `gop run`, we got a generated `merged.svg`:
-
-![merged](doc/usage/merged.svg)
+after `gop run`, we got a generated `merged.svg`.
 
 we can also merge specific diagrams by their names:
 
 ```c
 merge("hi1", "hi2").saveFile("res.svg")
+```
+
+#### range diagrams
+
+you can range all the diagrams:
+
+```c
+rangeCdors (name, cdor, err) => {
+    // do something with cdor
+}
+```
+
+or range part of the diagrams: 
+
+```c
+rangeCdors (name, cdor, err) => {
+    // do somthing with cdor
+}, "hi1", "hi2"
 ```
 
 ## config

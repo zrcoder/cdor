@@ -1,6 +1,0 @@
-const dotQuote = "`"
-
-type Person struct {
-	Name string
-	Age  int
-}

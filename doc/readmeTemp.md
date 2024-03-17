@@ -43,10 +43,6 @@ gop mod tidy
 gop run .
 ```
 
-you'll find `hi.svg` generated:
-
-![hi](doc/usage/single.svg)
-
 #### multiple diagrams
 
 create `hi1_cdor.gox` with content:
@@ -75,14 +71,30 @@ con "a", "x"
 merge().saveFile "merged.svg"
 ```
 
-after `gop run`, we got a generated `merged.svg`:
-
-![merged](doc/usage/merged.svg)
+after `gop run`, we got a generated `merged.svg`.
 
 we can also merge specific diagrams by their names:
 
 ```c
 merge("hi1", "hi2").saveFile("res.svg")
+```
+
+#### range diagrams
+
+you can range all the diagrams:
+
+```c
+rangeCdors (name, cdor, err) => {
+    // do something with cdor
+}
+```
+
+or range part of the diagrams: 
+
+```c
+rangeCdors (name, cdor, err) => {
+    // do somthing with cdor
+}, "hi1", "hi2"
 ```
 
 ## config
