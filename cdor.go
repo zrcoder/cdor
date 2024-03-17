@@ -14,30 +14,160 @@ func Ctx() *Cdor {
 	return c
 }
 
-// Node creats a node
-func (c *Cdor) Node(id string, opt ...*option) *node {
+// Node creats a node with default shape rectangle
+func (c *Cdor) Node(id string) *node {
 	node := &node{
 		id:     id,
 		option: c.Opt(),
 		Cdor:   c,
 	}
-	if len(opt) > 0 {
-		node.option = opt[0]
-	}
 	c.nodes = append(c.nodes, node)
 	return node
 }
 
+// Rectangle creates a rectangle node
+func (c *Cdor) Rectangle(id string) *node {
+	return c.Node(id).Shape("rectangle")
+}
+
+// Square creates a square node
+func (c *Cdor) Square(id string) *node {
+	return c.Node(id).Shape("square")
+}
+
+// Page creates a page node
+func (c *Cdor) Page(id string) *node {
+	return c.Node(id).Shape("page")
+}
+
+// Parallelogram creates a parallelogram node
+func (c *Cdor) Parallelogram(id string) *node {
+	return c.Node(id).Shape("parallelogram")
+}
+
+// Document creates a document node
+func (c *Cdor) Document(id string) *node {
+	return c.Node(id).Shape("document")
+}
+
+// Cylinder creates a cylinder node
+func (c *Cdor) Cylinder(id string) *node {
+	return c.Node(id).Shape("cylinder")
+}
+
+// Queue creates a queue node
+func (c *Cdor) Queue(id string) *node {
+	return c.Node(id).Shape("queue")
+}
+
+// Pkg creates a package node
+func (c *Cdor) Pkg(id string) *node {
+	return c.Node(id).Shape("package")
+}
+
+// Step creates a step node
+func (c *Cdor) Step(id string) *node {
+	return c.Node(id).Shape("step")
+}
+
+// Callout creates a callout node
+func (c *Cdor) Callout(id string) *node {
+	return c.Node(id).Shape("callout")
+}
+
+// StoredData creates a stored_data node
+func (c *Cdor) StoredData(id string) *node {
+	return c.Node(id).Shape("stored_data")
+}
+
+// Person creates a person node
+func (c *Cdor) Person(id string) *node {
+	return c.Node(id).Shape("person")
+}
+
+// Diamond creates a diamond node
+func (c *Cdor) Diamond(id string) *node {
+	return c.Node(id).Shape("diamond")
+}
+
+// Oval creates a oval node
+func (c *Cdor) Oval(id string) *node {
+	return c.Node(id).Shape("oval")
+}
+
+// Circle creates a circle node
+func (c *Cdor) Circle(id string) *node {
+	return c.Node(id).Shape("circle")
+}
+
+// Hexagon creates a hexagon node
+func (c *Cdor) Hexagon(id string) *node {
+	return c.Node(id).Shape("hexagon")
+}
+
+// Cloud creates a cloud node
+func (c *Cdor) Cloud(id string) *node {
+	return c.Node(id).Shape("cloud")
+}
+
+// SqlTable creates a sql_table node
+func (c *Cdor) SqlTable(id string) *node {
+	return c.Node(id).Shape("sql_table")
+}
+
+// Image creates an image node
+func (c *Cdor) Image(id string) *node {
+	return c.Node(id).Shape("image")
+}
+
+// Class creates a uml class node
+func (c *Cdor) Class(id string) *node {
+	return c.Node(id).Shape("class")
+}
+
+// Code creates a code node
+func (c *Cdor) Code(id, tag, code string) *node {
+	if tag == "latex" || tag == "tex" {
+		code = strings.ReplaceAll(code, `\`, `\\`)
+	}
+	node := c.Node(id)
+	node.codeTag = tag
+	node.code = code
+	return node
+}
+
+// MdCode creates a node with md code style
+func (c *Cdor) MdCode(code string, id ...string) *node {
+	const mdCodeTemp = "```\n%s\n```"
+	key := "md"
+	if len(id) > 0 {
+		key = id[0]
+	}
+	return c.Markdown(key, fmt.Sprintf(mdCodeTemp, code))
+}
+
+// Markdown creates a markdown node
+func (c *Cdor) Markdown(id, content string) *node {
+	return c.Code(id, "md", content)
+}
+
+// Latex creates a latex node
+func (c *Cdor) Latex(id, content string) *node {
+	return c.Code(id, "latex", content)
+}
+
+// Text creates a text node
+func (c *Cdor) Text(id, content string) *node {
+	return c.Code(id, "text", content)
+}
+
 // Con creats a connection
-func (c *Cdor) Con(src, dst string, opt ...*conOption) *connection {
+func (c *Cdor) Con(src, dst string) *connection {
 	con := &connection{
 		src:       src,
 		dst:       dst,
 		conOption: &conOption{},
 		Cdor:      c,
-	}
-	if len(opt) > 0 {
-		con.conOption = opt[0]
 	}
 	con.conOption.option = *c.Opt()
 	con.conOption.arrow.srcHead = *c.Opt()
@@ -47,8 +177,8 @@ func (c *Cdor) Con(src, dst string, opt ...*conOption) *connection {
 }
 
 // Scon creats a single connection
-func (c *Cdor) Scon(src, dst string, opt ...*conOption) *connection {
-	con := c.Con(src, dst, opt...)
+func (c *Cdor) Scon(src, dst string) *connection {
+	con := c.Con(src, dst)
 	con.isSingle = true
 	return con
 }
@@ -119,16 +249,6 @@ func (c *Cdor) Clear() {
 	c.isSequence = false
 }
 
-// MdCode creates a node with md code style
-func (c *Cdor) MdCode(code string, id ...string) *node {
-	const mdCodeTemp = "```\n%s\n```"
-	key := "md"
-	if len(id) > 0 {
-		key = id[0]
-	}
-	return c.Node(key).Code("md", fmt.Sprintf(mdCodeTemp, code))
-}
-
 // Json creates nodes and connections for a json
 func (c *Cdor) Json(json string) *Cdor {
 	c.direction = "right"
@@ -137,31 +257,49 @@ func (c *Cdor) Json(json string) *Cdor {
 	return c
 }
 
+// Jsonn creates a node with id id and children with json
+func (c *Cdor) Jsonn(id, json string) *node {
+	node := c.Node(id)
+	children, cons := c.json(json)
+	node.Children(children...)
+	node.Cons(cons...)
+	return node
+}
+
 // Yaml creates nodes and connections for a yaml
 func (c *Cdor) Yaml(yaml string) *Cdor {
 	json := c.yaml2json(yaml)
-	if c.err != nil {
-		return c
-	}
 	return c.Json(json)
 }
 
+// Yamln creats a node with id id and children with yaml
+func (c *Cdor) Yamln(id, yaml string) *node {
+	json := c.yaml2json(yaml)
+	return c.Jsonn(id, json)
+}
+
 // Toml creates nodes and connections for a toml
-func (c *Cdor) Toml(yaml string) *Cdor {
-	json := c.toml2json(yaml)
-	if c.err != nil {
-		return c
-	}
+func (c *Cdor) Toml(toml string) *Cdor {
+	json := c.toml2json(toml)
 	return c.Json(json)
+}
+
+// Tomln creates a node with id id and children with toml
+func (c *Cdor) Tomln(id, toml string) *node {
+	json := c.toml2json(toml)
+	return c.Jsonn(id, json)
 }
 
 // Obj creates nodes and connections for an object
 func (c *Cdor) Obj(x any) *Cdor {
 	json := c.obj2json(x)
-	if c.err != nil {
-		return c
-	}
 	return c.Json(json)
+}
+
+// Objn creates a node with id id and children with obj
+func (c *Cdor) Objn(id string, obj any) *node {
+	json := c.obj2json(obj)
+	return c.Jsonn(id, json)
 }
 
 // GridRows sets the global grid rows
@@ -216,16 +354,6 @@ func (n *node) Cons(cons ...*connection) *node {
 // Opt sets the node's option
 func (n *node) Opt(opt *option) *node {
 	n.option.Apply(opt)
-	return n
-}
-
-// Code creates a code node
-func (n *node) Code(tag, code string) *node {
-	if tag == "latex" || tag == "tex" {
-		code = strings.ReplaceAll(code, `\`, `\\`)
-	}
-	n.codeTag = tag
-	n.code = code
 	return n
 }
 
@@ -466,8 +594,8 @@ func (c *connection) Opt(opt *conOption) *connection {
 }
 
 // Con create a connection from current connection's destination to dst
-func (c *connection) Con(dst string, opt ...*conOption) *connection {
-	return c.Cdor.Con(c.dst, dst, opt...)
+func (c *connection) Con(dst string) *connection {
+	return c.Cdor.Con(c.dst, dst)
 }
 
 func (c *connection) Label(label string) *connection {
@@ -799,10 +927,15 @@ func (c *config) Direction(dir string) *config {
 	return c
 }
 
-// Sequence sets if the diagram is a sequence
-func (c *config) Sequence(b ...bool) *config {
-	c.isSequence = *solveBool(b)
+// Sequence sets the diagram as a sequence
+func (c *config) Sequence() *config {
+	c.isSequence = true
 	return c
+}
+
+// Sequencen creates a node with a sequence shape
+func (c *Cdor) Sequencen(id string) *node {
+	return c.Node(id).Sequence()
 }
 
 // const
@@ -882,56 +1015,40 @@ func (c *Cdor) DarkFlagshipTerrastruct() int {
 	return 201
 }
 
-// shapes
+// arrow head shapes
 
-func (c *Cdor) Rectangle() string {
-	return "rectangle"
+func (c *Cdor) HeadTriangle() string {
+	return "triangle"
 }
-func (c *Cdor) Square() string {
-	return "square"
+func (c *Cdor) HeadArrow() string {
+	return "arrow"
 }
-func (c *Cdor) Page() string {
-	return "page"
-}
-func (c *Cdor) Parallelogram() string {
-	return "parallelogram"
-}
-func (c *Cdor) Document() string {
-	return "document"
-}
-func (c *Cdor) Cylinder() string {
-	return "cylinder"
-}
-func (c *Cdor) Queue() string {
-	return "queue"
-}
-func (c *Cdor) Pkg() string {
-	return "package"
-}
-func (c *Cdor) Step() string {
-	return "step"
-}
-func (c *Cdor) Callout() string {
-	return "callout"
-}
-func (c *Cdor) StoredData() string {
-	return "stored_data"
-}
-func (c *Cdor) Person() string {
-	return "person"
-}
-func (c *Cdor) Diamond() string {
+func (c *Cdor) HeadDiamond() string {
 	return "diamond"
 }
-func (c *Cdor) Oval() string {
-	return "oval"
+func (c *Cdor) HeadCfOne() string {
+	return "cf-one"
 }
-func (c *Cdor) Circle() string {
-	return "circle"
+func (c *Cdor) HeadCfOneRequired() string {
+	return "cf-one-required"
 }
-func (c *Cdor) Hexagon() string {
-	return "hexagon"
+func (c *Cdor) HeadCfMany() string {
+	return "cf-many"
 }
-func (c *Cdor) Cloud() string {
-	return "cloud"
+func (c *Cdor) HeadCfManyRequired() string {
+	return "cf-many-required"
+}
+
+// special shapes
+
+// fill patterns
+
+func (c *Cdor) Dots() string {
+	return "dots"
+}
+func (c *Cdor) Lines() string {
+	return "lines"
+}
+func (c *Cdor) Grain() string {
+	return "grain"
 }

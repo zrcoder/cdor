@@ -4,4 +4,4 @@ mdContent := `# I can do headers
 
   And other normal markdown stuff
 `
-node("markdown").code("md", mdContent)
+markdown "m", mdContent

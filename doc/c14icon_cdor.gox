@@ -2,4 +2,4 @@ import "path/filepath"
 
 iconPath := filepath.join("doc", "examples", "icons", "github.svg")
 node("github").icon(iconPath)
-node("gg").icon(iconPath).shape("image")
+image("gg").icon(iconPath)

@@ -3,27 +3,27 @@ gridCols(1).gridGap(0)
 op := opt.label("").fill("transparent").stroke("transparent")
 
 node("1").opt(op).children(
-	node("rectangle").shape(rectangle),
-	node("square").shape(square),
-	node("page").shape(page),
-	node("parallelogram").shape(parallelogram),
+	rectangle("rectangle"),
+	square("square"),
+	page("page"),
+	parallelogram("parallelogram"),
 )
 node("2").opt(op).children(
-	node("document").shape(document),
-	node("cylinder").shape(cylinder),
-	node("queue").shape(queue),
-	node("package").shape(pkg),
-	node("step").shape(step),
+	document("document"),
+	cylinder("cylinder"),
+	queue("queue"),
+	pkg("package"),
+	step("step"),
 )
 node("3").opt(op).children(
-	node("callout").shape(callout),
-	node("stored_data").shape(storedData),
-	node("person").shape(person),
-	node("diamond").shape(diamond),
+	callout("callout"),
+	storedData("stored_data"),
+	person("person"),
+	diamond("diamond"),
 )
 node("4").opt(op).children(
-	node("oval").shape(oval),
-	node("circle").shape(circle),
-	node("hexagon").shape(hexagon),
-	node("cloud").shape(cloud),
+	oval("oval"),
+	circle("circle"),
+	hexagon("hexagon"),
+	cloud("cloud"),
 )

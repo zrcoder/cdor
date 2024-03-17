@@ -140,19 +140,19 @@ func (this *c06md) Main() {
   And other normal markdown stuff
 `
 //line doc/c06md_cdor.gox:7:1
-	this.Node("markdown").Code("md", mdContent)
+	this.Markdown("m", mdContent)
 }
 //line doc/c07latex_cdor.gox:1
 func (this *c07latex) Main() {
 //line doc/c07latex_cdor.gox:1:1
 	tex := `\lim_{h \rightarrow 0 } \frac{f(x+h)-f(x)}{h}`
 //line doc/c07latex_cdor.gox:2:1
-	this.Node("tex").Code("latex", tex)
+	this.Code("tex", "latex", tex)
 }
 //line doc/c08sql_table_cdor.gox:1
 func (this *c08sql_table) Main() {
 //line doc/c08sql_table_cdor.gox:1:1
-	this.Node("table").Shape("sql_table").Field("id", "int", "primary_key").Field("last_updated", "timestamp with time zone")
+	this.SqlTable("table").Field("id", "int", "primary_key").Field("last_updated", "timestamp with time zone")
 }
 //line doc/c10jsonn_cdor.gox:1
 func (this *c10jsonn) Main() {
@@ -162,7 +162,7 @@ func (this *c10jsonn) Main() {
    "colors": ["Red", "Green"]
 }`
 //line doc/c10jsonn_cdor.gox:6:1
-	this.Node("obj").Json(data)
+	this.Jsonn("obj", data)
 //line doc/c10jsonn_cdor.gox:7:1
 	this.Scon("root", "obj.0")
 //line doc/c10jsonn_cdor.gox:8:1
@@ -175,7 +175,7 @@ func (this *c14icon) Main() {
 //line doc/c14icon_cdor.gox:4:1
 	this.Node("github").Icon(iconPath)
 //line doc/c14icon_cdor.gox:5:1
-	this.Node("gg").Icon(iconPath).Shape("image")
+	this.Image("gg").Icon(iconPath)
 }
 //line doc/c16shapes_cdor.gox:1
 func (this *c16shapes) Main() {
@@ -184,11 +184,11 @@ func (this *c16shapes) Main() {
 //line doc/c16shapes_cdor.gox:3:1
 	op := this.Opt().Label("").Fill("transparent").Stroke("transparent")
 //line doc/c16shapes_cdor.gox:5:1
-	this.Node("1").Opt(op).Children(this.Node("rectangle").Shape(this.Rectangle()), this.Node("square").Shape(this.Square()), this.Node("page").Shape(this.Page()), this.Node("parallelogram").Shape(this.Parallelogram()))
+	this.Node("1").Opt(op).Children(this.Rectangle("rectangle"), this.Square("square"), this.Page("page"), this.Parallelogram("parallelogram"))
 //line doc/c16shapes_cdor.gox:11:1
-	this.Node("2").Opt(op).Children(this.Node("document").Shape(this.Document()), this.Node("cylinder").Shape(this.Cylinder()), this.Node("queue").Shape(this.Queue()), this.Node("package").Shape(this.Pkg()), this.Node("step").Shape(this.Step()))
+	this.Node("2").Opt(op).Children(this.Document("document"), this.Cylinder("cylinder"), this.Queue("queue"), this.Pkg("package"), this.Step("step"))
 //line doc/c16shapes_cdor.gox:18:1
-	this.Node("3").Opt(op).Children(this.Node("callout").Shape(this.Callout()), this.Node("stored_data").Shape(this.StoredData()), this.Node("person").Shape(this.Person()), this.Node("diamond").Shape(this.Diamond()))
+	this.Node("3").Opt(op).Children(this.Callout("callout"), this.StoredData("stored_data"), this.Person("person"), this.Diamond("diamond"))
 //line doc/c16shapes_cdor.gox:24:1
-	this.Node("4").Opt(op).Children(this.Node("oval").Shape(this.Oval()), this.Node("circle").Shape(this.Circle()), this.Node("hexagon").Shape(this.Hexagon()), this.Node("cloud").Shape(this.Cloud()))
+	this.Node("4").Opt(op).Children(this.Oval("oval"), this.Circle("circle"), this.Hexagon("hexagon"), this.Cloud("cloud"))
 }

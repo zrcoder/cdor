@@ -1,2 +1,2 @@
 tex := `\lim_{h \rightarrow 0 } \frac{f(x+h)-f(x)}{h}`
-node("tex").code("latex", tex)
+code("tex", "latex", tex)

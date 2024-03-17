@@ -6,7 +6,7 @@ Generate diagrams with Go+/Go code.
 
 `cdor` is inspired and powered by `d2`, the difference is:
 
-> d2 is a `DSL` (Domain Specific Language), But cdor is `SDF` (Specific Domain Friendliness), we just write common programming laguages (Go+/Go) to generate diagrams.
+d2 is a `DSL` (Domain Specific Language), But cdor is `SDF` (Specific Domain Friendliness), we just write common programming laguages (Go+/Go) to generate diagrams.
 
 ## examples
 
@@ -102,10 +102,4 @@ or range part of the diagrams:
 rangeCdors (name, cdor, err) => {
     // do somthing with cdor
 }, "hi1", "hi2"
-```
-
-## config
-
-```c
-cfg.direction(right).sketch.elkLayout.theme(butteredToast).darkTheme(darkMauve)
 ```

@@ -3,6 +3,6 @@ data := `{
    "colors": ["Red", "Green"]
 }`
 
-node("obj").json(data)
+jsonn "obj", data // same as: node("obj").json(data)
 scon "root", "obj.0"
 direction right

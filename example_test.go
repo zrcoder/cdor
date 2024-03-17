@@ -6,7 +6,7 @@ import (
 
 func Example_hello() {
 	c := Ctx()
-	c.Direction("right")
+	c.Direction(c.Right())
 	c.Con("Go+", "Go").Label("cdor")
 	fmt.Println(c.d2())
 	// Output:
@@ -42,7 +42,7 @@ func Example_label() {
 
 func Example_shape() {
 	c := Ctx()
-	c.Node("cloud").Shape("cloud")
+	c.Cloud("cloud")
 	fmt.Println(c.d2())
 	// Output:
 	// cloud: {shape: cloud}
@@ -62,8 +62,8 @@ func Example_connection_arrow() {
 	c := Ctx()
 	c.Con("x", "y").
 		Stroke("red").
-		SrcHeadLabel("from").SrcHeadShape("arrow").
-		DstHeadLabel("to").DstHeadShape("diamond").DstHeadFilled()
+		SrcHeadLabel("from").SrcHeadShape(c.HeadArrow()).
+		DstHeadLabel("to").DstHeadShape(c.HeadDiamond()).DstHeadFilled()
 	fmt.Println(c.d2())
 	// Output:
 	// x <-> y: {
@@ -129,11 +129,11 @@ func Example_same_name_sub_containers() {
 
 func Example_code() {
 	c := Ctx()
-	c.Node("markdown").Code("md", `# Hi cdor
+	c.Code("markdown", "md", `# Hi cdor
 	- Go+
 	- Go
 	`)
-	c.Node("latex").Code("latex", `\lim_{h \rightarrow 0 } \frac{f(x+h)-f(x)}{h}`)
+	c.Code("latex", "latex", `\lim_{h \rightarrow 0 } \frac{f(x+h)-f(x)}{h}`)
 	fmt.Println(c.d2())
 	// Output:
 	// markdown: |md
@@ -147,7 +147,7 @@ func Example_code() {
 func Example_icon() {
 	c := Ctx()
 	c.Node("github").Icon("https://icons.terrastruct.com/dev/github.svg")
-	c.Node("gg").Icon("https://icons.terrastruct.com/dev/github.svg").Shape("image")
+	c.Image("gg").Icon("https://icons.terrastruct.com/dev/github.svg")
 	fmt.Println(c.d2())
 	// Output:
 	// github: {icon: https://icons.terrastruct.com/dev/github.svg}
@@ -160,7 +160,7 @@ func Example_icon() {
 
 func Example_sql_table() {
 	c := Ctx()
-	c.Node("table").Shape("sql_table").
+	c.SqlTable("table").
 		Field("id", "int", "primary_key").
 		Field("last_updated", "timestamp with time zone")
 	fmt.Println(c.d2())
@@ -175,8 +175,7 @@ func Example_sql_table() {
 
 func Example_class() {
 	c := Ctx()
-	c.Node("MyClass").
-		Shape("class").
+	c.Class("MyClass").
 		Field("field", "[]string").
 		Field("method(a uint64)", "(x, y int)").
 		Field(`# peekn(n int)`, "(s string, eof bool)")
@@ -273,7 +272,7 @@ func Example_grid() {
 	// "15.999"
 	// "-218.79"
 }
-func Example_sequece() {
+func Example_sequence() {
 	c := Ctx()
 	c.Sequence()
 	c.Scon("alice", "bob").Label("What does it mean\nto be well-adjusted?")
@@ -287,7 +286,7 @@ func Example_sequece() {
 
 func Example_opacity() {
 	c := Ctx()
-	c.Direction("right")
+	c.Direction(c.Right())
 	c.Node("x").Opacity(0)
 	c.Node("y").Opacity(0.7)
 	c.Scon("x", "y").Opacity(0.4)
@@ -301,10 +300,10 @@ func Example_opacity() {
 
 func Example_fillpattern() {
 	c := Ctx()
-	c.Direction("right")
-	c.FillPattern("dots")
-	c.Node("x").FillPattern("lines")
-	c.Node("y").FillPattern("grain")
+	c.Direction(c.Right())
+	c.FillPattern(c.Dots())
+	c.Node("x").FillPattern(c.Lines())
+	c.Node("y").FillPattern(c.Grain())
 	c.Scon("x", "y").Label("hi")
 	fmt.Println(c.d2())
 	// Output:
@@ -317,7 +316,7 @@ func Example_fillpattern() {
 
 func Example_strokeWidth() {
 	c := Ctx()
-	c.Direction("right")
+	c.Direction(c.Right())
 	c.Node("x").StrokeWidth(1)
 	c.Scon("x", "y").StrokeWidth(8)
 	fmt.Println(c.d2())
@@ -381,7 +380,7 @@ func Example_multiple() {
 func Example_doubleBorder() {
 	c := Ctx()
 	c.Node("x").DoubleBorder()
-	c.Node("y").Shape("circle").DoubleBorder()
+	c.Circle("y").DoubleBorder()
 	c.Scon("x", "y").Label("hi")
 	fmt.Println(c.d2())
 	// Output:
