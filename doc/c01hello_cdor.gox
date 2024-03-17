@@ -1,2 +1,2 @@
-direction "right"
+direction right
 con("Go+", "Go").label("cdor")

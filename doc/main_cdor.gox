@@ -6,7 +6,7 @@ import (
 
 const cdorSuffix = "_cdor.gox"
 
-applyConfig(cfg.elkLayout().sketch())
+applyConfig cfg.sketch().elkLayout().theme(butteredToast).darkTheme(darkMauve)
 
 buf := bytes.newBuffer(nil)
 

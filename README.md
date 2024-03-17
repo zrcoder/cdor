@@ -1,6 +1,6 @@
 # cdor
 
-Write Go+/Go code to make diagrams.
+Generate diagrams with Go+/Go code.
 
 ## cdor vs [d2](https://d2lang.com)
 
@@ -107,32 +107,5 @@ rangeCdors (name, cdor, err) => {
 ## config
 
 ```c
-cfg.direction("right").sketch().elkLayout().theme(105).darkTheme(200)
+cfg.direction(right).sketch.elkLayout.theme(butteredToast).darkTheme(darkMauve)
 ```
-
-directions: `down`(default), `up`, `left`, `right`
-
-theme ids:
-
-| Theme | ID |
-|---|---|
-| Neutral default |  0 |
-| Neutral Grey |  1 |
-| Flagship Terrastruct |  3 |
-| Cool classics |  4 |
-| Mixed berry blue |  5 |
-| Grape soda |  6 |
-| Aubergine |  7 |
-| Colorblind clear |  8 |
-| Vanilla nitro cola |  100 |
-| Orange creamsicle |  101 |
-| Shirley temple |  102 |
-| Earth tones |  103 |
-| Everglade green |  104 |
-| Buttered toast |  105 |
-| Terminal |  300 |
-| Terminal Grayscale |  301 |
-| Origami |  302 |
-| Dark Mauve |  200 |
-| Dark Flagship Terrastruct |  201 |
-

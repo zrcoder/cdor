@@ -65,7 +65,7 @@ func (c *Cdor) Gen() (svg []byte, err error) {
 // Cfg creates a default config
 func (c *Cdor) Cfg() *config {
 	res := &config{}
-	return res.DarkTheme(DarkMauve)
+	return res.DarkTheme(c.DarkMauve())
 }
 
 // Opt creates a default option
@@ -805,26 +805,133 @@ func (c *config) Sequence(b ...bool) *config {
 	return c
 }
 
-const (
-	// Light themes:
-	Neutral           = 0
-	NeutralGrey       = 1
-	Flagship          = 3
-	Cool              = 4
-	MixedBerryBlue    = 5
-	GrapeSoda         = 6
-	Aubergine         = 7
-	ColorblindClear   = 8
-	VanillaNitroCola  = 100
-	OrangeCreamsicle  = 101
-	ShirleyTemple     = 102
-	EarthTones        = 103
-	EvergladeGreen    = 104
-	ButteredToast     = 105
-	Terminal          = 300
-	TerminalGrayscale = 301
-	Origami           = 302
-	// Dark themes:
-	DarkMauve               = 200
-	DarkFlagshipTerrastruct = 201
-)
+// const
+
+// directions
+
+func (c *Cdor) Right() string {
+	return "right"
+}
+func (c *Cdor) Left() string {
+	return "left"
+}
+func (c *Cdor) Up() string {
+	return "up"
+}
+func (c *Cdor) Down() string {
+	return "down"
+}
+
+// themes
+
+func (c *Cdor) Neutral() int {
+	return 0
+}
+func (c *Cdor) NeutralGrey() int {
+	return 1
+}
+func (c *Cdor) Flagship() int {
+	return 3
+}
+func (c *Cdor) Cool() int {
+	return 4
+}
+func (c *Cdor) MixedBerryBlue() int {
+	return 5
+}
+func (c *Cdor) GrapeSoda() int {
+	return 6
+}
+func (c *Cdor) Aubergine() int {
+	return 7
+}
+func (c *Cdor) ColorblindClear() int {
+	return 8
+}
+func (c *Cdor) VanillaNitroCola() int {
+	return 100
+}
+func (c *Cdor) OrangeCreamsicle() int {
+	return 101
+}
+func (c *Cdor) ShirleyTemple() int {
+	return 102
+}
+func (c *Cdor) EarthTones() int {
+	return 103
+}
+func (c *Cdor) EvergladeGreen() int {
+	return 104
+}
+func (c *Cdor) ButteredToast() int {
+	return 105
+}
+func (c *Cdor) Terminal() int {
+	return 300
+}
+func (c *Cdor) TerminalGrayscale() int {
+	return 301
+}
+func (c *Cdor) Origami() int {
+	return 302
+}
+func (c *Cdor) DarkMauve() int {
+	return 200
+}
+func (c *Cdor) DarkFlagshipTerrastruct() int {
+	return 201
+}
+
+// shapes
+
+func (c *Cdor) Rectangle() string {
+	return "rectangle"
+}
+func (c *Cdor) Square() string {
+	return "square"
+}
+func (c *Cdor) Page() string {
+	return "page"
+}
+func (c *Cdor) Parallelogram() string {
+	return "parallelogram"
+}
+func (c *Cdor) Document() string {
+	return "document"
+}
+func (c *Cdor) Cylinder() string {
+	return "cylinder"
+}
+func (c *Cdor) Queue() string {
+	return "queue"
+}
+func (c *Cdor) Pkg() string {
+	return "package"
+}
+func (c *Cdor) Step() string {
+	return "step"
+}
+func (c *Cdor) Callout() string {
+	return "callout"
+}
+func (c *Cdor) StoredData() string {
+	return "stored_data"
+}
+func (c *Cdor) Person() string {
+	return "person"
+}
+func (c *Cdor) Diamond() string {
+	return "diamond"
+}
+func (c *Cdor) Oval() string {
+	return "oval"
+}
+func (c *Cdor) Circle() string {
+	return "circle"
+}
+func (c *Cdor) Hexagon() string {
+	return "hexagon"
+}
+func (c *Cdor) Cloud() string {
+	return "cloud"
+}
