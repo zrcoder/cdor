@@ -63,11 +63,12 @@ func Example_connection_arrow() {
 	c.Con("x", "y").
 		Stroke("red").
 		SrcHeadLabel("from").SrcHeadShape("arrow").
-		DstHeadLabel("to").DstHeadShape("diamond")
+		DstHeadLabel("to").DstHeadShape("diamond").DstHeadFilled()
 	fmt.Println(c.d2())
 	// Output:
 	// x <-> y: {
 	//   style.stroke: red
+	//   target-arrowhead.style.filled: true
 	//   source-arrowhead.label: from
 	//   source-arrowhead.shape: arrow
 	//   target-arrowhead.label: to
@@ -358,7 +359,7 @@ func Example_shadow() {
 	// x -> y: hi
 }
 
-func Example_3d() {
+func Example_is3d() {
 	c := Ctx()
 	c.Node("x").Is3d()
 	c.Scon("x", "y").Label("hi")

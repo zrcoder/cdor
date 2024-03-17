@@ -433,6 +433,13 @@ func (c *connection) SrcHeadLabel(label string) *connection {
 	return c
 }
 
+// SrcHeadFilled sets if the connection's source head is filled
+func (c *connection) SrcHeadFilled(f ...bool) *connection {
+	c.srcHead.filledFlag = true
+	c.srcHead.filled = *solveBool(f)
+	return c
+}
+
 // DstHeadShape sets the connection's target head shape
 func (c *connection) DstHeadShape(shape string) *connection {
 	c.dstHead.shape = shape
@@ -442,6 +449,13 @@ func (c *connection) DstHeadShape(shape string) *connection {
 // DstHeadLabel sets the connection's target head label
 func (c *connection) DstHeadLabel(label string) *connection {
 	c.dstHead.label = label
+	return c
+}
+
+// DstHeadFilled sets if the connection's target head is filled
+func (c *connection) DstHeadFilled(f ...bool) *connection {
+	c.dstHead.filledFlag = true
+	c.dstHead.filled = *solveBool(f)
 	return c
 }
 

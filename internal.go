@@ -171,14 +171,7 @@ func (c *Cdor) genCon(con *connection) (key string) {
 	}
 	c.apply(key, &con.option)
 
-	c.set(key, "source-arrowhead.label", con.srcHead.label)
-	c.set(key, "source-arrowhead.shape", con.srcHead.shape)
-	c.set(key, "target-arrowhead.label", con.dstHead.label)
-	c.set(key, "target-arrowhead.shape", con.dstHead.shape)
-	/* FIX ME
-
-	Error failed to set "(x <-> y)[0].target-arrowhead.style.filled" to "\"true\"": malformed style setting, expected 2 part path
-	*/
+	// filled must be set firstly than other fields of heads
 	if con.srcHead.filledFlag {
 		s := strconv.FormatBool(con.srcHead.filled)
 		c.set(key, "source-arrowhead.style.filled", s)
@@ -187,7 +180,10 @@ func (c *Cdor) genCon(con *connection) (key string) {
 		s := strconv.FormatBool(con.dstHead.filled)
 		c.set(key, "target-arrowhead.style.filled", s)
 	}
-
+	c.set(key, "source-arrowhead.label", con.srcHead.label)
+	c.set(key, "source-arrowhead.shape", con.srcHead.shape)
+	c.set(key, "target-arrowhead.label", con.dstHead.label)
+	c.set(key, "target-arrowhead.shape", con.dstHead.shape)
 	return
 }
 
@@ -205,12 +201,8 @@ func (c *Cdor) apply(id string, o *option) {
 	}
 	c.set(id, "style.fill", o.fill)
 	c.set(id, "style.stroke", o.stroke)
-	if o.width > 0 {
-		c.set(id, "width", strconv.Itoa(o.width))
-	}
-	if o.height > 0 {
-		c.set(id, "height", strconv.Itoa(o.height))
-	}
+	c.setInt(id, "width", o.width, 1)
+	c.setInt(id, "height", o.height, 1)
 	c.setFloat(id, "style.opacity", o.opacity)
 	c.set(id, "style.fill-pattern", o.fillPattern)
 	c.setInt(id, "style.stroke-width", o.strokeWidth)
@@ -235,12 +227,8 @@ func (c *Cdor) applyGrid(id string, o *option) {
 	if o == nil {
 		return
 	}
-	if o.gridRows > 0 {
-		c.set(id, "grid-rows", strconv.Itoa(o.gridRows))
-	}
-	if o.gridCols > 0 {
-		c.set(id, "grid-columns", strconv.Itoa(o.gridCols))
-	}
+	c.setInt(id, "grid-rows", o.gridRows, 1)
+	c.setInt(id, "grid-columns", o.gridCols, 1)
 	c.setInt(id, "grid-gap", o.gridGap)
 	c.setInt(id, "horizontal-gap", o.horizontalGap)
 	c.setInt(id, "vertical-gap", o.verticalGap)

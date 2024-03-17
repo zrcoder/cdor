@@ -9,13 +9,12 @@ import (
 
 type Mgr struct {
 	Cdor
-	workers     map[string]IWorker
-	workerNames []string
+	cdors     map[string]*Cdor
+	cdorNames []string
 }
 
 func (m *Mgr) RangeCdors(action func(string, *Cdor, error) error, diagrams ...string) {
-	m.rangeAction(func(name string, worker IWorker) {
-		c := worker.cdor()
+	m.rangeAction(func(name string, c *Cdor) {
 		if action(name, c, c.err) != nil {
 			return
 		}
@@ -23,14 +22,14 @@ func (m *Mgr) RangeCdors(action func(string, *Cdor, error) error, diagrams ...st
 }
 
 func (a *Mgr) ApplyConfig(cfg *config, diagrams ...string) {
-	a.rangeAction(func(name string, worker IWorker) {
-		worker.cdor().ApplyConfig(cfg)
+	a.rangeAction(func(name string, c *Cdor) {
+		c.cdor().ApplyConfig(cfg)
 	}, diagrams)
 }
 
 func (a *Mgr) ApplyOption(opt *option, diagrams ...string) {
-	a.rangeAction(func(name string, worker IWorker) {
-		worker.cdor().ApplyOption(opt)
+	a.rangeAction(func(name string, c *Cdor) {
+		c.cdor().ApplyOption(opt)
 	}, diagrams)
 }
 
@@ -42,11 +41,11 @@ func (a *Mgr) Merge(diagrams ...string) *Cdor {
 		res.nodes = append(res.nodes, a.nodes...)
 		res.connections = append(res.connections, a.connections...)
 	}
-	a.rangeAction(func(name string, worker IWorker) {
-		res.ApplyConfig(worker.cdor().config)
-		res.ApplyOption(worker.cdor().cdor().globalOption)
-		res.nodes = append(res.nodes, worker.cdor().nodes...)
-		res.connections = append(res.connections, worker.cdor().connections...)
+	a.rangeAction(func(name string, c *Cdor) {
+		res.ApplyConfig(c.cdor().config)
+		res.ApplyOption(c.cdor().cdor().globalOption)
+		res.nodes = append(res.nodes, c.cdor().nodes...)
+		res.connections = append(res.connections, c.cdor().connections...)
 	}, diagrams)
 
 	return res
@@ -58,9 +57,9 @@ func (a *Mgr) SaveFiles(dir string, diagrams ...string) (err error) {
 			return
 		}
 	}
-	a.rangeAction(func(name string, worker IWorker) {
+	a.rangeAction(func(name string, c *Cdor) {
 		var data []byte
-		if data, err = worker.cdor().Gen(); err != nil {
+		if data, err = c.cdor().Gen(); err != nil {
 			return
 		}
 		file := filepath.Join(dir, fmt.Sprintf("%s.svg", name))
@@ -73,25 +72,25 @@ func (a *Mgr) SaveFiles(dir string, diagrams ...string) (err error) {
 }
 
 func (a *Mgr) init(workers []IWorker) {
-	a.workers = make(map[string]IWorker, len(workers))
-	a.workerNames = make([]string, len(workers))
+	a.cdors = make(map[string]*Cdor, len(workers))
+	a.cdorNames = make([]string, len(workers))
 	for i, worker := range workers {
 		name := reflect.TypeOf(worker).Elem().Name()
-		a.workerNames[i] = name
-		a.workers[name] = worker
+		a.cdorNames[i] = name
+		a.cdors[name] = worker.cdor()
 	}
 	a.Cdor.init()
 }
 
-func (a *Mgr) rangeAction(action func(string, IWorker), diagrams []string) {
+func (a *Mgr) rangeAction(action func(string, *Cdor), diagrams []string) {
 	if len(diagrams) == 0 {
-		diagrams = a.workerNames // for all workers
+		diagrams = a.cdorNames // for all cdors
 	}
 	for _, name := range diagrams {
-		worker, ok := a.workers[name]
+		cdor, ok := a.cdors[name]
 		if !ok {
 			continue
 		}
-		action(name, worker)
+		action(name, cdor)
 	}
 }
