@@ -199,6 +199,8 @@ func (c *Cdor) apply(id string, o *option) {
 	} else {
 		c.set(id, "label", o.label)
 	}
+	c.set(id, "tooltip", o.tooltip)
+	c.set(id, "link", o.link)
 	c.set(id, "style.fill", o.fill)
 	c.set(id, "style.stroke", o.stroke)
 	c.setInt(id, "width", o.width, 1)

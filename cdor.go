@@ -125,6 +125,11 @@ func (c *Cdor) Class(id string) *node {
 	return c.Node(id).Shape("class")
 }
 
+// Text creates a text node
+func (c *Cdor) Text(id, content string) *node {
+	return c.Node(id).Shape("text").Label(content)
+}
+
 // Code creates a code node
 func (c *Cdor) Code(id, tag, code string) *node {
 	if tag == "latex" || tag == "tex" {
@@ -154,11 +159,6 @@ func (c *Cdor) Markdown(id, content string) *node {
 // Latex creates a latex node
 func (c *Cdor) Latex(id, content string) *node {
 	return c.Code(id, "latex", content)
-}
-
-// Text creates a text node
-func (c *Cdor) Text(id, content string) *node {
-	return c.Code(id, "text", content)
 }
 
 // Con creats a connection
@@ -425,6 +425,16 @@ func (n *node) Label(label string) *node {
 
 func (n *node) Shape(shape string) *node {
 	n.shape = shape
+	return n
+}
+
+func (n *node) Tooltip(tip string) *node {
+	n.tooltip = tip
+	return n
+}
+
+func (n *node) Link(link string) *node {
+	n.link = link
 	return n
 }
 
@@ -1017,6 +1027,10 @@ func (c *Cdor) DarkFlagshipTerrastruct() int {
 
 // arrow head shapes
 
+func (c *Cdor) HeadNone() string {
+	return "none"
+}
+
 func (c *Cdor) HeadTriangle() string {
 	return "triangle"
 }
@@ -1038,8 +1052,6 @@ func (c *Cdor) HeadCfMany() string {
 func (c *Cdor) HeadCfManyRequired() string {
 	return "cf-many-required"
 }
-
-// special shapes
 
 // fill patterns
 

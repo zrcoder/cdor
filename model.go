@@ -37,6 +37,8 @@ type option struct {
 	label         string
 	blankLabel    bool
 	shape         string
+	tooltip       string
+	link          string
 	icon          string
 	width         int
 	height        int

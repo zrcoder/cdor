@@ -434,3 +434,19 @@ func Example_boldItalicUnderline() {
 	// y: {style.italic: true}
 	// x -> y: hi {style.bold: true}
 }
+
+func Example_tooltip() {
+	c := Ctx()
+	c.Node("x").Tooltip("Hello,\nWorld!")
+	fmt.Println(c.d2())
+	// Output:
+	// x: {tooltip: "Hello,\nWorld!"}
+}
+
+func Example_link() {
+	c := Ctx()
+	c.Node("cdor").Link("https://github.com/zrcoder/cdor")
+	fmt.Println(c.d2())
+	// Output:
+	// cdor: {link: https://github.com/zrcoder/cdor}
+}
