@@ -69,3 +69,19 @@ func d2() (string, error) {
 
 	return strings.TrimSpace(d2format.Format(graph.AST)), nil
 }
+
+func TestTmp(t *testing.T) {
+	var err error
+	_, graph, _ := d2lib.Compile(context.Background(), "", nil, nil)
+	graph, _, err = d2oracle.Create(graph, nil, "x")
+	if err != nil {
+		t.Error(err)
+	}
+	// TODO
+	pos := "bottom-right"
+	graph, err = d2oracle.Set(graph, nil, "x.label.near", nil, &pos)
+	if err != nil {
+		t.Error(err)
+	}
+	t.Log(d2format.Format(graph.AST))
+}

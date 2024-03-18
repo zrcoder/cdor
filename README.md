@@ -17,6 +17,7 @@ d2 is a `DSL` (Domain Specific Language), But cdor is `SDF` (Specific Domain Fri
 ![jsonn](doc/examples/jsonn.svg)
 ![icon](doc/examples/icon.svg)
 ![shapes](doc/examples/shapes.svg)
+![near](doc/examples/near.svg)
 
 see [doc](doc) for details.
 

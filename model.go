@@ -40,6 +40,9 @@ type option struct {
 	tooltip       string
 	link          string
 	icon          string
+	position      string
+	labelPosition string
+	iconPosition  string
 	width         int
 	height        int
 	gridRows      int

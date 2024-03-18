@@ -43,6 +43,10 @@ type c16shapes struct {
 	cdor.Cdor
 	*App
 }
+type c17near struct {
+	cdor.Cdor
+	*App
+}
 type App struct {
 	cdor.Mgr
 }
@@ -73,7 +77,7 @@ func (this *App) MainEntry() {
 			return err
 		}
 //line doc/main_cdor.gox:25:1
-		cdor.MdCode(string(code))
+		cdor.MdCode(string(code)).Near("center-left")
 //line doc/main_cdor.gox:26:1
 		var data []byte
 //line doc/main_cdor.gox:27:1
@@ -121,7 +125,7 @@ func (this *App) MainEntry() {
 	}
 }
 func main() {
-	cdor.Gopt_App_Main(new(App), new(c01hello), new(c06md), new(c07latex), new(c08sql_table), new(c10jsonn), new(c14icon), new(c16shapes))
+	cdor.Gopt_App_Main(new(App), new(c01hello), new(c06md), new(c07latex), new(c08sql_table), new(c10jsonn), new(c14icon), new(c16shapes), new(c17near))
 }
 //line doc/c01hello_cdor.gox:1
 func (this *c01hello) Main() {
@@ -191,4 +195,15 @@ func (this *c16shapes) Main() {
 	this.Node("3").Opt(op).Children(this.Callout("callout"), this.StoredData("stored_data"), this.Person("person"), this.Diamond("diamond"))
 //line doc/c16shapes_cdor.gox:24:1
 	this.Node("4").Opt(op).Children(this.Oval("oval"), this.Circle("circle"), this.Hexagon("hexagon"), this.Cloud("cloud"))
+}
+//line doc/c17near_cdor.gox:1
+func (this *c17near) Main() {
+//line doc/c17near_cdor.gox:1:1
+	this.Direction(this.Right())
+//line doc/c17near_cdor.gox:2:1
+	this.Node("worker").Icon("https://icons.terrastruct.com/essentials%2F005-programmer.svg").IconNear("outside-top-right")
+//line doc/c17near_cdor.gox:5:1
+	this.Node("profits").Icon("https://icons.terrastruct.com/essentials%2Fprofits.svg").IconNear("outside-top-left")
+//line doc/c17near_cdor.gox:8:1
+	this.Scon("worker", "profits")
 }

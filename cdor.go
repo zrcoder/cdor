@@ -438,6 +438,19 @@ func (n *node) Link(link string) *node {
 	return n
 }
 
+func (n *node) Near(position string) *node {
+	n.position = position
+	return n
+}
+func (n *node) LabelNear(position string) *node {
+	n.labelPosition = position
+	return n
+}
+func (n *node) IconNear(position string) *node {
+	n.iconPosition = position
+	return n
+}
+
 func (n *node) Fill(fill string) *node {
 	n.fill = fill
 	return n

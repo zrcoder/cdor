@@ -201,6 +201,10 @@ func (c *Cdor) apply(id string, o *option) {
 	}
 	c.set(id, "tooltip", o.tooltip)
 	c.set(id, "link", o.link)
+	c.set(id, "near", o.position)
+	c.set(id, "icon.near", o.iconPosition)
+	// c.set(id, "label.near", o.labelPosition) // TODO
+
 	c.set(id, "style.fill", o.fill)
 	c.set(id, "style.stroke", o.stroke)
 	c.setInt(id, "width", o.width, 1)

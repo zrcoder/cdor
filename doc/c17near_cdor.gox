@@ -1,0 +1,8 @@
+direction right
+node("worker").
+	icon("https://icons.terrastruct.com/essentials%2F005-programmer.svg").
+	iconNear("outside-top-right")
+node("profits").
+	icon("https://icons.terrastruct.com/essentials%2Fprofits.svg").
+	iconNear("outside-top-left")
+scon "worker", "profits"

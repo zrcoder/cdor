@@ -22,7 +22,7 @@ rangeCdors (name, cdor, err) => {
 		echo err
 		return err
 	}
-	cdor.mdCode string(code)
+	cdor.mdCode(string(code)).near("center-left")
 	var data []byte
 	data, err = cdor.Gen()
 	if err != nil {
