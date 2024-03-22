@@ -332,8 +332,15 @@ func (c *Cdor) HorizontalGap(gap int) *Cdor {
 	return c
 }
 
+// FillPattern sets the global fill pattern
 func (c *Cdor) FillPattern(pattern string) *Cdor {
 	c.globalOption.fillPattern = pattern
+	return c
+}
+
+// D2 append d2 script as part of the diagram
+func (c *Cdor) D2(d2script string) *Cdor {
+	c.d2s = append(c.d2s, d2script)
 	return c
 }
 

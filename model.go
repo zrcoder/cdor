@@ -9,6 +9,7 @@ type Cdor struct {
 	graph        *d2graph.Graph
 	nodes        []*node
 	connections  []*connection
+	d2s          []string
 	globalOption *option
 	err          error
 	*config

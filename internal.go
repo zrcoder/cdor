@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"os"
 	"strconv"
+	"strings"
 
 	"cdr.dev/slog"
 	"cdr.dev/slog/sloggers/sloghuman"
@@ -104,7 +105,7 @@ func (c *Cdor) genSvg() (svg []byte) {
 		return
 	}
 
-	ctx := log.With(context.TODO(), slog.Make(sloghuman.Sink(os.Stdout)))
+	ctx := log.With(context.TODO(), slog.Make(sloghuman.Sink(os.Stdout)).Leveled(slog.LevelWarn))
 	d2 := c.d2()
 	var ruler *textmeasure.Ruler
 	if ruler, c.err = textmeasure.NewRuler(); c.err != nil {
@@ -295,7 +296,9 @@ func (c *Cdor) d2() string {
 	if c.err != nil {
 		return ""
 	}
-	return d2format.Format(c.graph.AST)
+	main := d2format.Format(c.graph.AST)
+	c.d2s = append(c.d2s, main)
+	return strings.Join(c.d2s, "\n")
 }
 
 func (c *Cdor) json(json string) (nodes []*node, cons []*connection) {

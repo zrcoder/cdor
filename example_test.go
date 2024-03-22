@@ -450,3 +450,15 @@ func Example_link() {
 	// Output:
 	// cdor: {link: https://github.com/zrcoder/cdor}
 }
+
+func Example_d2() {
+	c := Ctx()
+	c.D2(`x -> y: hi`)
+	c.Direction(c.Right())
+	c.Con("Go+", "Go").Label("cdor")
+	fmt.Println(c.d2())
+	// Output:
+	// x -> y: hi
+	// direction: right
+	// Go+ <-> Go: cdor
+}
