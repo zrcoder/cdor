@@ -238,7 +238,7 @@ func (c *Cdor) SaveFile(filename string) error {
 	if err != nil {
 		return err
 	}
-	return os.WriteFile(filename, data, 0600)
+	return os.WriteFile(filename, data, 0o600)
 }
 
 // Clear clears the diagram
@@ -449,10 +449,12 @@ func (n *node) Near(position string) *node {
 	n.position = position
 	return n
 }
+
 func (n *node) LabelNear(position string) *node {
 	n.labelPosition = position
 	return n
 }
+
 func (n *node) IconNear(position string) *node {
 	n.iconPosition = position
 	return n
@@ -517,60 +519,73 @@ func (n *node) FillPattern(p string) *node {
 	n.fillPattern = p
 	return n
 }
+
 func (n *node) StrokeWidth(w int) *node {
 	n.strokeWidth = w
 	return n
 }
+
 func (n *node) StrokeDash(d int) *node {
 	n.strokeDash = d
 	return n
 }
+
 func (n *node) BorderRadius(r int) *node {
 	n.borderRadius = r
 	return n
 }
+
 func (n *node) Shadow(s ...bool) *node {
 	b := solveBool(s)
 	n.shadow = *b
 	return n
 }
+
 func (n *node) Is3d(d ...bool) *node {
 	b := solveBool(d)
 	n.is3d = *b
 	return n
 }
+
 func (n *node) Multiple(m ...bool) *node {
 	b := solveBool(m)
 	n.multiple = *b
 	return n
 }
+
 func (n *node) DoubleBorder(d ...bool) *node {
 	b := solveBool(d)
 	n.doubleBorder = *b
 	return n
 }
+
 func (n *node) FontSize(s int) *node {
 	n.fontSize = s
 	return n
 }
+
 func (n *node) FontColor(c string) *node {
 	n.fontColor = c
 	return n
 }
+
 func (n *node) Font(f string) *node {
 	n.font = f
 	return n
 }
+
 func (n *node) Bold(bold ...bool) *node {
 	b := solveBool(bold)
 	n.bold = *b
 	return n
 }
+
 func (n *node) Italic(i ...bool) *node {
 	b := solveBool(i)
 	n.italic = *b
 	return n
 }
+
 func (n *node) Underline(u ...bool) *node {
 	b := solveBool(u)
 	n.underline = *b
@@ -635,61 +650,75 @@ func (c *connection) Label(label string) *connection {
 	c.label = label
 	return c
 }
+
 func (c *connection) Shape(shape string) *connection {
 	c.shape = shape
 	return c
 }
+
 func (c *connection) Stroke(stroke string) *connection {
 	c.stroke = stroke
 	return c
 }
+
 func (c *connection) Icon(i string) *connection {
 	c.icon = i
 	return c
 }
+
 func (c *connection) Opacity(op float64) *connection {
 	c.opacity = op
 	return c
 }
+
 func (c *connection) StrokeWidth(w int) *connection {
 	c.strokeWidth = w
 	return c
 }
+
 func (c *connection) StrokeDash(d int) *connection {
 	c.strokeDash = d
 	return c
 }
+
 func (c *connection) BorderRadius(r int) *connection {
 	c.borderRadius = r
 	return c
 }
+
 func (c *connection) FontSize(s int) *connection {
 	c.fontSize = s
 	return c
 }
+
 func (c *connection) FontColor(color string) *connection {
 	c.fontColor = color
 	return c
 }
+
 func (c *connection) Font(f string) *connection {
 	c.font = f
 	return c
 }
+
 func (c *connection) Bold(bold ...bool) *connection {
 	b := solveBool(bold)
 	c.bold = *b
 	return c
 }
+
 func (c *connection) Italic(i ...bool) *connection {
 	b := solveBool(i)
 	c.italic = *b
 	return c
 }
+
 func (c *connection) Underline(u ...bool) *connection {
 	b := solveBool(u)
 	c.underline = *b
 	return c
 }
+
 func (c *connection) Animated(a ...bool) *connection {
 	b := solveBool(a)
 	c.animated = *b
@@ -776,61 +805,74 @@ func (o *option) FillPattern(p string) *option {
 	o.fillPattern = p
 	return o
 }
+
 func (o *option) StrokeWidth(w int) *option {
 	o.strokeWidth = w
 	return o
 }
+
 func (o *option) StrokeDash(d int) *option {
 	o.strokeDash = d
 	return o
 }
+
 func (o *option) BorderRadius(r int) *option {
 	o.borderRadius = r
 	return o
 }
+
 func (o *option) Shadow(s ...bool) *option {
 	b := solveBool(s)
 	o.shadow = *b
 	return o
 }
+
 func (o *option) Is3d(d ...bool) *option {
 	b := solveBool(d)
 	o.is3d = *b
 	return o
 }
+
 func (o *option) Multiple(m ...bool) *option {
 	b := solveBool(m)
 	o.multiple = *b
 	return o
 }
+
 func (o *option) DoubleBorder(d ...bool) *option {
 	b := solveBool(d)
 	o.doubleBorder = *b
 	return o
 }
+
 func (o *option) FontSize(s int) *option {
 	o.fontSize = s
 	return o
 }
+
 func (o *option) FontColor(c string) *option {
 	o.fontColor = c
 	return o
 }
+
 func (o *option) Bold(bold ...bool) *option {
 	b := solveBool(bold)
 	o.bold = *b
 	return o
 }
+
 func (o *option) Italic(i ...bool) *option {
 	b := solveBool(i)
 	o.italic = *b
 	return o
 }
+
 func (o *option) Underline(u ...bool) *option {
 	b := solveBool(u)
 	o.underline = *b
 	return o
 }
+
 func (o *option) Animated(a ...bool) *option {
 	b := solveBool(a)
 	o.animated = *b
@@ -975,12 +1017,15 @@ func (c *Cdor) Sequencen(id string) *node {
 func (c *Cdor) Right() string {
 	return "right"
 }
+
 func (c *Cdor) Left() string {
 	return "left"
 }
+
 func (c *Cdor) Up() string {
 	return "up"
 }
+
 func (c *Cdor) Down() string {
 	return "down"
 }
@@ -990,57 +1035,75 @@ func (c *Cdor) Down() string {
 func (c *Cdor) Neutral() int {
 	return 0
 }
+
 func (c *Cdor) NeutralGrey() int {
 	return 1
 }
+
 func (c *Cdor) Flagship() int {
 	return 3
 }
+
 func (c *Cdor) Cool() int {
 	return 4
 }
+
 func (c *Cdor) MixedBerryBlue() int {
 	return 5
 }
+
 func (c *Cdor) GrapeSoda() int {
 	return 6
 }
+
 func (c *Cdor) Aubergine() int {
 	return 7
 }
+
 func (c *Cdor) ColorblindClear() int {
 	return 8
 }
+
 func (c *Cdor) VanillaNitroCola() int {
 	return 100
 }
+
 func (c *Cdor) OrangeCreamsicle() int {
 	return 101
 }
+
 func (c *Cdor) ShirleyTemple() int {
 	return 102
 }
+
 func (c *Cdor) EarthTones() int {
 	return 103
 }
+
 func (c *Cdor) EvergladeGreen() int {
 	return 104
 }
+
 func (c *Cdor) ButteredToast() int {
 	return 105
 }
+
 func (c *Cdor) Terminal() int {
 	return 300
 }
+
 func (c *Cdor) TerminalGrayscale() int {
 	return 301
 }
+
 func (c *Cdor) Origami() int {
 	return 302
 }
+
 func (c *Cdor) DarkMauve() int {
 	return 200
 }
+
 func (c *Cdor) DarkFlagshipTerrastruct() int {
 	return 201
 }
@@ -1054,21 +1117,27 @@ func (c *Cdor) HeadNone() string {
 func (c *Cdor) HeadTriangle() string {
 	return "triangle"
 }
+
 func (c *Cdor) HeadArrow() string {
 	return "arrow"
 }
+
 func (c *Cdor) HeadDiamond() string {
 	return "diamond"
 }
+
 func (c *Cdor) HeadCfOne() string {
 	return "cf-one"
 }
+
 func (c *Cdor) HeadCfOneRequired() string {
 	return "cf-one-required"
 }
+
 func (c *Cdor) HeadCfMany() string {
 	return "cf-many"
 }
+
 func (c *Cdor) HeadCfManyRequired() string {
 	return "cf-many-required"
 }
@@ -1078,9 +1147,11 @@ func (c *Cdor) HeadCfManyRequired() string {
 func (c *Cdor) Dots() string {
 	return "dots"
 }
+
 func (c *Cdor) Lines() string {
 	return "lines"
 }
+
 func (c *Cdor) Grain() string {
 	return "grain"
 }

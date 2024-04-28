@@ -261,6 +261,7 @@ func (c *Cdor) setInt(id, key string, val int, mins ...int) {
 	sval := strconv.Itoa(val)
 	c.graph, c.err = d2oracle.Set(c.graph, nil, id, nil, &sval)
 }
+
 func (c *Cdor) setFloat(id, key string, val float64) {
 	if val < 0 || c.err != nil {
 		return
@@ -269,6 +270,7 @@ func (c *Cdor) setFloat(id, key string, val float64) {
 	sval := strconv.FormatFloat(val, 'f', 1, 64)
 	c.graph, c.err = d2oracle.Set(c.graph, nil, id, nil, &sval)
 }
+
 func (c *Cdor) setBool(id, key string, val bool) {
 	if !val || c.err != nil {
 		return
@@ -442,6 +444,7 @@ func defaultStr(src, dst string) string {
 	}
 	return dst
 }
+
 func defaultGap(src, dst int) int {
 	if dst == -1 {
 		return src

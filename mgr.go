@@ -63,7 +63,7 @@ func (a *Mgr) SaveFiles(dir string, diagrams ...string) (err error) {
 			return
 		}
 		file := filepath.Join(dir, fmt.Sprintf("%s.svg", name))
-		if err = os.WriteFile(file, data, 0600); err != nil {
+		if err = os.WriteFile(file, data, 0o600); err != nil {
 			return
 		}
 	}, diagrams)

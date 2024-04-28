@@ -155,7 +155,6 @@ func Example_icon() {
 	//   icon: https://icons.terrastruct.com/dev/github.svg
 	//   shape: image
 	// }
-
 }
 
 func Example_sql_table() {
@@ -272,6 +271,7 @@ func Example_grid() {
 	// "15.999"
 	// "-218.79"
 }
+
 func Example_sequence() {
 	c := Ctx()
 	c.Sequence()
@@ -367,6 +367,7 @@ func Example_is3d() {
 	// x: {style.3d: true}
 	// x -> y: hi
 }
+
 func Example_multiple() {
 	c := Ctx()
 	c.Node("x").Multiple()

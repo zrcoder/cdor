@@ -13,8 +13,10 @@ type IWorker interface {
 
 type App = Mgr
 
-var _ IMain = (*App)(nil)
-var _ IWorker = (*Cdor)(nil)
+var (
+	_ IMain   = (*App)(nil)
+	_ IWorker = (*Cdor)(nil)
+)
 
 func Gopt_App_Main(app IMain, workers ...IWorker) {
 	for _, worker := range workers {

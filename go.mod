@@ -1,13 +1,13 @@
 module github.com/zrcoder/cdor
 
-go 1.20
+go 1.22
 
 require (
 	cdr.dev/slog v1.4.2-0.20221206192828-e4803b10ae17
 	github.com/BurntSushi/toml v0.3.1
 	github.com/tidwall/gjson v1.17.1
 	gopkg.in/yaml.v3 v3.0.1
-	oss.terrastruct.com/d2 v0.6.3
+	oss.terrastruct.com/d2 v0.6.5
 )
 
 require (
@@ -36,7 +36,7 @@ require (
 	golang.org/x/exp v0.0.0-20231127185646-65229373498e // indirect
 	golang.org/x/image v0.14.0 // indirect
 	golang.org/x/net v0.19.0 // indirect
-	golang.org/x/sys v0.15.0 // indirect
+	golang.org/x/sys v0.19.0 // indirect
 	golang.org/x/term v0.15.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
 	golang.org/x/xerrors v0.0.0-20231012003039-104605ab7028 // indirect
