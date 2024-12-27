@@ -50,7 +50,6 @@ type c17near struct {
 type App struct {
 	cdor.Mgr
 }
-
 //line doc/main_cdor.gox:9
 func (this *App) MainEntry() {
 //line doc/main_cdor.gox:9:1
@@ -125,10 +124,9 @@ func (this *App) MainEntry() {
 		panic(err)
 	}
 }
-func main() {
-	cdor.Gopt_App_Main(new(App), new(c01hello), new(c06md), new(c07latex), new(c08sql_table), new(c10jsonn), new(c14icon), new(c16shapes), new(c17near))
+func (this *App) Main() {
+	cdor.Gopt_App_Main(this, new(c01hello), new(c06md), new(c07latex), new(c08sql_table), new(c10jsonn), new(c14icon), new(c16shapes), new(c17near))
 }
-
 //line doc/c01hello_cdor.gox:1
 func (this *c01hello) Main() {
 //line doc/c01hello_cdor.gox:1:1
@@ -136,7 +134,9 @@ func (this *c01hello) Main() {
 //line doc/c01hello_cdor.gox:2:1
 	this.Con("Go+", "Go").Label("cdor")
 }
-
+func (this *c01hello) Classfname() string {
+	return "c01hello"
+}
 //line doc/c06md_cdor.gox:1
 func (this *c06md) Main() {
 //line doc/c06md_cdor.gox:1:1
@@ -149,7 +149,9 @@ func (this *c06md) Main() {
 //line doc/c06md_cdor.gox:7:1
 	this.Markdown("m", mdContent)
 }
-
+func (this *c06md) Classfname() string {
+	return "c06md"
+}
 //line doc/c07latex_cdor.gox:1
 func (this *c07latex) Main() {
 //line doc/c07latex_cdor.gox:1:1
@@ -157,13 +159,17 @@ func (this *c07latex) Main() {
 //line doc/c07latex_cdor.gox:2:1
 	this.Code("tex", "latex", tex)
 }
-
+func (this *c07latex) Classfname() string {
+	return "c07latex"
+}
 //line doc/c08sql_table_cdor.gox:1
 func (this *c08sql_table) Main() {
 //line doc/c08sql_table_cdor.gox:1:1
 	this.SqlTable("table").Field("id", "int", "primary_key").Field("last_updated", "timestamp with time zone")
 }
-
+func (this *c08sql_table) Classfname() string {
+	return "c08sql_table"
+}
 //line doc/c10jsonn_cdor.gox:1
 func (this *c10jsonn) Main() {
 //line doc/c10jsonn_cdor.gox:1:1
@@ -178,7 +184,9 @@ func (this *c10jsonn) Main() {
 //line doc/c10jsonn_cdor.gox:8:1
 	this.Direction(this.Right())
 }
-
+func (this *c10jsonn) Classfname() string {
+	return "c10jsonn"
+}
 //line doc/c14icon_cdor.gox:3
 func (this *c14icon) Main() {
 //line doc/c14icon_cdor.gox:3:1
@@ -188,7 +196,9 @@ func (this *c14icon) Main() {
 //line doc/c14icon_cdor.gox:5:1
 	this.Image("gg").Icon(iconPath)
 }
-
+func (this *c14icon) Classfname() string {
+	return "c14icon"
+}
 //line doc/c16shapes_cdor.gox:1
 func (this *c16shapes) Main() {
 //line doc/c16shapes_cdor.gox:1:1
@@ -204,7 +214,9 @@ func (this *c16shapes) Main() {
 //line doc/c16shapes_cdor.gox:24:1
 	this.Node("4").Opt(op).Children(this.Oval("oval"), this.Circle("circle"), this.Hexagon("hexagon"), this.Cloud("cloud"))
 }
-
+func (this *c16shapes) Classfname() string {
+	return "c16shapes"
+}
 //line doc/c17near_cdor.gox:1
 func (this *c17near) Main() {
 //line doc/c17near_cdor.gox:1:1
@@ -215,4 +227,10 @@ func (this *c17near) Main() {
 	this.Node("profits").Icon("https://icons.terrastruct.com/essentials%2Fprofits.svg").IconNear("outside-top-left")
 //line doc/c17near_cdor.gox:8:1
 	this.Scon("worker", "profits")
+}
+func (this *c17near) Classfname() string {
+	return "c17near"
+}
+func main() {
+	new(App).Main()
 }

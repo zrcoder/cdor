@@ -12,7 +12,7 @@ import (
 	"cdr.dev/slog"
 	"cdr.dev/slog/sloggers/sloghuman"
 	"github.com/BurntSushi/toml"
-	"github.com/tidwall/gjson"
+	"github.com/cloudwego/gjson"
 	"gopkg.in/yaml.v3"
 	"oss.terrastruct.com/d2/d2format"
 	"oss.terrastruct.com/d2/d2graph"
