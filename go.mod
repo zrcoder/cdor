@@ -20,6 +20,7 @@ require (
 	github.com/google/pprof v0.0.0-20240927180334-d43a67379298 // indirect
 	github.com/lucasb-eyer/go-colorful v1.2.0 // indirect
 	github.com/mazznoer/csscolorparser v0.1.5 // indirect
+	github.com/qiniu/x v1.13.12
 	github.com/rivo/uniseg v0.4.7 // indirect
 	github.com/tidwall/match v1.1.1 // indirect
 	github.com/tidwall/pretty v1.2.0 // indirect
