@@ -5,12 +5,11 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"log/slog"
 	"os"
 	"strconv"
 	"strings"
 
-	"cdr.dev/slog"
-	"cdr.dev/slog/sloggers/sloghuman"
 	"github.com/BurntSushi/toml"
 	"github.com/tidwall/gjson"
 	"gopkg.in/yaml.v3"
@@ -104,8 +103,8 @@ func (c *Cdor) genSvg() (svg []byte) {
 	if c.err != nil {
 		return
 	}
-
-	ctx := log.With(context.TODO(), slog.Make(sloghuman.Sink(os.Stdout)).Leveled(slog.LevelWarn))
+	logger := slog.New(slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{Level: slog.LevelWarn}))
+	ctx := log.With(context.TODO(), logger)
 	d2 := c.d2()
 	var ruler *textmeasure.Ruler
 	if ruler, c.err = textmeasure.NewRuler(); c.err != nil {
@@ -142,7 +141,7 @@ func (c *Cdor) genSvg() (svg []byte) {
 		return
 	}
 	lg := simplelog.FromLibLog(ctx)
-	if svg, c.err = imgbundler.BundleLocal(ctx, lg, svg, true); c.err != nil {
+	if svg, c.err = imgbundler.BundleLocal(ctx, lg, "", svg, true); c.err != nil {
 		return
 	}
 	svg, c.err = imgbundler.BundleRemote(ctx, lg, svg, true)
