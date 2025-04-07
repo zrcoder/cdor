@@ -1,4 +1,4 @@
-gop 1.2
+gop 1.3
 
 project _cdor.gox App github.com/zrcoder/cdor
 
