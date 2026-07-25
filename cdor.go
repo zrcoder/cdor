@@ -332,6 +332,12 @@ func (c *Cdor) HorizontalGap(gap int) *Cdor {
 	return c
 }
 
+// Fill sets the global fill color
+func (c *Cdor) Fill(fill string) *Cdor {
+	c.globalOption.fill = fill
+	return c
+}
+
 // FillPattern sets the global fill pattern
 func (c *Cdor) FillPattern(pattern string) *Cdor {
 	c.globalOption.fillPattern = pattern

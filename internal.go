@@ -56,6 +56,7 @@ func (c *Cdor) buildGraph() {
 	c.setInt("", "horizontal-gap", c.globalOption.horizontalGap)
 	c.setInt("", "vertical-gap", c.globalOption.verticalGap)
 	c.set("", "style.fill-pattern", c.globalOption.fillPattern)
+	c.set("", "style.fill", c.globalOption.fill)
 
 	for _, n := range c.nodes {
 		c.soveID(n)
