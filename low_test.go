@@ -6,9 +6,9 @@ import (
 	"strings"
 	"testing"
 
-	"oss.terrastruct.com/d2/d2format"
-	"oss.terrastruct.com/d2/d2lib"
-	"oss.terrastruct.com/d2/d2oracle"
+	"github.com/d2lang/d2/d2format"
+	"github.com/d2lang/d2/d2lib"
+	"github.com/d2lang/d2/d2oracle"
 )
 
 const d2wanted = `

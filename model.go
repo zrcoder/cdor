@@ -1,8 +1,8 @@
 package cdor
 
 import (
-	"oss.terrastruct.com/d2/d2graph"
-	"oss.terrastruct.com/d2/d2target"
+	"github.com/d2lang/d2/d2graph"
+	"github.com/d2lang/d2/d2target"
 )
 
 type Cdor struct {
